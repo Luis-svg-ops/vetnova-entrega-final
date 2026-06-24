@@ -1,0 +1,14 @@
+$kind: http-request
+url: http://localhost:8088/api/tickets/1/escalar
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "administradorId": 1,
+      "motivo": "Cliente insistió por segunda vez sin resolución",
+      "estado": "ESCALADO"
+    }
+order: 9000

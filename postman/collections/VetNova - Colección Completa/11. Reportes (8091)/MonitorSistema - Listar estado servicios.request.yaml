@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8091/api/v1/monitor
+method: GET
+order: 6000

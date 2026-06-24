@@ -1,0 +1,9 @@
+$kind: http-request
+url: http://localhost:8086/api/v1/citas/1/confirmar
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: "{}"
+order: 9000

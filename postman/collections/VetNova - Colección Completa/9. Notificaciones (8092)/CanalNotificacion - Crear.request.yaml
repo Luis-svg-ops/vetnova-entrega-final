@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8092/api/v1/canales
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "usuarioId": 2,
+      "tipo": "EMAIL",
+      "destino": "cliente@vetnova.cl",
+      "activo": true
+    }
+order: 4000

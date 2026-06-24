@@ -40,9 +40,12 @@ foreach ($servicio in $servicios) {
         continue
     }
 
+    # Usar mvnw.cmd del gateway si mvn no está en el PATH
+    $mvn = if (Get-Command mvn -ErrorAction SilentlyContinue) { "mvn" } else { "$raiz\getawayspring-profeAlejandro\mvnw.cmd" }
+
     Push-Location $carpeta
     try {
-        mvn clean package -q -DskipTests
+        & $mvn clean package -q -DskipTests
         if ($LASTEXITCODE -eq 0) {
             Write-Host "OK: $servicio" -ForegroundColor Green
             $resultados += [PSCustomObject]@{ Servicio = $servicio; Estado = "OK" }

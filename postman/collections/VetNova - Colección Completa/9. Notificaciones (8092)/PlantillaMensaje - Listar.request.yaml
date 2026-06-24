@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8092/api/v1/plantillas
+method: GET
+order: 7000

@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8088/api/tickets/categorias
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Atención Clínica",
+      "descripcion": "Problemas relacionados con la atención médica de mascotas",
+      "areaPorDefecto": "VETERINARIA",
+      "prioridadDefault": "ALTA"
+    }
+order: 1000

@@ -7,65 +7,77 @@ spring:
       server:
         webflux:
           routes:
+            # ── Auth (8081) ──────────────────────────────────────────────────
             - id: ms-auth
               uri: http://localhost:8081
               predicates:
-                - Path=/api/auth,/api/auth/**,/api/usuarios,/api/usuarios/**,/api/roles,/api/roles/**
+                - Path=/api/auth,/api/auth/**,/api/usuarios,/api/usuarios/**,/api/roles,/api/roles/**,/api/auditoria,/api/auditoria/**,/api/v1/clientes,/api/v1/clientes/**
 
+            # ── Catálogo (8082) ──────────────────────────────────────────────
             - id: ms-catalogo
               uri: http://localhost:8082
               predicates:
-                - Path=/api/v1/catalogo,/api/v1/catalogo/**,/api/v1/productos,/api/v1/productos/**,/api/v1/categorias,/api/v1/categorias/**
+                - Path=/api/v1/catalogo,/api/v1/catalogo/**,/api/v1/productos,/api/v1/productos/**,/api/v1/categorias,/api/v1/categorias/**,/api/v1/ofertas,/api/v1/ofertas/**,/api/v1/servicios,/api/v1/servicios/**
 
+            # ── Inventario (8083) ────────────────────────────────────────────
             - id: ms-inventario
               uri: http://localhost:8083
               predicates:
-                - Path=/api/v1/inventario,/api/v1/inventario/**
+                - Path=/api/v1/inventario,/api/v1/inventario/**,/api/v1/inventarios,/api/v1/inventarios/**,/api/v1/movimientos,/api/v1/movimientos/**,/api/v1/alertastocks,/api/v1/alertastocks/**,/api/v1/pedidoproveedors,/api/v1/pedidoproveedors/**,/api/v1/detallepedidoproveedors,/api/v1/detallepedidoproveedors/**,/api/v1/proveedors,/api/v1/proveedors/**,/api/v1/solicitudreposicions,/api/v1/solicitudreposicions/**,/api/v1/transferenciastocks,/api/v1/transferenciastocks/**
 
+            # ── Ventas (8084) ────────────────────────────────────────────────
             - id: ms-ventas
               uri: http://localhost:8084
               predicates:
-                - Path=/api/v1/ordenes,/api/v1/ordenes/**,/api/v1/pagos,/api/v1/pagos/**
+                - Path=/api/v1/ordenes,/api/v1/ordenes/**,/api/v1/pagos,/api/v1/pagos/**,/api/v1/carritos,/api/v1/carritos/**
 
+            # ── Envío (8085) ─────────────────────────────────────────────────
             - id: ms-envio
               uri: http://localhost:8085
               predicates:
-                - Path=/api/v1/envios,/api/v1/envios/**
+                - Path=/api/v1/envios,/api/v1/envios/**,/api/v1/despachos,/api/v1/despachos/**,/api/v1/guiadespachos,/api/v1/guiadespachos/**,/api/v1/itemdespachos,/api/v1/itemdespachos/**,/api/v1/rutadespachos,/api/v1/rutadespachos/**,/api/v1/seguimientopedidos,/api/v1/seguimientopedidos/**,/api/v1/transferencias,/api/v1/transferencias/**
 
+            # ── Agenda (8086) ────────────────────────────────────────────────
             - id: ms-agenda
               uri: http://localhost:8086
               predicates:
-                - Path=/api/v1/citas,/api/v1/citas/**,/api/v1/recordatorios,/api/v1/recordatorios/**
+                - Path=/api/v1/citas,/api/v1/citas/**,/api/v1/recordatorios,/api/v1/recordatorios/**,/api/v1/bloques,/api/v1/bloques/**,/api/v1/boxes,/api/v1/boxes/**,/api/v1/disponibilidad,/api/v1/disponibilidad/**,/api/v1/historial,/api/v1/historial/**
 
+            # ── Ficha Clínica (8087) ─────────────────────────────────────────
             - id: ms-ficha
               uri: http://localhost:8087
               predicates:
-                - Path=/api/v1/fichas,/api/v1/fichas/**,/api/v1/evoluciones,/api/v1/evoluciones/**,/api/v1/mascotas,/api/v1/mascotas/**
+                - Path=/api/v1/fichas,/api/v1/fichas/**,/api/v1/evoluciones,/api/v1/evoluciones/**,/api/v1/mascotas,/api/v1/mascotas/**,/api/v1/recetas,/api/v1/recetas/**,/api/v1/vacunas,/api/v1/vacunas/**,/api/v1/procedimientos,/api/v1/procedimientos/**,/api/v1/certificados,/api/v1/certificados/**
 
+            # ── Soporte (8088) ───────────────────────────────────────────────
             - id: ms-soporte
               uri: http://localhost:8088
               predicates:
-                - Path=/tickets,/tickets/**
+                - Path=/tickets,/tickets/**,/categorias-ticket,/categorias-ticket/**,/derivaciones,/derivaciones/**,/escalamientos,/escalamientos/**,/respuestas-ticket,/respuestas-ticket/**,/valoraciones,/valoraciones/**
 
+            # ── Laboratorio (8089) ───────────────────────────────────────────
             - id: ms-laboratorio
               uri: http://localhost:8089
               predicates:
-                - Path=/api/v1/laboratorio,/api/v1/laboratorio/**
+                - Path=/ordenes-examen,/ordenes-examen/**,/tipos-examen,/tipos-examen/**,/muestras,/muestras/**,/procesamientos,/procesamientos/**,/resultados-examen,/resultados-examen/**
 
+            # ── Facturación (8090) ───────────────────────────────────────────
             - id: ms-facturacion
               uri: http://localhost:8090
               predicates:
-                - Path=/api/v1/documentos,/api/v1/documentos/**
+                - Path=/documentos,/documentos/**,/anulaciones,/anulaciones/**,/folios,/folios/**,/envios-sii,/envios-sii/**,/reportes-tributarios,/reportes-tributarios/**
 
+            # ── Reportes (8091) ──────────────────────────────────────────────
             - id: ms-reportes
               uri: http://localhost:8091
               predicates:
-                - Path=/reportes,/reportes/**
+                - Path=/reportes,/reportes/**,/reportes-atencion,/reportes-atencion/**,/reportes-stock,/reportes-stock/**,/reportes-venta,/reportes-venta/**,/respaldos,/respaldos/**,/incidentes,/incidentes/**,/monitor,/monitor/**,/dashboard,/dashboard/**
 
+            # ── Notificaciones (8092) ────────────────────────────────────────
             - id: ms-notificaciones
               uri: http://localhost:8092
               predicates:
-                - Path=/notificaciones,/notificaciones/**
+                - Path=/notificaciones,/notificaciones/**,/canales,/canales/**,/plantillas,/plantillas/**,/historial-mensajes,/historial-mensajes/**,/configuraciones-alerta,/configuraciones-alerta/**
 
 server:
   port: 8080

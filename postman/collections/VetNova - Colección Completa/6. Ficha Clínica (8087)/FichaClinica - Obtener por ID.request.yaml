@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8087/api/v1/fichas/1
+method: GET
+order: 7000

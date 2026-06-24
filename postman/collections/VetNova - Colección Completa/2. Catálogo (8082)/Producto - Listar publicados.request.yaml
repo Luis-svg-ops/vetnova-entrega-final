@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8082/api/v1/productos
+method: GET
+order: 3000

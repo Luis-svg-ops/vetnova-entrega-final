@@ -1,0 +1,14 @@
+$kind: http-request
+url: http://localhost:8082/api/v1/categorias
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Alimentos",
+      "descripcion": "Alimentos para mascotas de todas las especies",
+      "tipo": "PRODUCTO"
+    }
+order: 2000

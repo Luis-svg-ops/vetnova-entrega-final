@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8081/api/usuarios/1/existe
+method: GET
+order: 5000

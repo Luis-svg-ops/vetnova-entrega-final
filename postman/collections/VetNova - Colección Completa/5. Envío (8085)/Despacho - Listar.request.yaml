@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8085/api/v1/despachos
+method: GET
+order: 6000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8084/api/v1/ordenes/1/pagos
+method: GET
+order: 9000

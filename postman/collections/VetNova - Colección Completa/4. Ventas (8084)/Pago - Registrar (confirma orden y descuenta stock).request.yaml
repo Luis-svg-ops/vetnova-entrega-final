@@ -1,0 +1,14 @@
+$kind: http-request
+url: http://localhost:8084/api/v1/ordenes/1/pagos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "metodo": "DEBITO",
+      "monto": 71980.0,
+      "referencia": "TRX-0001"
+    }
+order: 8000

@@ -1,0 +1,16 @@
+$kind: http-request
+url: http://localhost:8091/api/v1/reportes
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "tipo": "STOCK",
+      "sucursal": 1,
+      "desde": "2026-01-01",
+      "hasta": "2026-06-30",
+      "generadoPor": 1
+    }
+order: 3000

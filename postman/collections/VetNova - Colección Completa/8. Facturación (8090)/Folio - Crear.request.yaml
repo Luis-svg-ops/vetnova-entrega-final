@@ -1,0 +1,18 @@
+$kind: http-request
+url: http://localhost:8090/api/v1/folios
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "sucursal": 1,
+      "tipoDocumento": "BOLETA",
+      "folioDesde": 1,
+      "folioHasta": 1000,
+      "folioActual": 1,
+      "activo": true,
+      "umbral": 50
+    }
+order: 6000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8089/api/v1/tipos-examen
+method: GET
+order: 2000

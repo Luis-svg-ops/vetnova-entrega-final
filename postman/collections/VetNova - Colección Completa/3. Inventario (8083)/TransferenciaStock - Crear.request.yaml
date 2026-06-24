@@ -1,0 +1,16 @@
+$kind: http-request
+url: http://localhost:8083/api/v1/inventario/transferencias
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "productoId": 1,
+      "sucursalOrigen": "CHILLAN",
+      "sucursalDestino": "LOS_ANGELES",
+      "cantidad": 10,
+      "estado": "PENDIENTE"
+    }
+order: 14000

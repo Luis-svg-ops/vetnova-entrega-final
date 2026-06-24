@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:8087/api/v1/procedimientos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fichaId": 1,
+      "veterinarioId": 3,
+      "nombre": "Castración",
+      "tipo": "QUIRURGICO",
+      "descripcion": "Orquiectomía bilateral bajo anestesia general",
+      "resultado": "Procedimiento exitoso sin complicaciones"
+    }
+order: 15000

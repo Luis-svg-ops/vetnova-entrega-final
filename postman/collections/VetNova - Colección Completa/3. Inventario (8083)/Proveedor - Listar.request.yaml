@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8083/api/v1/inventario/proveedores
+method: GET
+order: 8000

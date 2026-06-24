@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8086/api/v1/citas/1/existe
+method: GET
+order: 8000

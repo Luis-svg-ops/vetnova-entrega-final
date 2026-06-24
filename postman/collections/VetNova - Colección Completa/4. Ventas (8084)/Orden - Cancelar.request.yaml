@@ -1,0 +1,12 @@
+$kind: http-request
+url: http://localhost:8084/api/v1/ordenes/1/cancelar
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "motivo": "Cliente solicitó cancelación"
+    }
+order: 6000

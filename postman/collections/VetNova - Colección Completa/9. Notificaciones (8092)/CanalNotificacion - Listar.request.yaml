@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8092/api/v1/canales
+method: GET
+order: 5000

@@ -1,0 +1,12 @@
+$kind: http-request
+url: http://localhost:8088/api/tickets/1/resolver
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "resolucion": "Se coordinó nueva consulta sin costo. El paciente fue atendido y se ajustó el tratamiento."
+    }
+order: 7000

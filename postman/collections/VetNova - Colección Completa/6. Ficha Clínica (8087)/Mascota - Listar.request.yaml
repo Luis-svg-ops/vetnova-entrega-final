@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8087/api/v1/mascotas
+method: GET
+order: 2000

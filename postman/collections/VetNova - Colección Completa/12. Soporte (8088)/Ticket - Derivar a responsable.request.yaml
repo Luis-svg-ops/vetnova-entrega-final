@@ -1,0 +1,13 @@
+$kind: http-request
+url: http://localhost:8088/api/tickets/1/derivar
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "responsableNuevoId": 3,
+      "motivo": "Requiere revisión del veterinario tratante"
+    }
+order: 6000

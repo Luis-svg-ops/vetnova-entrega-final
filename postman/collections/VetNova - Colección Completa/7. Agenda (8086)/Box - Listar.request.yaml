@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8086/api/v1/boxes
+method: GET
+order: 1000
