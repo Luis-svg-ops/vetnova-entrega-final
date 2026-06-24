@@ -1,0 +1,10 @@
+target/
+*.class
+*.log
+*.db
+*.mv.db
+*.trace.db
+data/
+.idea/
+.vscode/
+.DS_Store

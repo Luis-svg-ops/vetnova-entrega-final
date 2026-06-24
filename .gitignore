@@ -1,0 +1,13 @@
+target/
+*.class
+*.log
+*.db
+*.mv.db
+*.trace.db
+data/
+.gradle/
+build/
+bin/
+.idea/
+.vscode/
+.DS_Store

@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VetMascotas — Diagramas de Clase por Microservicio</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --surface2: #1a1e28;
+    --border: #252935;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --accent3: #1fd8a4;
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --text3: #555b6e;
+    --pill-bg: #1e2333;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 28px 40px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    background: var(--surface);
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  header span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    background: rgba(31,216,164,0.1);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(31,216,164,0.2);
+    letter-spacing: 0.5px;
+  }
+
+  .layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  aside {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+  }
+
+  .aside-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0 20px 12px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: var(--surface2);
+    border-left-color: var(--text3);
+  }
+
+  .nav-item.active {
+    background: var(--surface2);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item.active .nav-num {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .nav-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    background: var(--pill-bg);
+    color: var(--text2);
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .nav-info { flex: 1; min-width: 0; }
+
+  .nav-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  .nav-cu {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 1px;
+  }
+
+  .nav-item.active .nav-title { color: var(--accent); }
+
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+  }
+
+  .panel { display: none; animation: fadeIn 0.2s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+  .panel-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .panel-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .panel-meta { flex: 1; }
+
+  .panel-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .panel-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: var(--pill-bg);
+  }
+
+  .diagram-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    overflow-x: auto;
+  }
+
+  .diagram-card .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .diagram-card svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .loading-msg {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .dot {
+    display: inline-block;
+    animation: blink 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0;} 40%{opacity:1;} }
+
+  /* Mermaid overrides for dark theme */
+  .mermaid svg {
+    background: transparent !important;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>VetMascotas — Diagramas de Clase</h1>
+  <span>12 MICROSERVICIOS</span>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="aside-label">Módulos</div>
+    <div id="nav"></div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const modules = [
+  {
+    id: 1,
+    icon: '🔐',
+    iconBg: 'rgba(79,142,247,0.15)',
+    title: 'Autenticación e Identidad',
+    cu: 'CU-01.01 → CU-01.05',
+    desc: 'Gestiona el registro, autenticación y control de acceso de los usuarios según su rol, e incluye el perfil del cliente (datos personales y de contacto).',
+    tags: ['CU-01', 'JWT', 'Roles', 'Permisos', 'Cliente'],
+    diagram: `classDiagram
+  direction TB
+  class Usuario {
+    +Long id
+    +String nombre
+    +String email
+    +String passwordHash
+    +String rol
+    +Boolean activo
+    +Date fechaCreacion
+    +crearCuenta(String email, String password) void
+    +iniciarSesion(String email, String password) String
+    +cerrarSesion(String token) void
+    +actualizarPerfil(String nombre, String telefono) void
+    +cambiarPassword(String actual, String nueva) void
+  }
+  class RolPermiso {
+    +Long id
+    +String nombreRol
+    +List permisos
+    +asignarPermiso(String permiso) void
+    +revocarPermiso(String permiso) void
+    +tienePermiso(String permiso) Boolean
+  }
+  class SesionToken {
+    +Long id
+    +Long usuarioId
+    +String token
+    +Date expiracion
+    +Boolean activo
+    +generar(Long usuarioId) String
+    +validar(String token) Boolean
+    +revocar(String token) void
+  }
+  class AuditoriaAcceso {
+    +Long id
+    +Long usuarioId
+    +String accion
+    +String ip
+    +Date timestamp
+    +Boolean exitoso
+    +registrar(Long usuarioId, String accion, Boolean ok) void
+  }
+  class Cliente {
+    +Long id
+    +Long usuarioId
+    +String rut
+    +String nombre
+    +String apellido
+    +String email
+    +String telefono
+    +String direccion
+    +Boolean activo
+    +Date fechaRegistro
+    +registrar() void
+    +actualizarDatos(String telefono, String direccion) void
+    +desactivar() void
+  }
+  Usuario "1" --> "1" RolPermiso : tiene
+  Usuario "1" --> "0..1" Cliente : perfil
+  Usuario "1" --> "0..*" SesionToken : genera
+  Usuario "1" --> "0..*" AuditoriaAcceso : registra`
+  },
+  {
+    id: 2,
+    icon: '🛒',
+    iconBg: 'rgba(124,92,252,0.15)',
+    title: 'Catálogo',
+    cu: 'CU-02.01 → CU-02.07',
+    desc: 'Administra los productos y servicios disponibles, incluyendo búsqueda, filtrado por categoría y gestión de precios.',
+    tags: ['CU-02', 'Productos', 'Servicios', 'Categorías'],
+    diagram: `classDiagram
+  direction TB
+  class Producto {
+    +Long id
+    +String nombre
+    +String descripcion
+    +Double precio
+    +Boolean activo
+    +Long categoriaId
+    +String imagenUrl
+    +Date fechaActualizacion
+    +activar() void
+    +desactivar() void
+    +actualizarPrecio(Double nuevoPrecio) void
+    +actualizarOferta(Double descuento, Date hasta) void
+  }
+  class Servicio {
+    +Long id
+    +String nombre
+    +String descripcion
+    +Double precio
+    +Integer duracionMinutos
+    +Boolean activo
+    +Long categoriaId
+    +activar() void
+    +desactivar() void
+    +actualizarPrecio(Double nuevoPrecio) void
+  }
+  class Categoria {
+    +Long id
+    +String nombre
+    +String descripcion
+    +String tipo
+    +getProductos() List
+    +getServicios() List
+  }
+  class Oferta {
+    +Long id
+    +Long productoId
+    +Double descuento
+    +Date fechaInicio
+    +Date fechaFin
+    +Boolean activa
+    +aplicar(Double precioBase) Double
+    +estaVigente() Boolean
+  }
+  class CatalogoBuscador {
+    +buscarPorNombre(String nombre) List
+    +filtrarPorCategoria(Long categoriaId) List
+    +filtrarPorRango(Double min, Double max) List
+    +listarDisponibles(String sucursal) List
+    +getDetalle(Long itemId, String tipo) Object
+  }
+  Producto "0..*" --> "1" Categoria : pertenece a
+  Servicio "0..*" --> "1" Categoria : pertenece a
+  Producto "1" --> "0..*" Oferta : puede tener
+  CatalogoBuscador --> Producto : consulta
+  CatalogoBuscador --> Servicio : consulta`
+  },
+  {
+    id: 3,
+    icon: '📦',
+    iconBg: 'rgba(31,216,164,0.15)',
+    title: 'Inventario',
+    cu: 'CU-03.01 → CU-03.05',
+    desc: 'Controla el stock por sucursal, entradas/salidas, transferencias inter-sucursal, alertas de stock crítico, proveedores, recepción de pedidos y autorización de solicitudes de reposición.',
+    tags: ['CU-03', 'Stock', 'Sucursales', 'Proveedores', 'Reposición'],
+    diagram: `classDiagram
+  direction TB
+  class Inventario {
+    +Long id
+    +Long productoId
+    +String sucursal
+    +Integer stockDisponible
+    +Integer stockMinimo
+    +Integer stockTransito
+    +registrarEntrada(Integer cantidad, String responsable) void
+    +registrarSalida(Integer cantidad, String motivo) void
+    +ajustarStockMinimo(Integer minimo) void
+    +verificarStockCritico() Boolean
+    +getStockTotal() Integer
+  }
+  class MovimientoStock {
+    +Long id
+    +Long inventarioId
+    +String tipo
+    +Integer cantidad
+    +String motivo
+    +String responsable
+    +Date fecha
+    +String sucursal
+    +registrar() void
+  }
+  class TransferenciaStock {
+    +Long id
+    +Long productoId
+    +String sucursalOrigen
+    +String sucursalDestino
+    +Integer cantidad
+    +String estado
+    +Date fechaSolicitud
+    +Date fechaConfirmacion
+    +iniciar() void
+    +confirmarRecepcion() void
+    +cancelar() void
+  }
+  class AlertaStock {
+    +Long id
+    +Long inventarioId
+    +String sucursal
+    +String tipo
+    +Integer stockActual
+    +Integer stockMinimo
+    +Boolean atendida
+    +Date fechaGeneracion
+    +generar() void
+    +atender() void
+  }
+  class Proveedor {
+    +Long id
+    +String rut
+    +String nombre
+    +String contacto
+    +String telefono
+    +String email
+    +String direccion
+    +Boolean activo
+    +registrar() void
+    +actualizar() void
+    +desactivar() void
+  }
+  class PedidoProveedor {
+    +Long id
+    +Long proveedorId
+    +String sucursal
+    +String estado
+    +Date fechaPedido
+    +Date fechaRecepcion
+    +String responsable
+    +crear() void
+    +registrarRecepcion() void
+    +registrarDiferencia(Long detalleId, Integer recibido) void
+  }
+  class DetallePedidoProveedor {
+    +Long id
+    +Long pedidoProveedorId
+    +Long productoId
+    +Integer cantidadPedida
+    +Integer cantidadRecibida
+    +Double costoUnitario
+  }
+  class SolicitudReposicion {
+    +Long id
+    +Long productoId
+    +String sucursal
+    +Integer cantidadSolicitada
+    +String estado
+    +Long solicitadaPor
+    +Long autorizadaPor
+    +String motivoRechazo
+    +Date fechaSolicitud
+    +Date fechaResolucion
+    +crear() void
+    +aprobar(Long adminId) void
+    +rechazar(Long adminId, String motivo) void
+  }
+  Inventario "1" --> "0..*" MovimientoStock : registra
+  Inventario "1" --> "0..*" AlertaStock : genera
+  TransferenciaStock --> Inventario : afecta origen
+  TransferenciaStock --> Inventario : afecta destino
+  PedidoProveedor "0..*" --> "1" Proveedor : se compra a
+  PedidoProveedor "1" --> "1..*" DetallePedidoProveedor : contiene
+  PedidoProveedor "1" --> "0..*" MovimientoStock : genera entrada
+  SolicitudReposicion "0..*" --> "1" Inventario : sobre
+  SolicitudReposicion "1" --> "0..1" PedidoProveedor : gatilla`
+  },
+  {
+    id: 4,
+    icon: '💳',
+    iconBg: 'rgba(247,79,108,0.15)',
+    title: 'Ventas y Pedidos',
+    cu: 'CU-04.01 → CU-04.05',
+    desc: 'Maneja el carrito de compras, la generación de órdenes de venta, selección de método de pago y descuento automático de stock.',
+    tags: ['CU-04', 'Carrito', 'Órdenes', 'Pagos'],
+    diagram: `classDiagram
+  direction TB
+  class Orden {
+    +Long id
+    +Long clienteId
+    +String sucursal
+    +String estado
+    +Double subtotal
+    +Double impuestos
+    +Double total
+    +String metodoPago
+    +Date fechaCreacion
+    +Date fechaConfirmacion
+    +confirmar() void
+    +cancelar() void
+    +calcularTotal() Double
+    +generarDocumento() Documento
+  }
+  class DetalleOrden {
+    +Long id
+    +Long ordenId
+    +Long itemId
+    +String tipoItem
+    +Integer cantidad
+    +Double precioUnitario
+    +Double subtotal
+    +calcularSubtotal() Double
+  }
+  class Carrito {
+    +Long id
+    +Long clienteId
+    +List items
+    +Double total
+    +agregarItem(Long itemId, String tipo, Integer cantidad) void
+    +quitarItem(Long itemId) void
+    +actualizarCantidad(Long itemId, Integer cantidad) void
+    +calcularTotal() Double
+    +convertirAOrden() Orden
+    +vaciar() void
+  }
+  class Pago {
+    +Long id
+    +Long ordenId
+    +String metodo
+    +Double monto
+    +String estado
+    +String referencia
+    +Date fecha
+    +procesar() Boolean
+    +confirmar() void
+    +rechazar(String motivo) void
+    +reembolsar() void
+  }
+  class ItemCarrito {
+    +Long itemId
+    +String tipo
+    +String nombre
+    +Integer cantidad
+    +Double precio
+    +Double subtotal
+  }
+  Orden "1" --> "1..*" DetalleOrden : contiene
+  Orden "1" --> "1" Pago : tiene
+  Carrito "1" --> "1..*" ItemCarrito : almacena
+  Carrito --> Orden : genera`
+  },
+  {
+    id: 5,
+    icon: '🚚',
+    iconBg: 'rgba(247,168,79,0.15)',
+    title: 'Envío y Logística',
+    cu: 'CU-05.01 → CU-05.06',
+    desc: 'Coordina los despachos, transferencias inter-sucursal, seguimiento de pedidos y control de stock en tránsito.',
+    tags: ['CU-05', 'Despachos', 'Tránsito', 'Rutas'],
+    diagram: `classDiagram
+  direction TB
+  class Despacho {
+    +Long id
+    +Long ordenId
+    +String sucursalOrigen
+    +String sucursalDestino
+    +String tipo
+    +String estado
+    +String responsable
+    +Date fechaCreacion
+    +Date fechaEstimada
+    +Date fechaEntrega
+    +iniciar() void
+    +enviar() void
+    +confirmarEntrega() void
+    +cancelar() void
+    +actualizarEstado(String estado) void
+  }
+  class ItemDespacho {
+    +Long id
+    +Long despachoId
+    +Long productoId
+    +Integer cantidad
+    +String estado
+  }
+  class GuiaDespacho {
+    +Long id
+    +Long despachoId
+    +String folio
+    +String origen
+    +String destino
+    +Date fechaEmision
+    +String responsable
+    +List productos
+    +generarPDF() File
+    +enviarAlCliente() void
+  }
+  class SeguimientoPedido {
+    +Long id
+    +Long despachoId
+    +Long ordenId
+    +String estado
+    +Date fechaActualizacion
+    +String descripcion
+    +actualizarEstado(String estado, String descripcion) void
+    +getHistorial() List
+    +notificarCliente() void
+  }
+  class RutaDespacho {
+    +Long id
+    +String sucursalOrigen
+    +String sucursalDestino
+    +Double distanciaKm
+    +Integer tiempoEstimadoMin
+    +Boolean activa
+    +optimizar() void
+    +calcularTiempoEstimado() Integer
+  }
+  Despacho "1" --> "1..*" ItemDespacho : contiene
+  Despacho "1" --> "1" GuiaDespacho : genera
+  Despacho "1" --> "1" SeguimientoPedido : tiene
+  Despacho "0..*" --> "1" RutaDespacho : usa`
+  },
+  {
+    id: 6,
+    icon: '📅',
+    iconBg: 'rgba(79,200,247,0.15)',
+    title: 'Agenda y Horas',
+    cu: 'CU-06.01 → CU-06.07',
+    desc: 'Gestiona la reserva, reprogramación y cancelación de citas médicas, además de la disponibilidad de profesionales y box.',
+    tags: ['CU-06', 'Citas', 'Disponibilidad', 'Profesionales'],
+    diagram: `classDiagram
+  direction TB
+  class Cita {
+    +Long id
+    +Long clienteId
+    +Long mascotaId
+    +Long veterinarioId
+    +Long boxId
+    +String sucursal
+    +String servicio
+    +Date fechaHora
+    +Integer duracionMin
+    +String estado
+    +String canal
+    +confirmar() void
+    +reprogramar(Date nuevaFecha) void
+    +cancelar(String motivo) void
+    +registrarAsistencia() void
+    +marcarAusente() void
+  }
+  class DisponibilidadProfesional {
+    +Long id
+    +Long veterinarioId
+    +String diaSemana
+    +String horaInicio
+    +String horaFin
+    +String sucursal
+    +Boolean activa
+    +getHorasLibres(Date fecha) List
+    +bloquear(Date desde, Date hasta, String motivo) void
+  }
+  class Box {
+    +Long id
+    +String nombre
+    +String sucursal
+    +Boolean disponible
+    +String tipo
+    +reservar(Date fechaHora, Integer duracionMin) void
+    +liberar(Long citaId) void
+    +estaDisponible(Date fechaHora) Boolean
+  }
+  class BloqueAgenda {
+    +Long id
+    +Long veterinarioId
+    +Long boxId
+    +Date fechaInicio
+    +Date fechaFin
+    +String motivo
+    +String tipo
+  }
+  class HistorialAgenda {
+    +Long id
+    +Long citaId
+    +Long mascotaId
+    +Long clienteId
+    +Date fecha
+    +String estado
+    +String servicio
+    +getCitasPorMascota(Long mascotaId) List
+    +getCitasPorProfesional(Long vetId, Date desde, Date hasta) List
+  }
+  Cita "0..*" --> "1" DisponibilidadProfesional : usa
+  Cita "0..*" --> "1" Box : ocupa
+  DisponibilidadProfesional "1" --> "0..*" BloqueAgenda : puede tener
+  Cita "1" --> "1" HistorialAgenda : registra en`
+  },
+  {
+    id: 7,
+    icon: '🩺',
+    iconBg: 'rgba(31,216,164,0.15)',
+    title: 'Ficha Clínica',
+    cu: 'CU-07.01 → CU-07.07',
+    desc: 'Administra a la mascota (paciente) y su historial médico: diagnósticos, vacunas, procedimientos, recetas y certificados veterinarios.',
+    tags: ['CU-07', 'Mascota', 'Historial', 'Diagnóstico', 'Recetas'],
+    diagram: `classDiagram
+  direction TB
+  class FichaClinica {
+    +Long id
+    +Long mascotaId
+    +Date fechaCreacion
+    +String observacionesGenerales
+    +List evoluciones
+    +List vacunas
+    +List procedimientos
+    +getHistorialCompleto() List
+    +agregarEvolucion(Evolucion e) void
+    +agregarVacuna(Vacuna v) void
+    +agregarProcedimiento(Procedimiento p) void
+  }
+  class Evolucion {
+    +Long id
+    +Long fichaId
+    +Long veterinarioId
+    +Long citaId
+    +Date fecha
+    +String anamnesis
+    +String examenFisico
+    +String diagnostico
+    +String tratamiento
+    +String observaciones
+    +registrar() void
+  }
+  class Vacuna {
+    +Long id
+    +Long fichaId
+    +Long veterinarioId
+    +String nombre
+    +String lote
+    +Date fechaAplicacion
+    +Date fechaProximaDosis
+    +String observaciones
+    +registrar() void
+    +programarRecordatorio() void
+  }
+  class Procedimiento {
+    +Long id
+    +Long fichaId
+    +Long veterinarioId
+    +String tipo
+    +String descripcion
+    +Date fecha
+    +String resultado
+    +registrar() void
+  }
+  class Receta {
+    +Long id
+    +Long fichaId
+    +Long veterinarioId
+    +Long mascotaId
+    +String medicamentos
+    +String dosis
+    +String frecuencia
+    +String duracion
+    +String indicaciones
+    +Date fechaEmision
+    +generarPDF() File
+    +compartirConCliente() void
+  }
+  class Certificado {
+    +Long id
+    +Long fichaId
+    +Long veterinarioId
+    +Long mascotaId
+    +String tipo
+    +String contenido
+    +Date fechaEmision
+    +generarPDF() File
+    +compartirConCliente() void
+  }
+  class Mascota {
+    +Long id
+    +Long clienteId
+    +String nombre
+    +String especie
+    +String raza
+    +String sexo
+    +Date fechaNacimiento
+    +Double peso
+    +String microchip
+    +Boolean activo
+    +registrar() void
+    +actualizarDatos() void
+    +desactivar() void
+  }
+  FichaClinica "1" --> "0..*" Evolucion : contiene
+  FichaClinica "1" --> "0..*" Vacuna : registra
+  FichaClinica "1" --> "0..*" Procedimiento : registra
+  FichaClinica "1" --> "0..*" Receta : genera
+  FichaClinica "1" --> "0..*" Certificado : emite
+  Mascota "1" --> "1" FichaClinica : tiene`
+  },
+  {
+    id: 8,
+    icon: '🎫',
+    iconBg: 'rgba(247,79,108,0.15)',
+    title: 'Soporte y Reclamos',
+    cu: 'CU-08.01 → CU-08.07',
+    desc: 'Gestiona los tickets de soporte, su clasificación, derivación y escalamiento, y las valoraciones de la atención dejadas por el cliente.',
+    tags: ['CU-08', 'Tickets', 'Derivación', 'Valoraciones'],
+    diagram: `classDiagram
+  direction TB
+  class Ticket {
+    +Long id
+    +Long clienteId
+    +String motivo
+    +String descripcion
+    +String categoria
+    +String prioridad
+    +String estado
+    +Long responsableId
+    +String sucursal
+    +Date fechaCreacion
+    +Date fechaCierre
+    +clasificar(String cat, String prior) void
+    +derivar(Long responsableId) void
+    +escalar() void
+    +responder(String respuesta) void
+    +cerrar(String resolucion) void
+  }
+  class CategoriaTicket {
+    +Long id
+    +String nombre
+    +String descripcion
+    +String areaPorDefecto
+    +Integer prioridadDefault
+  }
+  class DerivacionTicket {
+    +Long id
+    +Long ticketId
+    +Long responsableAnterior
+    +Long responsableNuevo
+    +String motivo
+    +Date fecha
+    +registrar() void
+  }
+  class RespuestaTicket {
+    +Long id
+    +Long ticketId
+    +Long autorId
+    +String contenido
+    +Date fecha
+    +Boolean visible
+    +registrar() void
+  }
+  class EscalamientoTicket {
+    +Long id
+    +Long ticketId
+    +Long administradorId
+    +String motivo
+    +String resolucion
+    +Date fechaEscalamiento
+    +Date fechaResolucion
+    +String estado
+    +gestionar(String accion) void
+    +cerrar(String resolucion) void
+  }
+  class Valoracion {
+    +Long id
+    +Long clienteId
+    +Long citaId
+    +Long atencionId
+    +Integer puntaje
+    +String comentario
+    +Boolean visible
+    +Date fecha
+    +registrar() void
+    +validarPuntaje() Boolean
+  }
+  Ticket "0..*" --> "1" CategoriaTicket : clasifica en
+  Ticket "1" --> "0..*" DerivacionTicket : registra
+  Ticket "1" --> "0..*" RespuestaTicket : tiene
+  Ticket "1" --> "0..1" EscalamientoTicket : puede escalar a`
+  },
+  {
+    id: 9,
+    icon: '🔬',
+    iconBg: 'rgba(124,92,252,0.15)',
+    title: 'Laboratorio y Exámenes',
+    cu: 'CU-09.01 → CU-09.07',
+    desc: 'Administra solicitudes de exámenes, procesamiento de muestras, registro de resultados y vinculación con la ficha clínica.',
+    tags: ['CU-09', 'Muestras', 'Resultados', 'Órdenes'],
+    diagram: `classDiagram
+  direction TB
+  class OrdenExamen {
+    +Long id
+    +Long mascotaId
+    +Long veterinarioId
+    +Long recepcionistaId
+    +String tipoExamen
+    +String descripcion
+    +String estado
+    +String sucursal
+    +Date fechaSolicitud
+    +Date fechaProgramada
+    +generar() void
+    +programar(Date fecha) void
+    +cancelar(String motivo) void
+  }
+  class TipoExamen {
+    +Long id
+    +String nombre
+    +String descripcion
+    +Integer tiempoEstimadoHoras
+    +Boolean requiereMuestra
+    +String instrucciones
+  }
+  class Muestra {
+    +Long id
+    +Long ordenExamenId
+    +String tipo
+    +String descripcion
+    +String codigoMuestra
+    +Date fechaRecepcion
+    +String estadoProcesamiento
+    +String responsableRecepcion
+    +registrarRecepcion(String responsable) void
+    +actualizarEstado(String estado) void
+  }
+  class Procesamiento {
+    +Long id
+    +Long muestraId
+    +Long tecnicoId
+    +String metodologia
+    +Date fechaInicio
+    +Date fechaFin
+    +String estado
+    +String observaciones
+    +iniciar() void
+    +completar() void
+  }
+  class ResultadoExamen {
+    +Long id
+    +Long ordenExamenId
+    +Long muestraId
+    +Long tecnicoId
+    +String resultado
+    +String observaciones
+    +String interpretacion
+    +Boolean disponible
+    +Date fechaRegistro
+    +registrar() void
+    +publicar() void
+    +vincularAFichaClinica(Long fichaId) void
+  }
+  OrdenExamen "0..*" --> "1" TipoExamen : es de tipo
+  OrdenExamen "1" --> "0..1" Muestra : genera
+  Muestra "1" --> "0..1" Procesamiento : tiene
+  OrdenExamen "1" --> "0..1" ResultadoExamen : produce`
+  },
+  {
+    id: 10,
+    icon: '🧾',
+    iconBg: 'rgba(247,168,79,0.15)',
+    title: 'Facturación / SII',
+    cu: 'CU-10.01 → CU-10.07',
+    desc: 'Emite boletas y facturas electrónicas, gestiona folios, envía documentos al SII y genera reportes tributarios.',
+    tags: ['CU-10', 'Boletas', 'Facturas', 'SII'],
+    diagram: `classDiagram
+  direction TB
+  class DocumentoTributario {
+    +Long id
+    +Long ordenId
+    +Long clienteId
+    +String tipo
+    +String folio
+    +Double neto
+    +Double iva
+    +Double total
+    +String estadoSII
+    +Date fechaEmision
+    +String rutEmisor
+    +String sucursal
+    +emitir() void
+    +anular(String motivo) void
+    +enviarAlSII() String
+    +generarPDF() File
+    +enviarAlCliente() void
+  }
+  class Folio {
+    +Long id
+    +String sucursal
+    +String tipoDocumento
+    +Integer folioDesde
+    +Integer folioHasta
+    +Integer folioActual
+    +Integer foliosRestantes
+    +Boolean activo
+    +cargar(Integer desde, Integer hasta) void
+    +getSiguienteFolio() Integer
+    +alertarStockBajo() void
+  }
+  class AnulacionDocumento {
+    +Long id
+    +Long documentoId
+    +Long administradorId
+    +String motivo
+    +Date fechaAnulacion
+    +String estadoSII
+    +registrar() void
+    +notificarSII() void
+  }
+  class EnvioSII {
+    +Long id
+    +Long documentoId
+    +Date fechaEnvio
+    +String respuestaCodigo
+    +String respuestaDescripcion
+    +String estado
+    +Boolean reintentado
+    +enviar() void
+    +procesarRespuesta(String xml) void
+    +reintentar() void
+  }
+  class ReporteTributario {
+    +Long id
+    +String sucursal
+    +String periodo
+    +Integer totalDocumentos
+    +Double montoNeto
+    +Double montoIva
+    +Double montoTotal
+    +Date generadoEn
+    +generar(String sucursal, String periodo) void
+    +exportar(String formato) File
+  }
+  DocumentoTributario "0..*" --> "1" Folio : consume
+  DocumentoTributario "1" --> "0..1" AnulacionDocumento : puede tener
+  DocumentoTributario "1" --> "1" EnvioSII : se envía via
+  DocumentoTributario "0..*" --> "1" ReporteTributario : incluido en`
+  },
+  {
+    id: 11,
+    icon: '📊',
+    iconBg: 'rgba(79,142,247,0.15)',
+    title: 'Reportes Central',
+    cu: 'CU-11.01 → CU-11.06',
+    desc: 'Centraliza el dashboard de indicadores y reportes (atenciones, ventas, stock) con filtros por sucursal, y el monitoreo técnico del sistema con alertas por fallos y respaldos.',
+    tags: ['CU-11', 'Dashboard', 'KPIs', 'Monitoreo', 'Respaldos'],
+    diagram: `classDiagram
+  direction TB
+  class Reporte {
+    +Long id
+    +String tipo
+    +String sucursal
+    +Date desde
+    +Date hasta
+    +Long generadoPor
+    +Date generadoEn
+    +Map datos
+    +String estado
+    +generar() void
+    +exportar(String formato) File
+    +filtrarPorSucursal(String sucursal) Reporte
+  }
+  class ReporteAtencion {
+    +Long id
+    +Long reporteId
+    +Integer totalCitas
+    +Integer citasRealizadas
+    +Integer citasCanceladas
+    +Integer citasAusentes
+    +Map atencionPorVeterinario
+    +Map atencionPorServicio
+    +calcularIndicadores() void
+  }
+  class ReporteVenta {
+    +Long id
+    +Long reporteId
+    +Integer totalOrdenes
+    +Double montoTotal
+    +Integer productosVendidos
+    +Map ventaPorProducto
+    +Map ventaPorPeriodo
+    +calcularIndicadores() void
+  }
+  class ReporteStock {
+    +Long id
+    +Long reporteId
+    +Integer productosConStockCritico
+    +Integer productosEnTransito
+    +Map stockPorSucursal
+    +Map movimientosRecientes
+    +calcularIndicadores() void
+  }
+  class Dashboard {
+    +String sucursal
+    +Integer citasHoy
+    +Integer ordenesHoy
+    +Double ventasHoy
+    +Integer alertasStock
+    +Integer ticketsAbiertos
+    +Map indicadoresPrincipales
+    +cargarIndicadores(String sucursal) void
+    +actualizar() void
+    +getKPIs() Map
+  }
+  class MonitorSistema {
+    +Long id
+    +String microservicio
+    +String estado
+    +Integer latenciaMs
+    +Double usoCpu
+    +Double usoMemoria
+    +Date ultimoChequeo
+    +chequearSalud() String
+    +registrarMetricas() void
+  }
+  class IncidenteSistema {
+    +Long id
+    +String microservicio
+    +String tipo
+    +String severidad
+    +String descripcion
+    +Boolean notificado
+    +String estado
+    +Date fechaDeteccion
+    +Date fechaResolucion
+    +generarAlerta() void
+    +notificarAdministrador() void
+    +resolver() void
+  }
+  class Respaldo {
+    +Long id
+    +String tipo
+    +String alcance
+    +String ubicacion
+    +Long tamanoBytes
+    +String estado
+    +Long ejecutadoPor
+    +Date fechaInicio
+    +Date fechaFin
+    +ejecutar() void
+    +verificarIntegridad() Boolean
+    +restaurar() void
+  }
+  Reporte "1" --> "0..1" ReporteAtencion : puede ser de tipo
+  Reporte "1" --> "0..1" ReporteVenta : puede ser de tipo
+  Reporte "1" --> "0..1" ReporteStock : puede ser de tipo
+  Dashboard --> Reporte : usa
+  MonitorSistema "1" --> "0..*" IncidenteSistema : detecta`
+  },
+  {
+    id: 12,
+    icon: '🔔',
+    iconBg: 'rgba(31,216,164,0.15)',
+    title: 'Notificaciones',
+    cu: 'CU-12.01 → CU-12.06',
+    desc: 'Envía recordatorios de citas, alertas de vacunas, actualizaciones de pedidos y alertas de stock por email, SMS o WhatsApp.',
+    tags: ['CU-12', 'Email', 'SMS', 'WhatsApp'],
+    diagram: `classDiagram
+  direction TB
+  class Notificacion {
+    +Long id
+    +Long destinatarioId
+    +String tipoDestinatario
+    +String canal
+    +String motivo
+    +String asunto
+    +String mensaje
+    +String estado
+    +Date programadaPara
+    +Date enviadaEn
+    +Integer intentos
+    +enviar() void
+    +reintentar() void
+    +marcarLeida() void
+    +registrarResultado(Boolean exitoso, String detalle) void
+  }
+  class CanalNotificacion {
+    +Long id
+    +String nombre
+    +String tipo
+    +Boolean activo
+    +Map configuracion
+    +String sucursal
+    +activar() void
+    +desactivar() void
+    +probar() Boolean
+    +actualizarConfig(Map config) void
+  }
+  class PlantillaMensaje {
+    +Long id
+    +String motivo
+    +String canal
+    +String asunto
+    +String cuerpo
+    +List variablesRequeridas
+    +Boolean activa
+    +renderizar(Map variables) String
+    +validarVariables(Map variables) Boolean
+  }
+  class HistorialMensaje {
+    +Long id
+    +Long notificacionId
+    +Long destinatarioId
+    +String canal
+    +String motivo
+    +String estado
+    +Date fecha
+    +String detalle
+    +registrar() void
+    +getHistorialPorDestinatario(Long id) List
+  }
+  class ConfiguracionAlerta {
+    +Long id
+    +String tipo
+    +Boolean activa
+    +Integer anticipacionHoras
+    +List canalesActivos
+    +String sucursal
+    +actualizar(Map config) void
+    +estaActiva(String tipo) Boolean
+  }
+  Notificacion "0..*" --> "1" CanalNotificacion : se envía por
+  Notificacion "0..*" --> "1" PlantillaMensaje : usa
+  Notificacion "1" --> "1" HistorialMensaje : genera
+  ConfiguracionAlerta --> Notificacion : dispara`
+  }
+];
+
+// Build nav
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+
+modules.forEach((m, i) => {
+  const item = document.createElement('div');
+  item.className = 'nav-item' + (i === 0 ? ' active' : '');
+  item.dataset.index = i;
+  item.innerHTML = `
+    <div class="nav-num">${m.id}</div>
+    <div class="nav-info">
+      <div class="nav-title">${m.title}</div>
+      <div class="nav-cu">${m.cu}</div>
+    </div>`;
+  item.addEventListener('click', () => switchPanel(i));
+  nav.appendChild(item);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel' + (i === 0 ? ' active' : '');
+  panel.id = 'panel-' + i;
+  panel.innerHTML = `
+    <div class="panel-header">
+      <div class="panel-icon" style="background:${m.iconBg}">${m.icon}</div>
+      <div class="panel-meta">
+        <div class="panel-title">${m.title}</div>
+        <div class="panel-desc">${m.desc}</div>
+        <div class="tags">${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="diagram-card">
+      <div class="loading-msg">Generando diagrama<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+      <div class="mermaid" id="mermaid-${i}" style="display:none"></div>
+    </div>`;
+  main.appendChild(panel);
+});
+
+function switchPanel(idx) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.nav-item[data-index="${idx}"]`).classList.add('active');
+  document.getElementById('panel-' + idx).classList.add('active');
+  renderDiagram(idx);
+}
+
+const rendered = new Set();
+
+async function renderDiagram(idx) {
+  if (rendered.has(idx)) return;
+  rendered.add(idx);
+  const m = modules[idx];
+  const container = document.getElementById('mermaid-' + idx);
+  const loading = container.parentElement.querySelector('.loading-msg');
+  try {
+    const { svg } = await mermaid.render('diag-' + idx, 'classDiagram\n' + m.diagram.replace('classDiagram\n',''));
+    container.innerHTML = svg;
+    container.style.display = 'flex';
+    if (loading) loading.style.display = 'none';
+  } catch(e) {
+    if (loading) loading.textContent = 'Error al renderizar el diagrama.';
+    console.error(e);
+  }
+}
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  themeVariables: {
+    darkMode: true,
+    background: '#13161d',
+    primaryColor: '#1a1e28',
+    primaryBorderColor: '#3a4058',
+    primaryTextColor: '#e8eaf0',
+    secondaryColor: '#1a2230',
+    tertiaryColor: '#1e1a2e',
+    lineColor: '#4f6080',
+    textColor: '#c0c4d0',
+    fontSize: '13px',
+    fontFamily: '"DM Mono", monospace',
+    classText: '#e8eaf0',
+    fillType0: '#1a2030',
+    attributeBackgroundColorEven: '#161920',
+    attributeBackgroundColorOdd: '#1a1e28',
+    nodeBorder: '#3a4058',
+  }
+});
+
+// Render first panel
+renderDiagram(0);
+</script>
+</body>
+</html>

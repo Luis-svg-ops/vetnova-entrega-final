@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: vetnova-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: ms-auth
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/auth,/api/auth/**,/api/usuarios,/api/usuarios/**,/api/roles,/api/roles/**
+
+            - id: ms-catalogo
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/v1/catalogo,/api/v1/catalogo/**,/api/v1/productos,/api/v1/productos/**,/api/v1/categorias,/api/v1/categorias/**
+
+            - id: ms-inventario
+              uri: http://localhost:8083
+              predicates:
+                - Path=/api/v1/inventario,/api/v1/inventario/**
+
+            - id: ms-ventas
+              uri: http://localhost:8084
+              predicates:
+                - Path=/api/v1/ordenes,/api/v1/ordenes/**,/api/v1/pagos,/api/v1/pagos/**
+
+            - id: ms-envio
+              uri: http://localhost:8085
+              predicates:
+                - Path=/api/v1/envios,/api/v1/envios/**
+
+            - id: ms-agenda
+              uri: http://localhost:8086
+              predicates:
+                - Path=/api/v1/citas,/api/v1/citas/**,/api/v1/recordatorios,/api/v1/recordatorios/**
+
+            - id: ms-ficha
+              uri: http://localhost:8087
+              predicates:
+                - Path=/api/v1/fichas,/api/v1/fichas/**,/api/v1/evoluciones,/api/v1/evoluciones/**,/api/v1/mascotas,/api/v1/mascotas/**
+
+            - id: ms-soporte
+              uri: http://localhost:8088
+              predicates:
+                - Path=/tickets,/tickets/**
+
+            - id: ms-laboratorio
+              uri: http://localhost:8089
+              predicates:
+                - Path=/api/v1/laboratorio,/api/v1/laboratorio/**
+
+            - id: ms-facturacion
+              uri: http://localhost:8090
+              predicates:
+                - Path=/api/v1/documentos,/api/v1/documentos/**
+
+            - id: ms-reportes
+              uri: http://localhost:8091
+              predicates:
+                - Path=/reportes,/reportes/**
+
+            - id: ms-notificaciones
+              uri: http://localhost:8092
+              predicates:
+                - Path=/notificaciones,/notificaciones/**
+
+server:
+  port: 8080

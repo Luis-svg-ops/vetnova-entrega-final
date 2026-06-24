@@ -1,0 +1,273 @@
+{
+  "info": {
+    "name": "VetNova - Microservicios",
+    "description": "Flujo de prueba integrado del backend VetNova. Levantar primero Auth (8081), Notificaciones (8092), Inventario (8083), Ventas (8084) y Envío (8085).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth (8081)",
+      "item": [
+        {
+          "name": "Validar usuario existe",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/usuarios/2/existe"
+          }
+        },
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/usuarios"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8081/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente@vetnova.cl\",\n  \"password\": \"Cliente1234\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Soporte (8088)",
+      "item": [
+        {
+          "name": "Crear ticket (valida usuario en Auth)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8088/api/tickets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 2,\n  \"motivo\": \"Problema con reserva de hora\",\n  \"descripcion\": \"No me llegó la confirmación de la hora agendada para mi mascota.\",\n  \"categoriaId\": 1,\n  \"prioridad\": \"MEDIA\",\n  \"sucursal\": \"Chillán\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar tickets",
+          "request": { "method": "GET", "url": "http://localhost:8088/api/tickets" }
+        }
+      ]
+    },
+    {
+      "name": "3. Laboratorio (8089)",
+      "item": [
+        {
+          "name": "Crear orden de examen (valida usuarios en Auth)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8089/api/ordenes-examen",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mascotaId\": 1,\n  \"veterinarioId\": 4,\n  \"recepcionistaId\": 3,\n  \"tipoExamenId\": 1,\n  \"descripcion\": \"Hemograma de control por decaimiento del paciente\",\n  \"sucursal\": \"Chillán\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar órdenes de examen",
+          "request": { "method": "GET", "url": "http://localhost:8089/api/ordenes-examen" }
+        }
+      ]
+    },
+    {
+      "name": "4. Inventario (8083)",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/inventario/productos" }
+        },
+        {
+          "name": "Consultar stock producto 1 sucursal 1",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8083/api/v1/inventario/productos/1/stock?idSucursal=1"
+          }
+        },
+        {
+          "name": "Registrar entrada de stock",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8083/api/v1/inventario/movimientos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": 1,\n  \"idSucursal\": 1,\n  \"tipo\": \"ENTRADA\",\n  \"cantidad\": 10,\n  \"motivo\": \"Reposición bodega\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Stock crítico",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/inventario/stock/critico" }
+        }
+      ]
+    },
+    {
+      "name": "5. Ventas (8084)",
+      "item": [
+        {
+          "name": "Crear orden (valida stock en Inventario)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8084/api/v1/ordenes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 2,\n  \"idSucursal\": 1,\n  \"detalles\": [\n    {\n      \"productoId\": 1,\n      \"nombreProducto\": \"Alimento perro adulto 15kg\",\n      \"cantidad\": 2,\n      \"precioUnitario\": 35990\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Registrar pago (confirma orden y descuenta stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8084/api/v1/ordenes/1/pagos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo\": \"DEBITO\",\n  \"monto\": 85656.2,\n  \"referencia\": \"TRX-0001\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Ver orden",
+          "request": { "method": "GET", "url": "http://localhost:8084/api/v1/ordenes/1" }
+        },
+        {
+          "name": "Orden existe (lo usan Envío y Facturación)",
+          "request": { "method": "GET", "url": "http://localhost:8084/api/v1/ordenes/1/existe" }
+        },
+        {
+          "name": "Cambiar estado a ENVIADA",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8084/api/v1/ordenes/1/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"ENVIADA\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Envío (8085)",
+      "item": [
+        {
+          "name": "Crear envío (valida orden en Ventas)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8085/api/v1/envios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ordenId\": 1,\n  \"tipoEnvio\": \"DOMICILIO\",\n  \"idSucursalOrigen\": 1,\n  \"direccionEntrega\": \"Av. Libertad 123, Chillán\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Pasar a EN_RUTA (avisa a Notificaciones)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8085/api/v1/envios/1/estado",
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"EN_RUTA\",\n  \"observacion\": \"Salió de bodega Chillán\"\n}" }
+          }
+        },
+        {
+          "name": "Tracking del envío",
+          "request": { "method": "GET", "url": "http://localhost:8085/api/v1/envios/1/tracking" }
+        },
+        {
+          "name": "Transferencia entre sucursales (mueve stock en Inventario)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8085/api/v1/transferencias",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": 1,\n  \"idSucursalOrigen\": 1,\n  \"idSucursalDestino\": 2,\n  \"cantidad\": 5,\n  \"observacion\": \"Reposición Los Ángeles\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Facturación (8090)",
+      "item": [
+        {
+          "name": "Crear documento asociado a orden (valida en Ventas)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8090/api/v1/documentos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ordenId\": 1,\n  \"clienteId\": 2,\n  \"tipo\": \"BOLETA\",\n  \"folio\": \"1\",\n  \"neto\": 71980,\n  \"iva\": 0,\n  \"total\": 0,\n  \"rutEmisor\": \"76.123.456-7\",\n  \"sucursal\": \"Chillán\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Documentos por orden",
+          "request": { "method": "GET", "url": "http://localhost:8090/api/v1/documentos/orden/1" }
+        }
+      ]
+    },
+    {
+      "name": "8. Notificaciones (8092)",
+      "item": [
+        {
+          "name": "Crear notificación manual",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8092/api/v1/notificaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinatarioId\": 2,\n  \"tipoDestinatario\": \"CLIENTE\",\n  \"canal\": \"EMAIL\",\n  \"motivo\": \"RECORDATORIO_CITA\",\n  \"asunto\": \"Recordatorio de cita\",\n  \"mensaje\": \"Tienes una cita mañana a las 10:00 en Chillán\",\n  \"estado\": \"PENDIENTE\",\n  \"intentos\": 0\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar notificaciones (ver avisos de Inventario y Envío)",
+          "request": { "method": "GET", "url": "http://localhost:8092/api/v1/notificaciones" }
+        }
+      ]
+    },
+    {
+      "name": "9. Otros módulos",
+      "item": [
+        {
+          "name": "Catálogo: listar productos publicados",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/productos" }
+        },
+        {
+          "name": "Agenda: crear cita",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "http://localhost:8086/api/v1/citas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 2,\n  \"mascotaId\": 1,\n  \"veterinarioId\": 4,\n  \"boxId\": 1,\n  \"sucursal\": \"Chillán\",\n  \"servicio\": \"Consulta general\",\n  \"fechaHora\": \"2025-12-15\",\n  \"duracionMin\": 30,\n  \"estado\": \"RESERVADA\",\n  \"canal\": \"WEB\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Ficha Clínica: listar fichas",
+          "request": { "method": "GET", "url": "http://localhost:8087/api/v1/fichas" }
+        },
+        {
+          "name": "Reportes: listar reportes",
+          "request": { "method": "GET", "url": "http://localhost:8091/api/v1/reportes" }
+        }
+      ]
+    }
+  ]
+}
