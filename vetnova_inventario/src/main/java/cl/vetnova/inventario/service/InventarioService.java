@@ -3,6 +3,7 @@ package cl.vetnova.inventario.service;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +130,10 @@ public class InventarioService implements OperacionStock {
         return inventarioRepository.save(inventario);
     }
 
+    public Optional<Inventario> buscarPorProductoYSucursal(Long productoId, String sucursal) {
+        return inventarioRepository.findByProductoIdAndSucursal(productoId, sucursal);
+    }
+
     public int getStockTotal(Long id) {
         Inventario inventario = obtenerPorId(id);
         int disponible = inventario.getStockDisponible() == null ? 0 : inventario.getStockDisponible();
@@ -159,6 +164,8 @@ public class InventarioService implements OperacionStock {
 
         if (tipo == TipoMovimiento.SALIDA) {
             verificarStockCritico(inventario);
+        } else {
+            limpiarAlertasResueltas(inventario);
         }
         return guardado;
     }
@@ -175,6 +182,15 @@ public class InventarioService implements OperacionStock {
             return true;
         }
         return false;
+    }
+
+    private void limpiarAlertasResueltas(Inventario inventario) {
+        int disponible = inventario.getStockDisponible() == null ? 0 : inventario.getStockDisponible();
+        int minimo = inventario.getStockMinimo() == null ? 0 : inventario.getStockMinimo();
+        if (disponible >= minimo) {
+            alertaStockRepository.findByInventarioIdAndLeidaFalse(inventario.getId())
+                    .forEach(a -> { a.setLeida(true); alertaStockRepository.save(a); });
+        }
     }
 
     private void generarAlerta(Inventario inventario, String tipo, int disponible, int minimo) {

@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8085/api/v1/envios
-method: GET
-order: 2000

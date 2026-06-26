@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8091/api/v1/incidentes
-method: GET
-order: 9000

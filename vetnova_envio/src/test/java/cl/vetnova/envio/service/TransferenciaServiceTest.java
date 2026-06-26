@@ -32,7 +32,7 @@ public class TransferenciaServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private CrearTransferenciaRequest request(Long origen, Long destino) {
+    private CrearTransferenciaRequest request(String origen, String destino) {
         CrearTransferenciaRequest request = new CrearTransferenciaRequest();
         request.setIdProducto(1L);
         request.setIdSucursalOrigen(origen);
@@ -45,17 +45,17 @@ public class TransferenciaServiceTest {
     void testTransferenciaRegistraSalidaEnOrigenYEntradaEnDestino() {
         when(transferenciaRepository.save(any(TransferenciaSucursal.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        TransferenciaResponse response = transferenciaService.crearTransferencia(request(1L, 2L));
+        TransferenciaResponse response = transferenciaService.crearTransferencia(request("CHILLAN", "LOS_ANGELES"));
 
         assertEquals("COMPLETADA", response.getEstado());
-        verify(inventarioClient).registrarMovimiento(eq(1L), eq(1L), eq("SALIDA"), eq(5), any());
-        verify(inventarioClient).registrarMovimiento(eq(1L), eq(2L), eq("ENTRADA"), eq(5), any());
+        verify(inventarioClient).registrarMovimiento(eq(1L), eq("CHILLAN"), eq("SALIDA"), eq(5), any());
+        verify(inventarioClient).registrarMovimiento(eq(1L), eq("LOS_ANGELES"), eq("ENTRADA"), eq(5), any());
     }
 
     @Test
     void testTransferenciaConMismaSucursalLanzaExcepcion() {
         assertThrows(BusinessRuleException.class,
-                () -> transferenciaService.crearTransferencia(request(1L, 1L)));
+                () -> transferenciaService.crearTransferencia(request("CHILLAN", "CHILLAN")));
         verify(inventarioClient, never()).registrarMovimiento(any(), any(), any(), any(), any());
     }
 
@@ -63,14 +63,14 @@ public class TransferenciaServiceTest {
     void testListarDevuelveLasTransferenciasGuardadas() {
         TransferenciaSucursal transferencia = new TransferenciaSucursal();
         transferencia.setIdProducto(1L);
-        transferencia.setIdSucursalOrigen(1L);
-        transferencia.setIdSucursalDestino(2L);
+        transferencia.setIdSucursalOrigen("CHILLAN");
+        transferencia.setIdSucursalDestino("LOS_ANGELES");
         transferencia.setCantidad(5);
         when(transferenciaRepository.findAll()).thenReturn(List.of(transferencia));
 
         List<TransferenciaResponse> lista = transferenciaService.listar();
 
         assertEquals(1, lista.size());
-        assertEquals(2L, lista.get(0).getIdSucursalDestino());
+        assertEquals("LOS_ANGELES", lista.get(0).getIdSucursalDestino());
     }
 }

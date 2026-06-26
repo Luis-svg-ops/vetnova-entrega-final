@@ -13,10 +13,10 @@ public class CrearTransferenciaRequestTest {
         CrearTransferenciaRequest crearTransferenciaRequest = new CrearTransferenciaRequest();
         crearTransferenciaRequest.setIdProducto(1L);
         assertEquals(1L, crearTransferenciaRequest.getIdProducto());
-        crearTransferenciaRequest.setIdSucursalOrigen(1L);
-        assertEquals(1L, crearTransferenciaRequest.getIdSucursalOrigen());
-        crearTransferenciaRequest.setIdSucursalDestino(1L);
-        assertEquals(1L, crearTransferenciaRequest.getIdSucursalDestino());
+        crearTransferenciaRequest.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", crearTransferenciaRequest.getIdSucursalOrigen());
+        crearTransferenciaRequest.setIdSucursalDestino("LOS_ANGELES");
+        assertEquals("LOS_ANGELES", crearTransferenciaRequest.getIdSucursalDestino());
         crearTransferenciaRequest.setCantidad(1);
         assertEquals(1, crearTransferenciaRequest.getCantidad());
         crearTransferenciaRequest.setObservacion("x");

@@ -9,9 +9,9 @@ public class ReporteRequestTest {
     @Test
     void testGettersYSetters() {
         ReporteRequest r = new ReporteRequest();
-        r.setSucursal(1L);
+        r.setSucursal("CHILLAN");
         r.setPeriodo("2025-06");
-        assertEquals(1L, r.getSucursal());
+        assertEquals("CHILLAN", r.getSucursal());
         assertEquals("2025-06", r.getPeriodo());
     }
 }

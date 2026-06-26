@@ -11,8 +11,8 @@ public class FolioTest {
         Folio f = new Folio();
         f.setId(1L);
         assertEquals(1L, f.getId());
-        f.setSucursal(1L);
-        assertEquals(1L, f.getSucursal());
+        f.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", f.getSucursal());
         f.setTipoDocumento("BOLETA");
         assertEquals("BOLETA", f.getTipoDocumento());
         f.setFolioDesde(1);

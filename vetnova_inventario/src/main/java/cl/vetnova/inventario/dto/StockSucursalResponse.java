@@ -2,13 +2,13 @@ package cl.vetnova.inventario.dto;
 
 public class StockSucursalResponse {
 
-    private Long idSucursal;
+    private String idSucursal;
     private Integer cantidad;
     private Integer stockMinimo;
     private boolean critico;
 
-    public Long getIdSucursal() { return idSucursal; }
-    public void setIdSucursal(Long idSucursal) { this.idSucursal = idSucursal; }
+    public String getIdSucursal() { return idSucursal; }
+    public void setIdSucursal(String idSucursal) { this.idSucursal = idSucursal; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public Integer getStockMinimo() { return stockMinimo; }

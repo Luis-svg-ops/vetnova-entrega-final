@@ -9,15 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class DashboardService {
 
-    public Dashboard cargarIndicadores(Long sucursal) {
+    public Dashboard cargarIndicadores(String sucursal) {
         if (sucursal == null) {
             throw new BusinessRuleException("La sucursal es obligatoria");
         }
-        // La existencia de la sucursal vive en MS Auth/Sucursales → verificación diferida.
-        // Los KPIs reales (citas, órdenes, ventas, alertas, tickets) son cross-service → diferidos;
-        // sin actividad consolidada se devuelven en cero (caso "sin datos" del CA).
         Dashboard dashboard = new Dashboard();
-        dashboard.setSucursal(String.valueOf(sucursal));
+        dashboard.setSucursal(sucursal);
         dashboard.setCitasHoy(0);
         dashboard.setOrdenesHoy(0);
         dashboard.setVentasHoy(0.0);

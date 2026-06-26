@@ -46,7 +46,7 @@ public class EnvioServiceTest {
         CrearEnvioRequest request = new CrearEnvioRequest();
         request.setOrdenId(1L);
         request.setTipoEnvio("DOMICILIO");
-        request.setIdSucursalOrigen(1L);
+        request.setIdSucursalOrigen("CHILLAN");
         request.setDireccionEntrega("Av. Libertad 123, Chillán");
         return request;
     }
@@ -55,7 +55,7 @@ public class EnvioServiceTest {
         Envio envio = new Envio();
         envio.setOrdenId(1L);
         envio.setTipoEnvio(TipoEnvio.DOMICILIO);
-        envio.setIdSucursalOrigen(1L);
+        envio.setIdSucursalOrigen("CHILLAN");
         envio.setNumeroGuia("GD-1");
         envio.setEstadoActual(estado);
         return envio;

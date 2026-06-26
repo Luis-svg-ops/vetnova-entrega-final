@@ -9,7 +9,7 @@ public class EnvioResponse {
     private String numeroGuia;
     private Long ordenId;
     private String tipoEnvio;
-    private Long idSucursalOrigen;
+    private String idSucursalOrigen;
     private String direccionEntrega;
     private String estadoActual;
     private LocalDateTime fechaCreacion;
@@ -23,8 +23,8 @@ public class EnvioResponse {
     public void setOrdenId(Long ordenId) { this.ordenId = ordenId; }
     public String getTipoEnvio() { return tipoEnvio; }
     public void setTipoEnvio(String tipoEnvio) { this.tipoEnvio = tipoEnvio; }
-    public Long getIdSucursalOrigen() { return idSucursalOrigen; }
-    public void setIdSucursalOrigen(Long idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
+    public String getIdSucursalOrigen() { return idSucursalOrigen; }
+    public void setIdSucursalOrigen(String idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
     public String getDireccionEntrega() { return direccionEntrega; }
     public void setDireccionEntrega(String direccionEntrega) { this.direccionEntrega = direccionEntrega; }
     public String getEstadoActual() { return estadoActual; }

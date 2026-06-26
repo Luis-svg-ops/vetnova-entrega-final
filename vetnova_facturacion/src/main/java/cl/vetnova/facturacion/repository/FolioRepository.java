@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 public interface FolioRepository extends JpaRepository<Folio, Long> {
 
-    List<Folio> findBySucursalAndTipoDocumento(Long sucursal, String tipoDocumento);
+    List<Folio> findBySucursalAndTipoDocumento(String sucursal, String tipoDocumento);
     Optional<Folio> findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(
-            Long sucursal, String tipoDocumento, Integer foliosRestantes);
+            String sucursal, String tipoDocumento, Integer foliosRestantes);
     List<Folio> findByActivoTrue();
 }

@@ -34,7 +34,7 @@ public class ReporteTributarioServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private ReporteRequest req(Long sucursal, String periodo) {
+    private ReporteRequest req(String sucursal, String periodo) {
         ReporteRequest r = new ReporteRequest();
         r.setSucursal(sucursal);
         r.setPeriodo(periodo);
@@ -57,41 +57,41 @@ public class ReporteTributarioServiceTest {
 
     @Test
     void testGenerarPeriodoNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req(1L, null)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("CHILLAN", null)));
         assertEquals("El período es obligatorio", ex.getMessage());
     }
 
     @Test
     void testGenerarPeriodoFormatoInvalido() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req(1L, "junio-2025")));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("CHILLAN", "junio-2025")));
         assertEquals("El período debe tener formato YYYY-MM", ex.getMessage());
     }
 
     @Test
     void testGenerarPeriodoFuturo() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req(1L, "2099-12")));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("CHILLAN", "2099-12")));
         assertEquals("No se puede generar reporte para un período futuro", ex.getMessage());
     }
 
     @Test
     void testGenerarReporteYaExiste() {
-        when(reporteRepository.existsBySucursalAndPeriodo(1L, "2025-06")).thenReturn(true);
-        ConflictException ex = assertThrows(ConflictException.class, () -> service.generar(req(1L, "2025-06")));
+        when(reporteRepository.existsBySucursalAndPeriodo("CHILLAN", "2025-06")).thenReturn(true);
+        ConflictException ex = assertThrows(ConflictException.class, () -> service.generar(req("CHILLAN", "2025-06")));
         assertEquals("Ya existe un reporte tributario para ese período y sucursal", ex.getMessage());
     }
 
     @Test
     void testGenerarCasoFelizExcluyeAnuladosYOtrosPeriodos() {
-        when(reporteRepository.existsBySucursalAndPeriodo(1L, "2025-06")).thenReturn(false);
+        when(reporteRepository.existsBySucursalAndPeriodo("CHILLAN", "2025-06")).thenReturn(false);
         List<DocumentoTributario> docs = List.of(
                 doc("ANULADO", LocalDateTime.of(2025, 6, 15, 10, 0), 1000.0),
                 doc("EMITIDO", null, 999.0),
                 doc("EMITIDO", LocalDateTime.of(2025, 5, 10, 10, 0), 2000.0),
                 doc("EMITIDO", LocalDateTime.of(2025, 6, 12, 10, 0), null),
                 doc("EMITIDO", LocalDateTime.of(2025, 6, 20, 10, 0), 3500.0));
-        when(documentoRepository.findBySucursal(1L)).thenReturn(docs);
+        when(documentoRepository.findBySucursal("CHILLAN")).thenReturn(docs);
         when(reporteRepository.save(any(ReporteTributario.class))).thenAnswer(inv -> inv.getArgument(0));
-        ReporteTributario reporte = service.generar(req(1L, "2025-06"));
+        ReporteTributario reporte = service.generar(req("CHILLAN", "2025-06"));
         assertEquals(2, reporte.getTotalDocumentos());
         assertEquals(3500.0, reporte.getMontoNeto());
         assertEquals(665.0, reporte.getMontoIva());

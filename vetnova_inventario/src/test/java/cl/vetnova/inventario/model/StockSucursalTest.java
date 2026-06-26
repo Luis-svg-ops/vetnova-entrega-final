@@ -14,8 +14,8 @@ public class StockSucursalTest {
         assertEquals(1L, stockSucursal.getId());
         stockSucursal.setProducto(new Producto());
         assertNotNull(stockSucursal.getProducto());
-        stockSucursal.setIdSucursal(1L);
-        assertEquals(1L, stockSucursal.getIdSucursal());
+        stockSucursal.setIdSucursal("CHILLAN");
+        assertEquals("CHILLAN", stockSucursal.getIdSucursal());
         stockSucursal.setCantidad(1);
         assertEquals(1, stockSucursal.getCantidad());
         stockSucursal.setStockMinimo(1);

@@ -15,10 +15,10 @@ public class TransferenciaResponseTest {
         assertEquals(1L, transferenciaResponse.getId());
         transferenciaResponse.setIdProducto(1L);
         assertEquals(1L, transferenciaResponse.getIdProducto());
-        transferenciaResponse.setIdSucursalOrigen(1L);
-        assertEquals(1L, transferenciaResponse.getIdSucursalOrigen());
-        transferenciaResponse.setIdSucursalDestino(1L);
-        assertEquals(1L, transferenciaResponse.getIdSucursalDestino());
+        transferenciaResponse.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", transferenciaResponse.getIdSucursalOrigen());
+        transferenciaResponse.setIdSucursalDestino("LOS_ANGELES");
+        assertEquals("LOS_ANGELES", transferenciaResponse.getIdSucursalDestino());
         transferenciaResponse.setCantidad(1);
         assertEquals(1, transferenciaResponse.getCantidad());
         transferenciaResponse.setEstado("x");

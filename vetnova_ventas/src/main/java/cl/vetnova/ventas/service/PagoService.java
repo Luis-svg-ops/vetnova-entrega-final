@@ -72,7 +72,7 @@ public class PagoService {
 
         // Descuento de stock en Inventario por cada detalle de la orden
         orden.getDetalles().forEach(detalle ->
-                inventarioClient.registrarSalida(detalle.getProductoId(), orden.getIdSucursal(),
+                inventarioClient.registrarSalida(detalle.getProductoId(), orden.getSucursal(),
                         detalle.getCantidad(), "Venta orden " + orden.getId()));
 
         Orden guardada = ordenRepository.save(orden);
@@ -163,17 +163,31 @@ public class PagoService {
         if (!APROBADO.equals(pago.getEstado())) {
             throw new BusinessRuleException("Solo se puede reembolsar un pago aprobado");
         }
-        if (pago.getOrden().getEstado() == EstadoOrden.ENTREGADA) {
+        Orden orden = pago.getOrden();
+        if (orden.getEstado() == EstadoOrden.ENTREGADA) {
             throw new BusinessRuleException("No se puede reembolsar el pago de una orden ya entregada");
         }
         pago.setEstado(REEMBOLSADO);
-        return toResponse(pagoRepository.save(pago));
+        pagoRepository.save(pago);
+        orden.getDetalles().forEach(detalle ->
+                inventarioClient.registrarEntrada(detalle.getProductoId(), orden.getSucursal(),
+                        detalle.getCantidad(), "Reembolso orden " + orden.getId()));
+        orden.setEstado(EstadoOrden.CANCELADA);
+        ordenRepository.save(orden);
+        log.info("event=pago_reembolsado ordenId={} stock_repuesto=true", orden.getId());
+        return toResponse(pago);
     }
 
     private void confirmarOrden(Orden orden) {
+        if (orden.getEstado() == EstadoOrden.CONFIRMADA) {
+            return;
+        }
         orden.setEstado(EstadoOrden.CONFIRMADA);
         orden.setFechaConfirmacion(LocalDateTime.now(ZoneOffset.UTC));
         ordenRepository.save(orden);
+        orden.getDetalles().forEach(detalle ->
+                inventarioClient.registrarSalida(detalle.getProductoId(), orden.getSucursal(),
+                        detalle.getCantidad(), "Venta orden " + orden.getId()));
     }
 
     private Pago buscarPago(Long id) {

@@ -31,7 +31,7 @@ public class FolioServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private FolioRequest req(Long sucursal, String tipo, Integer desde, Integer hasta) {
+    private FolioRequest req(String sucursal, String tipo, Integer desde, Integer hasta) {
         FolioRequest r = new FolioRequest();
         r.setSucursal(sucursal);
         r.setTipoDocumento(tipo);
@@ -60,37 +60,37 @@ public class FolioServiceTest {
 
     @Test
     void testCrearTipoNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, null, 1, 100)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", null, 1, 100)));
         assertEquals("El tipo de documento es obligatorio", ex.getMessage());
     }
 
     @Test
     void testCrearTipoInvalido() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "RECIBO", 1, 100)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", "RECIBO", 1, 100)));
         assertEquals("Tipo no válido. Valores permitidos: BOLETA, FACTURA", ex.getMessage());
     }
 
     @Test
     void testCrearFolioDesdeNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "BOLETA", null, 100)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", "BOLETA", null, 100)));
         assertEquals("El folio inicial es obligatorio", ex.getMessage());
     }
 
     @Test
     void testCrearFolioDesdeNoPositivo() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "BOLETA", 0, 100)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", "BOLETA", 0, 100)));
         assertEquals("El folio inicial debe ser mayor a 0", ex.getMessage());
     }
 
     @Test
     void testCrearFolioHastaNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "BOLETA", 1, null)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", "BOLETA", 1, null)));
         assertEquals("El folio final es obligatorio", ex.getMessage());
     }
 
     @Test
     void testCrearFolioHastaMenorQueDesde() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "BOLETA", 100, 50)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req("CHILLAN", "BOLETA", 100, 50)));
         assertEquals("El folio final debe ser mayor o igual al folio inicial", ex.getMessage());
     }
 
@@ -99,8 +99,8 @@ public class FolioServiceTest {
         Folio existente = folio(1L, 1, 100, true, 10);
         existente.setFolioDesde(1);
         existente.setFolioHasta(100);
-        when(folioRepository.findBySucursalAndTipoDocumento(1L, "BOLETA")).thenReturn(List.of(existente));
-        ConflictException ex = assertThrows(ConflictException.class, () -> service.crear(req(1L, "BOLETA", 50, 150)));
+        when(folioRepository.findBySucursalAndTipoDocumento("CHILLAN", "BOLETA")).thenReturn(List.of(existente));
+        ConflictException ex = assertThrows(ConflictException.class, () -> service.crear(req("CHILLAN", "BOLETA", 50, 150)));
         assertEquals("El rango de folios se superpone con uno existente", ex.getMessage());
     }
 
@@ -112,17 +112,17 @@ public class FolioServiceTest {
         Folio despues = folio(2L, 200, 300, true, 10);
         despues.setFolioDesde(200);
         despues.setFolioHasta(300);
-        when(folioRepository.findBySucursalAndTipoDocumento(1L, "BOLETA")).thenReturn(List.of(antes, despues));
+        when(folioRepository.findBySucursalAndTipoDocumento("CHILLAN", "BOLETA")).thenReturn(List.of(antes, despues));
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
-        Folio creado = service.crear(req(1L, "BOLETA", 50, 100));
+        Folio creado = service.crear(req("CHILLAN", "BOLETA", 50, 100));
         assertEquals(51, creado.getFoliosRestantes());
     }
 
     @Test
     void testCrearCasoFeliz() {
-        when(folioRepository.findBySucursalAndTipoDocumento(1L, "BOLETA")).thenReturn(List.of());
+        when(folioRepository.findBySucursalAndTipoDocumento("CHILLAN", "BOLETA")).thenReturn(List.of());
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
-        Folio creado = service.crear(req(1L, "BOLETA", 1, 100));
+        Folio creado = service.crear(req("CHILLAN", "BOLETA", 1, 100));
         assertEquals(1, creado.getFolioActual());
         assertEquals(100, creado.getFoliosRestantes());
         assertTrue(creado.getActivo());
@@ -130,9 +130,9 @@ public class FolioServiceTest {
 
     @Test
     void testCrearRangoUnitario() {
-        when(folioRepository.findBySucursalAndTipoDocumento(1L, "BOLETA")).thenReturn(List.of());
+        when(folioRepository.findBySucursalAndTipoDocumento("CHILLAN", "BOLETA")).thenReturn(List.of());
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
-        Folio creado = service.crear(req(1L, "BOLETA", 100, 100));
+        Folio creado = service.crear(req("CHILLAN", "BOLETA", 100, 100));
         assertEquals(1, creado.getFoliosRestantes());
     }
 

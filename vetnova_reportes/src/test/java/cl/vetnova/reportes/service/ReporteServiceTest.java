@@ -34,7 +34,7 @@ public class ReporteServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private ReporteRequest req(String tipo, Long sucursal, LocalDate desde, LocalDate hasta, Long generadoPor) {
+    private ReporteRequest req(String tipo, String sucursal, LocalDate desde, LocalDate hasta, Long generadoPor) {
         ReporteRequest r = new ReporteRequest();
         r.setTipo(tipo);
         r.setSucursal(sucursal);
@@ -49,7 +49,7 @@ public class ReporteServiceTest {
 
     @Test
     void testGenerarTipoNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req(null, 1L, d1, d2, 1L)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req(null, "CHILLAN", d1, d2, 1L)));
         
         assertEquals("El tipo de reporte es obligatorio", ex.getMessage());
         
@@ -57,7 +57,7 @@ public class ReporteServiceTest {
 
     @Test
     void testGenerarTipoInvalido() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("FINANCIERO", 1L, d1, d2, 1L)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("FINANCIERO", "CHILLAN", d1, d2, 1L)));
         assertEquals("Tipo no válido. Valores permitidos: ATENCION, VENTA, STOCK", ex.getMessage());
     }
 
@@ -69,25 +69,25 @@ public class ReporteServiceTest {
 
     @Test
     void testGenerarDesdeNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", 1L, null, d2, 1L)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", "CHILLAN", null, d2, 1L)));
         assertEquals("La fecha de inicio es obligatoria", ex.getMessage());
     }
 
     @Test
     void testGenerarHastaNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", 1L, d1, null, 1L)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", "CHILLAN", d1, null, 1L)));
         assertEquals("La fecha de fin es obligatoria", ex.getMessage());
     }
 
     @Test
     void testGenerarDesdePosteriorAHasta() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", 1L, d2, d1, 1L)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", "CHILLAN", d2, d1, 1L)));
         assertEquals("La fecha de inicio no puede ser posterior a la fecha de fin", ex.getMessage());
     }
 
     @Test
     void testGenerarGeneradoPorNull() {
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", 1L, d1, d2, null)));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.generar(req("VENTA", "CHILLAN", d1, d2, null)));
         assertEquals("El generadoPor es obligatorio", ex.getMessage());
     }
 
@@ -95,7 +95,7 @@ public class ReporteServiceTest {
     void testGenerarCasoFeliz() {
         when(authClient.usuarioExiste(1L)).thenReturn(true);
         when(reporteRepository.save(any(Reporte.class))).thenAnswer(inv -> inv.getArgument(0));
-        Reporte r = service.generar(req("VENTA", 1L, d1, d2, 1L));
+        Reporte r = service.generar(req("VENTA", "CHILLAN", d1, d2, 1L));
         
         assertEquals("GENERADO", r.getEstado());
         assertNotNull(r.getGeneradoEn());
@@ -105,7 +105,7 @@ public class ReporteServiceTest {
     void testGenerarMismoDia() {
         when(authClient.usuarioExiste(1L)).thenReturn(true);
         when(reporteRepository.save(any(Reporte.class))).thenAnswer(inv -> inv.getArgument(0));
-        Reporte r = service.generar(req("VENTA", 1L, d1, d1, 1L));
+        Reporte r = service.generar(req("VENTA", "CHILLAN", d1, d1, 1L));
         assertEquals("GENERADO", r.getEstado());
     }
 
@@ -146,8 +146,8 @@ public class ReporteServiceTest {
 
     @Test
     void testFiltrarPorSucursal() {
-        when(reporteRepository.findBySucursal(1L)).thenReturn(List.of(new Reporte()));
-        assertEquals(1, service.filtrarPorSucursal(1L).size());
+        when(reporteRepository.findBySucursal("CHILLAN")).thenReturn(List.of(new Reporte()));
+        assertEquals(1, service.filtrarPorSucursal("CHILLAN").size());
     }
 
     @Test

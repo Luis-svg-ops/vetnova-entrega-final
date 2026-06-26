@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ReporteTributarioRepository extends JpaRepository<ReporteTributario, Long> {
 
-    boolean existsBySucursalAndPeriodo(Long sucursal, String periodo);
-    List<ReporteTributario> findBySucursal(Long sucursal);
+    boolean existsBySucursalAndPeriodo(String sucursal, String periodo);
+    List<ReporteTributario> findBySucursal(String sucursal);
 }

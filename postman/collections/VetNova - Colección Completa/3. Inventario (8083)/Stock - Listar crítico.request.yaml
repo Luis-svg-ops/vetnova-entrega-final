@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8083/api/v1/inventario/stock/critico
-method: GET
-order: 4000

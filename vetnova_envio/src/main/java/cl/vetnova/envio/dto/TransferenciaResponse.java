@@ -6,8 +6,8 @@ public class TransferenciaResponse {
 
     private Long id;
     private Long idProducto;
-    private Long idSucursalOrigen;
-    private Long idSucursalDestino;
+    private String idSucursalOrigen;
+    private String idSucursalDestino;
     private Integer cantidad;
     private String estado;
     private String observacion;
@@ -17,10 +17,10 @@ public class TransferenciaResponse {
     public void setId(Long id) { this.id = id; }
     public Long getIdProducto() { return idProducto; }
     public void setIdProducto(Long idProducto) { this.idProducto = idProducto; }
-    public Long getIdSucursalOrigen() { return idSucursalOrigen; }
-    public void setIdSucursalOrigen(Long idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
-    public Long getIdSucursalDestino() { return idSucursalDestino; }
-    public void setIdSucursalDestino(Long idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
+    public String getIdSucursalOrigen() { return idSucursalOrigen; }
+    public void setIdSucursalOrigen(String idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
+    public String getIdSucursalDestino() { return idSucursalDestino; }
+    public void setIdSucursalDestino(String idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public String getEstado() { return estado; }

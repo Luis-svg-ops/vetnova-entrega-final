@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface ValoracionRepository extends JpaRepository<Valoracion, Long> {
     boolean existsByTicketId(Long ticketId);
     Valoracion findByTicketId(Long ticketId);
-    List<Valoracion> findBySucursalId(Long sucursalId);
+    List<Valoracion> findBySucursalId(String sucursalId);
 }

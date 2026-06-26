@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8090/api/v1/documentos
-method: GET
-order: 4000

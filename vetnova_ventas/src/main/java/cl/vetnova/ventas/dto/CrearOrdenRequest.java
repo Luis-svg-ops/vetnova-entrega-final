@@ -10,8 +10,8 @@ public class CrearOrdenRequest {
     @NotNull(message = "El id del cliente es obligatorio")
     private Long clienteId;
 
-    @NotNull(message = "El id de la sucursal es obligatorio")
-    private Long idSucursal;
+    @NotNull(message = "La sucursal es obligatoria")
+    private String sucursal;
 
     @NotEmpty(message = "La orden debe tener al menos un detalle")
     @Valid
@@ -19,8 +19,8 @@ public class CrearOrdenRequest {
 
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
-    public Long getIdSucursal() { return idSucursal; }
-    public void setIdSucursal(Long idSucursal) { this.idSucursal = idSucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
     public List<DetalleOrdenRequest> getDetalles() { return detalles; }
     public void setDetalles(List<DetalleOrdenRequest> detalles) { this.detalles = detalles; }
 }

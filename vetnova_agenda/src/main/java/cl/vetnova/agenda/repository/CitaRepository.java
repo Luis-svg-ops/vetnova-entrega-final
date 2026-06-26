@@ -13,6 +13,8 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findByVeterinarioIdAndEstado(Long veterinarioId, String estado);
 
+    List<Cita> findByBoxIdAndEstado(Long boxId, String estado);
+
     boolean existsByVeterinarioIdAndFechaHoraBetween(Long veterinarioId, LocalDateTime desde, LocalDateTime hasta);
 
     boolean existsByVeterinarioIdAndFechaHoraAfter(Long veterinarioId, LocalDateTime fecha);

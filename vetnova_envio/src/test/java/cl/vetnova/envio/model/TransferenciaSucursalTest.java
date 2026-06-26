@@ -14,10 +14,10 @@ public class TransferenciaSucursalTest {
         assertEquals(1L, transferenciaSucursal.getId());
         transferenciaSucursal.setIdProducto(1L);
         assertEquals(1L, transferenciaSucursal.getIdProducto());
-        transferenciaSucursal.setIdSucursalOrigen(1L);
-        assertEquals(1L, transferenciaSucursal.getIdSucursalOrigen());
-        transferenciaSucursal.setIdSucursalDestino(1L);
-        assertEquals(1L, transferenciaSucursal.getIdSucursalDestino());
+        transferenciaSucursal.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", transferenciaSucursal.getIdSucursalOrigen());
+        transferenciaSucursal.setIdSucursalDestino("LOS_ANGELES");
+        assertEquals("LOS_ANGELES", transferenciaSucursal.getIdSucursalDestino());
         transferenciaSucursal.setCantidad(1);
         assertEquals(1, transferenciaSucursal.getCantidad());
         transferenciaSucursal.setEstado("x");

@@ -8,7 +8,7 @@ public class DocumentoTributarioRequest {
     private Double total;
     private String rutEmisor;
     private String rutReceptor;
-    private Long sucursal;
+    private String sucursal;
 
     public Long getOrdenId() { return ordenId; }
     public void setOrdenId(Long ordenId) { this.ordenId = ordenId; }
@@ -24,6 +24,6 @@ public class DocumentoTributarioRequest {
     public void setRutEmisor(String rutEmisor) { this.rutEmisor = rutEmisor; }
     public String getRutReceptor() { return rutReceptor; }
     public void setRutReceptor(String rutReceptor) { this.rutReceptor = rutReceptor; }
-    public Long getSucursal() { return sucursal; }
-    public void setSucursal(Long sucursal) { this.sucursal = sucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
 }

@@ -50,11 +50,13 @@ public class ResultadoExamenService {
         if (resultadoRepository.existsByOrdenExamenId(orden.getId())) {
             throw new ConflictException("La orden ya tiene un resultado registrado");
         }
-        if (request.getMuestraId() != null) {
-            Muestra muestra = muestraRepository.findById(request.getMuestraId()).orElse(null);
-            if (muestra != null && !"PROCESADA".equals(muestra.getEstadoProcesamiento())) {
-                throw new BusinessRuleException("La muestra aún no ha sido procesada");
-            }
+        if (request.getMuestraId() == null) {
+            throw new BusinessRuleException("El muestraId es obligatorio para registrar un resultado");
+        }
+        Muestra muestra = muestraRepository.findById(request.getMuestraId())
+                .orElseThrow(() -> new ResourceNotFoundException("Muestra no encontrada"));
+        if (!"PROCESADA".equals(muestra.getEstadoProcesamiento())) {
+            throw new BusinessRuleException("La muestra aún no ha sido procesada");
         }
         if (request.getTecnicoId() == null) {
             throw new BusinessRuleException("El tecnicoId es obligatorio");

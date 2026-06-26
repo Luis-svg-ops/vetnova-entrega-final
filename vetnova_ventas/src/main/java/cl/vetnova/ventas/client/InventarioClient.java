@@ -18,61 +18,78 @@ public class InventarioClient {
         this.webClient = builder.baseUrl(inventarioUrl).build();
     }
 
-    public Integer consultarStock(Long idProducto, Long idSucursal) {
+    private Long buscarInventarioId(Long productoId, String sucursal) {
         try {
             Map<?, ?> response = webClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/v1/inventario/productos/{idProducto}/stock")
-                            .queryParam("idSucursal", idSucursal)
-                            .build(idProducto))
+                            .path("/api/v1/inventarios/buscar")
+                            .queryParam("productoId", productoId)
+                            .queryParam("sucursal", sucursal)
+                            .build())
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
-            Integer disponible = response == null ? 0 : ((Number) response.get("cantidadDisponible")).intValue();
-            log.info("event=remote_consulta_stock productoId={} sucursalId={} disponible={}", idProducto, idSucursal, disponible);
+            if (response == null || response.get("id") == null) {
+                throw new RemoteServiceException("No se encontró inventario para producto " + productoId + " en sucursal " + sucursal);
+            }
+            return ((Number) response.get("id")).longValue();
+        } catch (RemoteServiceException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RemoteServiceException("Error buscando inventario: " + ex.getMessage());
+        }
+    }
+
+    public Integer consultarStock(Long productoId, String sucursal) {
+        try {
+            Map<?, ?> response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/api/v1/inventarios/buscar")
+                            .queryParam("productoId", productoId)
+                            .queryParam("sucursal", sucursal)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            Integer disponible = response == null ? 0 : ((Number) response.get("stockDisponible")).intValue();
+            log.info("event=remote_consulta_stock productoId={} sucursal={} disponible={}", productoId, sucursal, disponible);
             return disponible;
         } catch (Exception ex) {
             throw new RemoteServiceException("No se pudo consultar stock en Inventario: " + ex.getMessage());
         }
     }
 
-    public void registrarSalida(Long idProducto, Long idSucursal, Integer cantidad, String motivo) {
+    public void registrarSalida(Long productoId, String sucursal, Integer cantidad, String motivo) {
         try {
-            Map<String, Object> body = Map.of(
-                    "idProducto", idProducto,
-                    "idSucursal", idSucursal,
-                    "tipo", "SALIDA",
-                    "cantidad", cantidad,
-                    "motivo", motivo
-            );
+            Long inventarioId = buscarInventarioId(productoId, sucursal);
+            Map<String, Object> body = Map.of("cantidad", cantidad, "motivo", motivo);
             webClient.post()
-                    .uri("/api/v1/inventario/movimientos")
+                    .uri("/api/v1/inventarios/{id}/salida", inventarioId)
                     .bodyValue(body)
                     .retrieve()
                     .toBodilessEntity()
                     .block();
-            log.info("event=remote_salida_stock productoId={} cantidad={}", idProducto, cantidad);
+            log.info("event=remote_salida_stock productoId={} cantidad={}", productoId, cantidad);
+        } catch (RemoteServiceException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RemoteServiceException("No se pudo descontar stock en Inventario: " + ex.getMessage());
         }
     }
 
-    public void registrarEntrada(Long idProducto, Long idSucursal, Integer cantidad, String motivo) {
+    public void registrarEntrada(Long productoId, String sucursal, Integer cantidad, String responsable) {
         try {
-            Map<String, Object> body = Map.of(
-                    "idProducto", idProducto,
-                    "idSucursal", idSucursal,
-                    "tipo", "ENTRADA",
-                    "cantidad", cantidad,
-                    "motivo", motivo
-            );
+            Long inventarioId = buscarInventarioId(productoId, sucursal);
+            Map<String, Object> body = Map.of("cantidad", cantidad, "responsable", responsable);
             webClient.post()
-                    .uri("/api/v1/inventario/movimientos")
+                    .uri("/api/v1/inventarios/{id}/entrada", inventarioId)
                     .bodyValue(body)
                     .retrieve()
                     .toBodilessEntity()
                     .block();
-            log.info("event=remote_entrada_stock productoId={} cantidad={}", idProducto, cantidad);
+            log.info("event=remote_entrada_stock productoId={} cantidad={}", productoId, cantidad);
+        } catch (RemoteServiceException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RemoteServiceException("No se pudo reponer stock en Inventario: " + ex.getMessage());
         }

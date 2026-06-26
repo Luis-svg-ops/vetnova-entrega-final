@@ -42,8 +42,8 @@ public class DocumentoTributario {
     @Column(name = "rut_receptor", length = 20)
     private String rutReceptor;
 
-    @Column(name = "sucursal")
-    private Long sucursal;
+    @Column(name = "sucursal", length = 30)
+    private String sucursal;
 
     @Column(name = "fecha_emision")
     private LocalDateTime fechaEmision;
@@ -84,8 +84,8 @@ public class DocumentoTributario {
     public String getRutReceptor() { return rutReceptor; }
     public void setRutReceptor(String rutReceptor) { this.rutReceptor = rutReceptor; }
 
-    public Long getSucursal() { return sucursal; }
-    public void setSucursal(Long sucursal) { this.sucursal = sucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
 
     public LocalDateTime getFechaEmision() { return fechaEmision; }
     public void setFechaEmision(LocalDateTime fechaEmision) { this.fechaEmision = fechaEmision; }

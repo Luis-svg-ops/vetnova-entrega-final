@@ -21,8 +21,8 @@ public class ValoracionTest {
         assertEquals(5, v.getPuntuacion());
         v.setComentario("Excelente atención");
         assertEquals("Excelente atención", v.getComentario());
-        v.setSucursalId(4L);
-        assertEquals(4L, v.getSucursalId());
+        v.setSucursalId("CHILLAN");
+        assertEquals("CHILLAN", v.getSucursalId());
         LocalDateTime ahora = LocalDateTime.now();
         v.setFecha(ahora);
         assertEquals(ahora, v.getFecha());

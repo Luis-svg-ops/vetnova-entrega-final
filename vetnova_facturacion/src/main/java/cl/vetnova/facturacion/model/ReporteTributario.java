@@ -12,8 +12,8 @@ public class ReporteTributario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sucursal")
-    private Long sucursal;
+    @Column(name = "sucursal", length = 30)
+    private String sucursal;
 
     @Column(name = "periodo", length = 20)
     private String periodo;
@@ -39,8 +39,8 @@ public class ReporteTributario {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getSucursal() { return sucursal; }
-    public void setSucursal(Long sucursal) { this.sucursal = sucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
 
     public String getPeriodo() { return periodo; }
     public void setPeriodo(String periodo) { this.periodo = periodo; }

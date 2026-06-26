@@ -47,7 +47,7 @@ public class ValoracionServiceTest {
         t.setId(id);
         t.setEstado(estado);
         t.setClienteId(clienteId);
-        t.setSucursalId(7L);
+        t.setSucursalId("CHILLAN");
         return t;
     }
 
@@ -128,7 +128,7 @@ public class ValoracionServiceTest {
         v.setComentario("Excelente atención");
         Valoracion creada = service.crear(v);
         assertEquals(5, creada.getPuntuacion());
-        assertEquals(7L, creada.getSucursalId());
+        assertEquals("CHILLAN", creada.getSucursalId());
         assertNotNull(creada.getFecha());
     }
 
@@ -148,8 +148,8 @@ public class ValoracionServiceTest {
 
     @Test
     void testPromedioSinValoraciones() {
-        when(valoracionRepository.findBySucursalId(1L)).thenReturn(List.of());
-        PromedioValoracionResponse r = service.promedioPorSucursal(1L);
+        when(valoracionRepository.findBySucursalId("CHILLAN")).thenReturn(List.of());
+        PromedioValoracionResponse r = service.promedioPorSucursal("CHILLAN");
         assertEquals(0.0, r.getPromedio());
         assertEquals(0, r.getTotal());
     }
@@ -158,8 +158,8 @@ public class ValoracionServiceTest {
     void testPromedioConValoraciones() {
         Valoracion v1 = req(1L, 1L, 4);
         Valoracion v2 = req(2L, 1L, 5);
-        when(valoracionRepository.findBySucursalId(1L)).thenReturn(List.of(v1, v2));
-        PromedioValoracionResponse r = service.promedioPorSucursal(1L);
+        when(valoracionRepository.findBySucursalId("CHILLAN")).thenReturn(List.of(v1, v2));
+        PromedioValoracionResponse r = service.promedioPorSucursal("CHILLAN");
         assertEquals(4.5, r.getPromedio());
         assertEquals(2, r.getTotal());
     }

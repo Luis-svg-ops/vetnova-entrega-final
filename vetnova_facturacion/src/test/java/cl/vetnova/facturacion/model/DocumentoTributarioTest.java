@@ -33,8 +33,8 @@ public class DocumentoTributarioTest {
         assertEquals("76.000.000-0", d.getRutEmisor());
         d.setRutReceptor("11.111.111-1");
         assertEquals("11.111.111-1", d.getRutReceptor());
-        d.setSucursal(1L);
-        assertEquals(1L, d.getSucursal());
+        d.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", d.getSucursal());
         LocalDateTime ahora = LocalDateTime.now();
         d.setFechaEmision(ahora);
         assertEquals(ahora, d.getFechaEmision());

@@ -11,8 +11,8 @@ public class StockSucursalResponseTest {
     @Test
     void testStockSucursalResponse() {
         StockSucursalResponse stockSucursalResponse = new StockSucursalResponse();
-        stockSucursalResponse.setIdSucursal(1L);
-        assertEquals(1L, stockSucursalResponse.getIdSucursal());
+        stockSucursalResponse.setIdSucursal("CHILLAN");
+        assertEquals("CHILLAN", stockSucursalResponse.getIdSucursal());
         stockSucursalResponse.setCantidad(1);
         assertEquals(1, stockSucursalResponse.getCantidad());
         stockSucursalResponse.setStockMinimo(1);

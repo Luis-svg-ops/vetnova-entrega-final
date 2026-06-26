@@ -5,6 +5,7 @@ import cl.vetnova.envio.dto.CrearTransferenciaRequest;
 import cl.vetnova.envio.dto.TransferenciaResponse;
 import cl.vetnova.envio.exception.BusinessRuleException;
 import cl.vetnova.envio.model.TransferenciaSucursal;
+import cl.vetnova.envio.repository.RutaDespachoRepository;
 import cl.vetnova.envio.repository.TransferenciaSucursalRepository;
 import java.util.List;
 import org.slf4j.Logger;
@@ -18,11 +19,14 @@ public class TransferenciaService {
 
     private final TransferenciaSucursalRepository transferenciaRepository;
     private final InventarioClient inventarioClient;
+    private final RutaDespachoRepository rutaDespachoRepository;
 
     public TransferenciaService(TransferenciaSucursalRepository transferenciaRepository,
-                                InventarioClient inventarioClient) {
+                                InventarioClient inventarioClient,
+                                RutaDespachoRepository rutaDespachoRepository) {
         this.transferenciaRepository = transferenciaRepository;
         this.inventarioClient = inventarioClient;
+        this.rutaDespachoRepository = rutaDespachoRepository;
     }
 
     // Regla de negocio: una transferencia es una SALIDA en la sucursal de origen
@@ -35,6 +39,11 @@ public class TransferenciaService {
 
         if (request.getIdSucursalOrigen().equals(request.getIdSucursalDestino())) {
             throw new BusinessRuleException("La sucursal de origen y destino no pueden ser la misma");
+        }
+        if (!rutaDespachoRepository.existsBySucursalOrigenAndSucursalDestino(
+                request.getIdSucursalOrigen(), request.getIdSucursalDestino())) {
+            throw new BusinessRuleException("No existe una ruta de despacho entre "
+                    + request.getIdSucursalOrigen() + " y " + request.getIdSucursalDestino());
         }
 
         String motivo = "Transferencia entre sucursales " + request.getIdSucursalOrigen()

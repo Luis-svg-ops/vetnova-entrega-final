@@ -7,7 +7,7 @@ public class OrdenResponse {
 
     private Long id;
     private Long clienteId;
-    private Long idSucursal;
+    private String sucursal;
     private String estado;
     private Double subtotal;
     private Double impuestos;
@@ -21,8 +21,8 @@ public class OrdenResponse {
     public void setId(Long id) { this.id = id; }
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
-    public Long getIdSucursal() { return idSucursal; }
-    public void setIdSucursal(Long idSucursal) { this.idSucursal = idSucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
     public Double getSubtotal() { return subtotal; }

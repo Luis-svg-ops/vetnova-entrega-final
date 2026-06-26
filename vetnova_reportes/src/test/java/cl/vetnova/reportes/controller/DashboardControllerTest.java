@@ -24,7 +24,7 @@ public class DashboardControllerTest {
 
     @Test
     void testObtener() throws Exception {
-        when(service.cargarIndicadores(1L)).thenReturn(new Dashboard());
-        mockMvc.perform(get("/dashboard").param("sucursal", "1")).andExpect(status().isOk());
+        when(service.cargarIndicadores("CHILLAN")).thenReturn(new Dashboard());
+        mockMvc.perform(get("/dashboard").param("sucursal", "CHILLAN")).andExpect(status().isOk());
     }
 }

@@ -32,8 +32,8 @@ public class Ticket {
     private String estado;
     @Column(name = "responsable_id")
     private Long responsableId;
-    @Column(name = "sucursal_id")
-    private Long sucursalId;
+    @Column(name = "sucursal_id", length = 30)
+    private String sucursalId;
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
     @Column(name = "fecha_cierre")
@@ -59,8 +59,8 @@ public class Ticket {
     public void setEstado(String estado) { this.estado = estado; }
     public Long getResponsableId() { return responsableId; }
     public void setResponsableId(Long responsableId) { this.responsableId = responsableId; }
-    public Long getSucursalId() { return sucursalId; }
-    public void setSucursalId(Long sucursalId) { this.sucursalId = sucursalId; }
+    public String getSucursalId() { return sucursalId; }
+    public void setSucursalId(String sucursalId) { this.sucursalId = sucursalId; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
     public LocalDateTime getFechaCierre() { return fechaCierre; }

@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ReporteRepository extends JpaRepository<Reporte, Long> {
 
-    List<Reporte> findBySucursal(Long sucursal);
+    List<Reporte> findBySucursal(String sucursal);
     List<Reporte> findByTipo(String tipo);
 }

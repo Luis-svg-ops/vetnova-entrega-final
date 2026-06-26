@@ -120,7 +120,7 @@ public class ProductoServiceCoberturaTest {
     void testObtenerProductoConStockMapeaLasSucursales() {
         Producto producto = new Producto();
         cl.vetnova.inventario.model.StockSucursal stock = new cl.vetnova.inventario.model.StockSucursal();
-        stock.setIdSucursal(1L);
+        stock.setIdSucursal("CHILLAN");
         stock.setCantidad(2);
         stock.setStockMinimo(5);
         producto.getStockSucursales().add(stock);
@@ -133,11 +133,11 @@ public class ProductoServiceCoberturaTest {
     void testObtenerProductoMarcaStockCriticoYNoCritico() {
         Producto producto = new Producto();
         cl.vetnova.inventario.model.StockSucursal bajo = new cl.vetnova.inventario.model.StockSucursal();
-        bajo.setIdSucursal(1L);
+        bajo.setIdSucursal("CHILLAN");
         bajo.setCantidad(2);
         bajo.setStockMinimo(5);
         cl.vetnova.inventario.model.StockSucursal holgado = new cl.vetnova.inventario.model.StockSucursal();
-        holgado.setIdSucursal(2L);
+        holgado.setIdSucursal("LOS_ANGELES");
         holgado.setCantidad(50);
         holgado.setStockMinimo(5);
         producto.getStockSucursales().add(bajo);

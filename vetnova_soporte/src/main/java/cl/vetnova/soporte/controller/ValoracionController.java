@@ -25,7 +25,7 @@ public class ValoracionController {
     }
 
     @GetMapping("/promedio")
-    public ResponseEntity<PromedioValoracionResponse> promedio(@RequestParam Long sucursalId) {
+    public ResponseEntity<PromedioValoracionResponse> promedio(@RequestParam String sucursalId) {
         return ResponseEntity.ok(valoracionService.promedioPorSucursal(sucursalId));
     }
 

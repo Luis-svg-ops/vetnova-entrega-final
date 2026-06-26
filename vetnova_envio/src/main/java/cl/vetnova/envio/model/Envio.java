@@ -23,8 +23,8 @@ public class Envio {
     @Column(nullable = false, length = 20)
     private TipoEnvio tipoEnvio;
 
-    @Column(nullable = false)
-    private Long idSucursalOrigen;
+    @Column(nullable = false, length = 30)
+    private String idSucursalOrigen;
 
     @Column(length = 200)
     private String direccionEntrega;
@@ -55,8 +55,8 @@ public class Envio {
     public void setOrdenId(Long ordenId) { this.ordenId = ordenId; }
     public TipoEnvio getTipoEnvio() { return tipoEnvio; }
     public void setTipoEnvio(TipoEnvio tipoEnvio) { this.tipoEnvio = tipoEnvio; }
-    public Long getIdSucursalOrigen() { return idSucursalOrigen; }
-    public void setIdSucursalOrigen(Long idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
+    public String getIdSucursalOrigen() { return idSucursalOrigen; }
+    public void setIdSucursalOrigen(String idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
     public String getDireccionEntrega() { return direccionEntrega; }
     public void setDireccionEntrega(String direccionEntrega) { this.direccionEntrega = direccionEntrega; }
     public EstadoEnvio getEstadoActual() { return estadoActual; }

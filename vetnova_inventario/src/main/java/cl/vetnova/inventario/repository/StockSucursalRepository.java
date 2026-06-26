@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface StockSucursalRepository extends JpaRepository<StockSucursal, Long> {
-    Optional<StockSucursal> findByProductoIdAndIdSucursal(Long productoId, Long idSucursal);
+    Optional<StockSucursal> findByProductoIdAndIdSucursal(Long productoId, String idSucursal);
     List<StockSucursal> findByProductoId(Long productoId);
 
     @Query("SELECT s FROM StockSucursal s WHERE s.cantidad <= s.stockMinimo")

@@ -47,6 +47,18 @@ private RestTemplate restTemplate;
         if (cita.getClienteId() == null) {
             throw new BusinessRuleException("El clienteId es obligatorio");
         }
+        try {
+            String urlCliente = "http://localhost:8081/api/usuarios/" + cita.getClienteId() + "/existe";
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> resp = restTemplate.getForObject(urlCliente, java.util.Map.class);
+            if (resp == null || !Boolean.TRUE.equals(resp.get("existe"))) {
+                throw new ResourceNotFoundException("Cliente no encontrado en el sistema");
+            }
+        } catch (ResourceNotFoundException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("No se pudo verificar el cliente en el sistema");
+        }
         if (cita.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
         }
@@ -75,6 +87,9 @@ private RestTemplate restTemplate;
         }
         if (haySolapamiento(cita)) {
             throw new ConflictException("El veterinario no está disponible en ese horario");
+        }
+        if (cita.getBoxId() != null && hayBoxOcupado(cita)) {
+            throw new ConflictException("El box ya está ocupado en ese horario");
         }
         cita.setEstado(PENDIENTE);
         cita.setFechaCreacion(LocalDateTime.now());
@@ -128,7 +143,26 @@ private RestTemplate restTemplate;
     private boolean haySolapamiento(Cita nueva) {
         LocalDateTime inicioNueva = nueva.getFechaHora();
         LocalDateTime finNueva = inicioNueva.plusMinutes(duracion(nueva));
-        for (Cita existente : citaRepository.findByVeterinarioIdAndEstado(nueva.getVeterinarioId(), CONFIRMADA)) {
+        List<Cita> ocupadas = new java.util.ArrayList<>();
+        ocupadas.addAll(citaRepository.findByVeterinarioIdAndEstado(nueva.getVeterinarioId(), PENDIENTE));
+        ocupadas.addAll(citaRepository.findByVeterinarioIdAndEstado(nueva.getVeterinarioId(), CONFIRMADA));
+        for (Cita existente : ocupadas) {
+            LocalDateTime inicioExistente = existente.getFechaHora();
+            LocalDateTime finExistente = inicioExistente.plusMinutes(duracion(existente));
+            if (inicioNueva.isBefore(finExistente) && inicioExistente.isBefore(finNueva)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hayBoxOcupado(Cita nueva) {
+        LocalDateTime inicioNueva = nueva.getFechaHora();
+        LocalDateTime finNueva = inicioNueva.plusMinutes(duracion(nueva));
+        List<Cita> ocupadas = new java.util.ArrayList<>();
+        ocupadas.addAll(citaRepository.findByBoxIdAndEstado(nueva.getBoxId(), PENDIENTE));
+        ocupadas.addAll(citaRepository.findByBoxIdAndEstado(nueva.getBoxId(), CONFIRMADA));
+        for (Cita existente : ocupadas) {
             LocalDateTime inicioExistente = existente.getFechaHora();
             LocalDateTime finExistente = inicioExistente.plusMinutes(duracion(existente));
             if (inicioNueva.isBefore(finExistente) && inicioExistente.isBefore(finNueva)) {

@@ -13,8 +13,8 @@ public class ReporteTributarioTest {
         ReporteTributario r = new ReporteTributario();
         r.setId(1L);
         assertEquals(1L, r.getId());
-        r.setSucursal(1L);
-        assertEquals(1L, r.getSucursal());
+        r.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", r.getSucursal());
         r.setPeriodo("2025-06");
         assertEquals("2025-06", r.getPeriodo());
         r.setTotalDocumentos(10);

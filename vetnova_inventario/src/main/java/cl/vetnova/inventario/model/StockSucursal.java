@@ -15,8 +15,8 @@ public class StockSucursal {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
-    @Column(name = "id_sucursal", nullable = false)
-    private Long idSucursal;
+    @Column(name = "id_sucursal", nullable = false, length = 30)
+    private String idSucursal;
 
     @Column(nullable = false)
     private Integer cantidad = 0;
@@ -31,8 +31,8 @@ public class StockSucursal {
     public void setId(Long id) { this.id = id; }
     public Producto getProducto() { return producto; }
     public void setProducto(Producto producto) { this.producto = producto; }
-    public Long getIdSucursal() { return idSucursal; }
-    public void setIdSucursal(Long idSucursal) { this.idSucursal = idSucursal; }
+    public String getIdSucursal() { return idSucursal; }
+    public void setIdSucursal(String idSucursal) { this.idSucursal = idSucursal; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public Integer getStockMinimo() { return stockMinimo; }

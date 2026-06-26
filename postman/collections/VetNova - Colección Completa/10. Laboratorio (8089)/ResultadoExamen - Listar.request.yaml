@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8089/api/v1/resultados
-method: GET
-order: 10000

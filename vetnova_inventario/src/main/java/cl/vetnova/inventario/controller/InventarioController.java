@@ -66,4 +66,12 @@ public class InventarioController {
     public ResponseEntity<StockTotalResponse> getStockTotal(@PathVariable Long id) {
         return ResponseEntity.ok(new StockTotalResponse(inventarioService.getStockTotal(id)));
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<Inventario> buscarPorProductoYSucursal(
+            @RequestParam Long productoId, @RequestParam String sucursal) {
+        return inventarioService.buscarPorProductoYSucursal(productoId, sucursal)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

@@ -19,8 +19,8 @@ public class EnvioResponseTest {
         assertEquals(1L, envioResponse.getOrdenId());
         envioResponse.setTipoEnvio("x");
         assertEquals("x", envioResponse.getTipoEnvio());
-        envioResponse.setIdSucursalOrigen(1L);
-        assertEquals(1L, envioResponse.getIdSucursalOrigen());
+        envioResponse.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", envioResponse.getIdSucursalOrigen());
         envioResponse.setDireccionEntrega("x");
         assertEquals("x", envioResponse.getDireccionEntrega());
         envioResponse.setEstadoActual("x");

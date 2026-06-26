@@ -26,14 +26,14 @@ public class TransferenciaControllerTest {
     @Test
     void testCrearTransferenciaValidaResponde201() throws Exception {
         mockMvc.perform(post("/api/v1/transferencias").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idProducto\":1,\"idSucursalOrigen\":1,\"idSucursalDestino\":2,\"cantidad\":5}"))
+                        .content("{\"idProducto\":1,\"idSucursalOrigen\":\"CHILLAN\",\"idSucursalDestino\":\"LOS_ANGELES\",\"cantidad\":5}"))
                 .andExpect(status().isCreated());
     }
 
     @Test
     void testCrearTransferenciaSinProductoResponde400() throws Exception {
         mockMvc.perform(post("/api/v1/transferencias").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idSucursalOrigen\":1,\"idSucursalDestino\":2,\"cantidad\":5}"))
+                        .content("{\"idSucursalOrigen\":\"CHILLAN\",\"idSucursalDestino\":\"LOS_ANGELES\",\"cantidad\":5}"))
                 .andExpect(status().isBadRequest());
     }
 

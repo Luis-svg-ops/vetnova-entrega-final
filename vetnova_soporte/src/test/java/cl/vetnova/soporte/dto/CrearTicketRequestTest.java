@@ -12,10 +12,10 @@ public class CrearTicketRequestTest {
         r.setClienteId(1L);
         r.setMotivo("Producto defectuoso");
         r.setDescripcion("El producto llegó roto");
-        r.setSucursalId(2L);
+        r.setSucursalId("LOS_ANGELES");
         assertEquals(1L, r.getClienteId());
         assertEquals("Producto defectuoso", r.getMotivo());
         assertEquals("El producto llegó roto", r.getDescripcion());
-        assertEquals(2L, r.getSucursalId());
+        assertEquals("LOS_ANGELES", r.getSucursalId());
     }
 }

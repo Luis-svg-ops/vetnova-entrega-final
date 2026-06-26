@@ -1,9 +1,0 @@
-$kind: http-request
-url: http://localhost:8084/api/v1/ordenes/1/confirmar
-method: POST
-headers:
-  Content-Type: application/json
-body:
-  type: text
-  content: "{}"
-order: 5000

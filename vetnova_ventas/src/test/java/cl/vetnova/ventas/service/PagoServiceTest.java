@@ -34,6 +34,8 @@ public class PagoServiceTest {
     private PagoRepository pagoRepository;
     @Mock
     private PasarelaPago pasarelaPago;
+    @Mock
+    private cl.vetnova.ventas.client.AuthClient authClient;
 
     private OrdenService ordenService;
     private PagoService pagoService;
@@ -42,12 +44,12 @@ public class PagoServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ordenService = new OrdenService(ordenRepository, inventarioClient, 0.19);
+        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, 0.19);
         pagoService = new PagoService(ordenRepository, ordenService, inventarioClient, pagoRepository, pasarelaPago);
 
         orden = new Orden();
         orden.setClienteId(2L);
-        orden.setIdSucursal(1L);
+        orden.setSucursal("CHILLAN");
         orden.setEstado(EstadoOrden.PENDIENTE);
         orden.setSubtotal(71980.0);
         orden.setImpuestos(13676.2);
@@ -80,7 +82,7 @@ public class PagoServiceTest {
         assertNotNull(response.getFechaConfirmacion());
         assertEquals(1, response.getPagos().size());
         assertEquals("APROBADO", response.getPagos().get(0).getEstado());
-        verify(inventarioClient).registrarSalida(1L, 1L, 2, "Venta orden " + orden.getId());
+        verify(inventarioClient).registrarSalida(1L, "CHILLAN", 2, "Venta orden " + orden.getId());
     }
 
     @Test

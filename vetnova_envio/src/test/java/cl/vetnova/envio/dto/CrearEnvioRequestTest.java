@@ -15,8 +15,8 @@ public class CrearEnvioRequestTest {
         assertEquals(1L, crearEnvioRequest.getOrdenId());
         crearEnvioRequest.setTipoEnvio("x");
         assertEquals("x", crearEnvioRequest.getTipoEnvio());
-        crearEnvioRequest.setIdSucursalOrigen(1L);
-        assertEquals(1L, crearEnvioRequest.getIdSucursalOrigen());
+        crearEnvioRequest.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", crearEnvioRequest.getIdSucursalOrigen());
         crearEnvioRequest.setDireccionEntrega("x");
         assertEquals("x", crearEnvioRequest.getDireccionEntrega());
     }

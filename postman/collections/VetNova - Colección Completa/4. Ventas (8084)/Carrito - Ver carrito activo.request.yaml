@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8084/api/v1/carritos/cliente/2
-method: GET
-order: 12000

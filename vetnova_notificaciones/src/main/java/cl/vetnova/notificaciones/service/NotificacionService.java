@@ -49,10 +49,16 @@ public class NotificacionService {
         }
 
         try {
-            String url = "http://localhost:8081/api/usuarios/" + request.getUsuarioId();
-            restTemplate.getForObject(url, Object.class);
+            String url = "http://localhost:8081/api/usuarios/" + request.getUsuarioId() + "/existe";
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> resp = restTemplate.getForObject(url, java.util.Map.class);
+            if (resp == null || !Boolean.TRUE.equals(resp.get("existe"))) {
+                throw new ResourceNotFoundException("Usuario no encontrado en el sistema");
+            }
+        } catch (ResourceNotFoundException ex) {
+            throw ex;
         } catch (Exception e) {
-             throw new ResourceNotFoundException("Usuario no encontrado en el sistema");
+            throw new ResourceNotFoundException("No se pudo verificar el usuario en el sistema");
         }
         // La existencia y el estado activo del usuario viven en MS Auth → verificación diferida.
         if (request.getTipo() == null) {

@@ -9,11 +9,11 @@ public class FolioRequestTest {
     @Test
     void testGettersYSetters() {
         FolioRequest r = new FolioRequest();
-        r.setSucursal(1L);
+        r.setSucursal("CHILLAN");
         r.setTipoDocumento("BOLETA");
         r.setFolioDesde(1);
         r.setFolioHasta(100);
-        assertEquals(1L, r.getSucursal());
+        assertEquals("CHILLAN", r.getSucursal());
         assertEquals("BOLETA", r.getTipoDocumento());
         assertEquals(1, r.getFolioDesde());
         assertEquals(100, r.getFolioHasta());

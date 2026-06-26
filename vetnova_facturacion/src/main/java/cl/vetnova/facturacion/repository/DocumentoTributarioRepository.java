@@ -12,6 +12,6 @@ public interface DocumentoTributarioRepository extends JpaRepository<DocumentoTr
     boolean existsByOrdenId(Long ordenId);
     List<DocumentoTributario> findByClienteId(Long clienteId);
     List<DocumentoTributario> findByOrdenId(Long ordenId);
-    List<DocumentoTributario> findBySucursal(Long sucursal);
+    List<DocumentoTributario> findBySucursal(String sucursal);
     List<DocumentoTributario> findByEstadoSII(String estadoSII);
 }

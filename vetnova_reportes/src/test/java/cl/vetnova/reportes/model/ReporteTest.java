@@ -16,8 +16,8 @@ public class ReporteTest {
         assertEquals(1L, r.getId());
         r.setTipo("VENTA");
         assertEquals("VENTA", r.getTipo());
-        r.setSucursal(1L);
-        assertEquals(1L, r.getSucursal());
+        r.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", r.getSucursal());
         LocalDate desde = LocalDate.of(2025, 1, 1);
         r.setDesde(desde);
         assertEquals(desde, r.getDesde());

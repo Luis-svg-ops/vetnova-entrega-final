@@ -167,6 +167,9 @@ public class TicketService {
         if (request.getResolucion() == null || request.getResolucion().trim().isEmpty()) {
             throw new BusinessRuleException("La resolución es obligatoria para cerrar el ticket");
         }
+        if (respuestaRepository.findByTicketIdOrderByFechaAsc(ticket.getId()).isEmpty()) {
+            throw new BusinessRuleException("El ticket debe tener al menos una respuesta antes de cerrarse");
+        }
         ticket.setEstado("CERRADO");
         ticket.setResolucion(request.getResolucion());
         ticket.setFechaCierre(LocalDateTime.now(ZoneOffset.UTC));

@@ -15,8 +15,8 @@ public class OrdenResponseTest {
         assertEquals(1L, ordenResponse.getId());
         ordenResponse.setClienteId(1L);
         assertEquals(1L, ordenResponse.getClienteId());
-        ordenResponse.setIdSucursal(1L);
-        assertEquals(1L, ordenResponse.getIdSucursal());
+        ordenResponse.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", ordenResponse.getSucursal());
         ordenResponse.setEstado("x");
         assertEquals("x", ordenResponse.getEstado());
         ordenResponse.setSubtotal(1.0);

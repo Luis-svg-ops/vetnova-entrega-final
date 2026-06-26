@@ -57,6 +57,9 @@ public class RecetaService {
         if (request.getFechaVencimiento() != null && request.getFechaVencimiento().before(emision)) {
             throw new BusinessRuleException("La fecha de vencimiento debe ser posterior a la fecha de emisión");
         }
+        if (request.getFechaVencimiento() == null) {
+            request.setFechaVencimiento(Date.valueOf(LocalDate.now().plusDays(30)));
+        }
         MedicamentoRequest primero = request.getMedicamentos().get(0);
         Receta receta = new Receta();
         receta.setFichaId(request.getFichaId());

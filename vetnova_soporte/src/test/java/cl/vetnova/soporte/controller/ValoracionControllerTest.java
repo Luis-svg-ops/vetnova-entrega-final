@@ -35,8 +35,8 @@ public class ValoracionControllerTest {
 
     @Test
     void testPromedio() throws Exception {
-        when(valoracionService.promedioPorSucursal(1L)).thenReturn(new PromedioValoracionResponse(1L, 4.3, 10));
-        mockMvc.perform(get("/valoraciones/promedio").param("sucursalId", "1")).andExpect(status().isOk());
+        when(valoracionService.promedioPorSucursal("CHILLAN")).thenReturn(new PromedioValoracionResponse("CHILLAN", 4.3, 10));
+        mockMvc.perform(get("/valoraciones/promedio").param("sucursalId", "CHILLAN")).andExpect(status().isOk());
     }
 
     @Test

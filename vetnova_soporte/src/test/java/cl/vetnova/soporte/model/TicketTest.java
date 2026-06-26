@@ -28,8 +28,8 @@ public class TicketTest {
         assertEquals("ABIERTO", t.getEstado());
         t.setResponsableId(3L);
         assertEquals(3L, t.getResponsableId());
-        t.setSucursalId(4L);
-        assertEquals(4L, t.getSucursalId());
+        t.setSucursalId("CHILLAN");
+        assertEquals("CHILLAN", t.getSucursalId());
         LocalDateTime ahora = LocalDateTime.now();
         t.setFechaCreacion(ahora);
         assertEquals(ahora, t.getFechaCreacion());

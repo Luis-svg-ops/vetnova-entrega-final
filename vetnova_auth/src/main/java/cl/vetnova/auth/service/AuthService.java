@@ -53,6 +53,18 @@ public class AuthService {
 
     @Transactional
     public UsuarioResponse registrar(RegisterRequest request) {
+        if (request.password() == null || request.password().length() < 8) {
+            throw new BusinessRuleException("El password debe tener al menos 8 caracteres");
+        }
+        if (!request.password().matches(".*[A-Z].*")) {
+            throw new BusinessRuleException("El password debe contener al menos una mayúscula");
+        }
+        if (!request.password().matches(".*[0-9].*")) {
+            throw new BusinessRuleException("El password debe contener al menos un número");
+        }
+        if (!request.password().matches(".*[^A-Za-z0-9].*")) {
+            throw new BusinessRuleException("El password debe contener al menos un símbolo");
+        }
         if (usuarioRepository.existsByEmailIgnoreCase(request.email())) {
             throw new BusinessRuleException("El email ya está registrado");
         }

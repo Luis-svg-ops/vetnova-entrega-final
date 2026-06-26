@@ -16,8 +16,8 @@ public class Orden {
     @Column(nullable = false)
     private Long clienteId;
 
-    @Column(nullable = false)
-    private Long idSucursal;
+    @Column(nullable = false, length = 30)
+    private String sucursal;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -60,8 +60,8 @@ public class Orden {
     public void setId(Long id) { this.id = id; }
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
-    public Long getIdSucursal() { return idSucursal; }
-    public void setIdSucursal(Long idSucursal) { this.idSucursal = idSucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
     public EstadoOrden getEstado() { return estado; }
     public void setEstado(EstadoOrden estado) { this.estado = estado; }
     public Double getSubtotal() { return subtotal; }

@@ -38,7 +38,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularPost(Mono.just(ResponseEntity.ok().build()));
 
-        assertDoesNotThrow(() -> client.registrarMovimiento(1L, 1L, "SALIDA", 5, "Transferencia"));
+        assertDoesNotThrow(() -> client.registrarMovimiento(1L, "CHILLAN", "SALIDA", 5, "Transferencia"));
     }
 
     @Test
@@ -47,7 +47,7 @@ private WebClient webClient;
         simularPost(Mono.error(new RuntimeException("conexion rechazada")));
 
         assertThrows(RemoteServiceException.class,
-                () -> client.registrarMovimiento(1L, 1L, "SALIDA", 5, "Transferencia"));
+                () -> client.registrarMovimiento(1L, "CHILLAN", "SALIDA", 5, "Transferencia"));
     }
 
 }

@@ -14,8 +14,8 @@ public class OrdenTest {
         assertEquals(1L, orden.getId());
         orden.setClienteId(1L);
         assertEquals(1L, orden.getClienteId());
-        orden.setIdSucursal(1L);
-        assertEquals(1L, orden.getIdSucursal());
+        orden.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", orden.getSucursal());
         orden.setEstado(EstadoOrden.PENDIENTE);
         assertEquals(EstadoOrden.PENDIENTE, orden.getEstado());
         orden.setSubtotal(1.0);

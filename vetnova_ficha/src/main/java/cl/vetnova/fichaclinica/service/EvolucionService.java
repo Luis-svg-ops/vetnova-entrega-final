@@ -36,10 +36,26 @@ public class EvolucionService {
         if (evolucion.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
         }
+        if (evolucion.getCitaId() == null) {
+            throw new BusinessRuleException("El citaId es obligatorio para registrar una evolución");
+        }
         if (evolucion.getCitaId() != null) {
             try {
                 String url = "http://localhost:8086/api/v1/citas/" + evolucion.getCitaId();
-                restTemplate.getForObject(url, Object.class);
+                @SuppressWarnings("unchecked")
+                java.util.Map<String, Object> citaData =
+                        restTemplate.getForObject(url, java.util.Map.class);
+                if (citaData != null && citaData.get("mascotaId") != null) {
+                    Long citaMascotaId = ((Number) citaData.get("mascotaId")).longValue();
+                    cl.vetnova.fichaclinica.model.FichaClinica ficha =
+                            fichaClinicaRepository.findById(evolucion.getFichaId()).orElseThrow();
+                    if (!citaMascotaId.equals(ficha.getMascotaId())) {
+                        throw new BusinessRuleException(
+                                "La cita pertenece a una mascota distinta a la de la ficha clínica");
+                    }
+                }
+            } catch (BusinessRuleException ex) {
+                throw ex;
             } catch (Exception e) {
                 throw new BusinessRuleException("La cita no existe en el sistema");
             }

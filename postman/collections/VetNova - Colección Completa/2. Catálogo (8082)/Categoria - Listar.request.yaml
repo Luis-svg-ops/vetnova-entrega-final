@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8082/api/v1/categorias
-method: GET
-order: 1000

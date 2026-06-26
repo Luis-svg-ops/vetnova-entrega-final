@@ -1,5 +1,6 @@
 package cl.vetnova.ventas.service;
 
+import cl.vetnova.ventas.client.AuthClient;
 import cl.vetnova.ventas.client.InventarioClient;
 import cl.vetnova.ventas.dto.*;
 import cl.vetnova.ventas.exception.BusinessRuleException;
@@ -23,24 +24,31 @@ public class OrdenService {
 
     private final OrdenRepository ordenRepository;
     private final InventarioClient inventarioClient;
+    private final AuthClient authClient;
     private final double iva;
 
     public OrdenService(OrdenRepository ordenRepository,
                         InventarioClient inventarioClient,
+                        AuthClient authClient,
                         @Value("${app.iva}") double iva) {
         this.ordenRepository = ordenRepository;
         this.inventarioClient = inventarioClient;
+        this.authClient = authClient;
         this.iva = iva;
     }
 
     @Transactional
     public OrdenResponse crearOrden(CrearOrdenRequest request) {
-        log.info("event=crear_orden clienteId={} sucursalId={} items={}",
-                request.getClienteId(), request.getIdSucursal(), request.getDetalles().size());
+        log.info("event=crear_orden clienteId={} sucursal={} items={}",
+                request.getClienteId(), request.getSucursal(), request.getDetalles().size());
+
+        if (!authClient.clienteExiste(request.getClienteId())) {
+            throw new ResourceNotFoundException("Cliente no encontrado con id " + request.getClienteId());
+        }
 
         // Regla de negocio: antes de crear la orden se valida stock contra Inventario
         for (DetalleOrdenRequest detalle : request.getDetalles()) {
-            Integer disponible = inventarioClient.consultarStock(detalle.getProductoId(), request.getIdSucursal());
+            Integer disponible = inventarioClient.consultarStock(detalle.getProductoId(), request.getSucursal());
             if (disponible < detalle.getCantidad()) {
                 throw new BusinessRuleException("Stock insuficiente para el producto " + detalle.getProductoId()
                         + ". Disponible: " + disponible + ", solicitado: " + detalle.getCantidad());
@@ -49,7 +57,7 @@ public class OrdenService {
 
         Orden orden = new Orden();
         orden.setClienteId(request.getClienteId());
-        orden.setIdSucursal(request.getIdSucursal());
+        orden.setSucursal(request.getSucursal());
 
         double subtotal = 0.0;
         for (DetalleOrdenRequest d : request.getDetalles()) {
@@ -116,13 +124,13 @@ public class OrdenService {
             throw new BusinessRuleException("La orden no puede confirmarse sin un pago aprobado");
         }
         for (DetalleOrden detalle : orden.getDetalles()) {
-            Integer disponible = inventarioClient.consultarStock(detalle.getProductoId(), orden.getIdSucursal());
+            Integer disponible = inventarioClient.consultarStock(detalle.getProductoId(), orden.getSucursal());
             if (disponible < detalle.getCantidad()) {
                 throw new BusinessRuleException("Stock insuficiente para confirmar la orden");
             }
         }
         for (DetalleOrden detalle : orden.getDetalles()) {
-            inventarioClient.registrarSalida(detalle.getProductoId(), orden.getIdSucursal(),
+            inventarioClient.registrarSalida(detalle.getProductoId(), orden.getSucursal(),
                     detalle.getCantidad(), "Confirmación orden " + id);
         }
         orden.setEstado(EstadoOrden.CONFIRMADA);
@@ -142,7 +150,7 @@ public class OrdenService {
         }
         if (orden.getEstado() == EstadoOrden.CONFIRMADA) {
             for (DetalleOrden detalle : orden.getDetalles()) {
-                inventarioClient.registrarEntrada(detalle.getProductoId(), orden.getIdSucursal(),
+                inventarioClient.registrarEntrada(detalle.getProductoId(), orden.getSucursal(),
                         detalle.getCantidad(), "Cancelación orden " + id);
             }
         }
@@ -269,7 +277,7 @@ public class OrdenService {
         OrdenResponse response = new OrdenResponse();
         response.setId(orden.getId());
         response.setClienteId(orden.getClienteId());
-        response.setIdSucursal(orden.getIdSucursal());
+        response.setSucursal(orden.getSucursal());
         response.setEstado(orden.getEstado().name());
         response.setSubtotal(orden.getSubtotal());
         response.setImpuestos(orden.getImpuestos());

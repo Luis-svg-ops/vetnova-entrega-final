@@ -1,2 +1,0 @@
-$kind: collection
-description: "Pruebas para todos los modelos del proyecto VetNova. Arrancar en orden: auth → catalogo → inventario → ventas → envio → ficha → agenda → facturacion → notificaciones → laboratorio → reportes → soporte → gateway."

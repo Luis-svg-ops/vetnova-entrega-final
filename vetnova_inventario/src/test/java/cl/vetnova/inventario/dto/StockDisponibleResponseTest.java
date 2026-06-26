@@ -13,11 +13,11 @@ public class StockDisponibleResponseTest {
         StockDisponibleResponse stockDisponibleResponse = new StockDisponibleResponse();
         stockDisponibleResponse.setIdProducto(1L);
         assertEquals(1L, stockDisponibleResponse.getIdProducto());
-        stockDisponibleResponse.setIdSucursal(1L);
-        assertEquals(1L, stockDisponibleResponse.getIdSucursal());
+        stockDisponibleResponse.setIdSucursal("CHILLAN");
+        assertEquals("CHILLAN", stockDisponibleResponse.getIdSucursal());
         stockDisponibleResponse.setCantidadDisponible(1);
         assertEquals(1, stockDisponibleResponse.getCantidadDisponible());
-        assertNotNull(new StockDisponibleResponse(1L, 1L, 1));
+        assertNotNull(new StockDisponibleResponse(1L, "CHILLAN", 1));
     }
 
 }

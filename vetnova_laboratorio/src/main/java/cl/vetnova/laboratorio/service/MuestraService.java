@@ -47,6 +47,9 @@ public class MuestraService {
         }
         OrdenExamen orden = ordenRepository.findById(request.getOrdenExamenId())
                 .orElseThrow(() -> new ResourceNotFoundException("Orden de examen no encontrada"));
+        if ("CANCELADA".equals(orden.getEstado())) {
+            throw new BusinessRuleException("No se puede registrar una muestra para una orden cancelada");
+        }
         if (Boolean.FALSE.equals(orden.getTipoExamen().getRequiereMuestra())) {
             throw new BusinessRuleException("Este tipo de examen no requiere muestra");
         }

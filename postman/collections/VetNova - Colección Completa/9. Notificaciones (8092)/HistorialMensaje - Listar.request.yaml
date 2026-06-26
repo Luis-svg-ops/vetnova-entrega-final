@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8092/api/v1/historial
-method: GET
-order: 8000

@@ -31,13 +31,16 @@ public class OrdenServiceTest {
     private OrdenRepository ordenRepository;
     @Mock
     private InventarioClient inventarioClient;
+    @Mock
+    private cl.vetnova.ventas.client.AuthClient authClient;
 
     private OrdenService ordenService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ordenService = new OrdenService(ordenRepository, inventarioClient, 0.19);
+        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, 0.19);
+        when(authClient.clienteExiste(any(Long.class))).thenReturn(true);
     }
 
     private CrearOrdenRequest requestConUnDetalle(int cantidad, double precio) {
@@ -48,14 +51,14 @@ public class OrdenServiceTest {
         detalle.setPrecioUnitario(precio);
         CrearOrdenRequest request = new CrearOrdenRequest();
         request.setClienteId(2L);
-        request.setIdSucursal(1L);
+        request.setSucursal("CHILLAN");
         request.setDetalles(List.of(detalle));
         return request;
     }
 
     @Test
     void testCrearOrdenCalculaSubtotalIvaYTotal() {
-        when(inventarioClient.consultarStock(1L, 1L)).thenReturn(50);
+        when(inventarioClient.consultarStock(1L, "CHILLAN")).thenReturn(50);
         when(ordenRepository.save(any(Orden.class))).thenAnswer(inv -> inv.getArgument(0));
 
         OrdenResponse response = ordenService.crearOrden(requestConUnDetalle(2, 35990.0));
@@ -69,7 +72,7 @@ public class OrdenServiceTest {
 
     @Test
     void testCrearOrdenConStockInsuficienteLanzaExcepcion() {
-        when(inventarioClient.consultarStock(1L, 1L)).thenReturn(1);
+        when(inventarioClient.consultarStock(1L, "CHILLAN")).thenReturn(1);
 
         assertThrows(BusinessRuleException.class,
                 () -> ordenService.crearOrden(requestConUnDetalle(5, 35990.0)));
@@ -78,12 +81,12 @@ public class OrdenServiceTest {
 
     @Test
     void testCrearOrdenConsultaStockPorCadaDetalle() {
-        when(inventarioClient.consultarStock(1L, 1L)).thenReturn(50);
+        when(inventarioClient.consultarStock(1L, "CHILLAN")).thenReturn(50);
         when(ordenRepository.save(any(Orden.class))).thenAnswer(inv -> inv.getArgument(0));
 
         ordenService.crearOrden(requestConUnDetalle(2, 1000.0));
 
-        verify(inventarioClient).consultarStock(1L, 1L);
+        verify(inventarioClient).consultarStock(1L, "CHILLAN");
     }
 
     @Test
@@ -106,7 +109,7 @@ public class OrdenServiceTest {
     void testOrdenConfirmadaPuedePasarAEnviada() {
         Orden orden = new Orden();
         orden.setClienteId(2L);
-        orden.setIdSucursal(1L);
+        orden.setSucursal("CHILLAN");
         orden.setEstado(EstadoOrden.CONFIRMADA);
         when(ordenRepository.findById(1L)).thenReturn(Optional.of(orden));
         when(ordenRepository.save(any(Orden.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -158,7 +161,7 @@ public class OrdenServiceTest {
     void testListarMapeaTodasLasOrdenes() {
         Orden orden = new Orden();
         orden.setClienteId(2L);
-        orden.setIdSucursal(1L);
+        orden.setSucursal("CHILLAN");
         when(ordenRepository.findAll()).thenReturn(List.of(orden));
 
         List<OrdenResponse> lista = ordenService.listar();
@@ -244,7 +247,7 @@ public class OrdenServiceTest {
 
     private Orden ordenConDetalle(EstadoOrden estado, String estadoPago) {
         Orden orden = new Orden();
-        orden.setIdSucursal(1L);
+        orden.setSucursal("CHILLAN");
         orden.setEstado(estado);
         DetalleOrden detalle = new DetalleOrden();
         detalle.setProductoId(1L);
@@ -290,7 +293,7 @@ public class OrdenServiceTest {
     @Test
     void testConfirmarSinStockLanzaBusinessRule() {
         when(ordenRepository.findById(1L)).thenReturn(Optional.of(ordenConDetalle(EstadoOrden.PENDIENTE, "APROBADO")));
-        when(inventarioClient.consultarStock(1L, 1L)).thenReturn(1);
+        when(inventarioClient.consultarStock(1L, "CHILLAN")).thenReturn(1);
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> ordenService.confirmar(1L));
         assertEquals("Stock insuficiente para confirmar la orden", ex.getMessage());
     }
@@ -298,14 +301,14 @@ public class OrdenServiceTest {
     @Test
     void testConfirmarCasoFelizDescuentaStock() {
         when(ordenRepository.findById(1L)).thenReturn(Optional.of(ordenConDetalle(EstadoOrden.PENDIENTE, "APROBADO")));
-        when(inventarioClient.consultarStock(1L, 1L)).thenReturn(50);
+        when(inventarioClient.consultarStock(1L, "CHILLAN")).thenReturn(50);
         when(ordenRepository.save(any(Orden.class))).thenAnswer(inv -> inv.getArgument(0));
 
         OrdenResponse response = ordenService.confirmar(1L);
 
         assertEquals("CONFIRMADA", response.getEstado());
         assertNotNull(response.getFechaConfirmacion());
-        verify(inventarioClient).registrarSalida(1L, 1L, 2, "Confirmación orden 1");
+        verify(inventarioClient).registrarSalida(1L, "CHILLAN", 2, "Confirmación orden 1");
     }
 
     @Test
@@ -330,7 +333,7 @@ public class OrdenServiceTest {
         OrdenResponse response = ordenService.cancelar(1L);
 
         assertEquals("CANCELADA", response.getEstado());
-        verify(inventarioClient).registrarEntrada(1L, 1L, 2, "Cancelación orden 1");
+        verify(inventarioClient).registrarEntrada(1L, "CHILLAN", 2, "Cancelación orden 1");
     }
 
     @Test

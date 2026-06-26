@@ -16,7 +16,7 @@ public class DashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<Dashboard> obtener(@RequestParam(required = false) Long sucursal) {
+    public ResponseEntity<Dashboard> obtener(@RequestParam(required = false) String sucursal) {
         return ResponseEntity.ok(service.cargarIndicadores(sucursal));
     }
 }

@@ -15,8 +15,8 @@ public class Reporte {
     @Column(name = "tipo", length = 30)
     private String tipo; // ATENCION, VENTA, STOCK
 
-    @Column(name = "sucursal")
-    private Long sucursal;
+    @Column(name = "sucursal", length = 30)
+    private String sucursal;
 
     @Column(name = "desde")
     private LocalDate desde;
@@ -42,8 +42,8 @@ public class Reporte {
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public Long getSucursal() { return sucursal; }
-    public void setSucursal(Long sucursal) { this.sucursal = sucursal; }
+    public String getSucursal() { return sucursal; }
+    public void setSucursal(String sucursal) { this.sucursal = sucursal; }
 
     public LocalDate getDesde() { return desde; }
     public void setDesde(LocalDate desde) { this.desde = desde; }

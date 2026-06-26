@@ -1,20 +1,20 @@
 package cl.vetnova.soporte.dto;
 
 public class PromedioValoracionResponse {
-    private Long sucursalId;
+    private String sucursalId;
     private Double promedio;
     private long total;
 
     public PromedioValoracionResponse() {}
 
-    public PromedioValoracionResponse(Long sucursalId, Double promedio, long total) {
+    public PromedioValoracionResponse(String sucursalId, Double promedio, long total) {
         this.sucursalId = sucursalId;
         this.promedio = promedio;
         this.total = total;
     }
 
-    public Long getSucursalId() { return sucursalId; }
-    public void setSucursalId(Long sucursalId) { this.sucursalId = sucursalId; }
+    public String getSucursalId() { return sucursalId; }
+    public void setSucursalId(String sucursalId) { this.sucursalId = sucursalId; }
     public Double getPromedio() { return promedio; }
     public void setPromedio(Double promedio) { this.promedio = promedio; }
     public long getTotal() { return total; }

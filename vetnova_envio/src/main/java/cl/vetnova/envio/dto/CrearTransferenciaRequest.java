@@ -9,10 +9,10 @@ public class CrearTransferenciaRequest {
     private Long idProducto;
 
     @NotNull(message = "La sucursal de origen es obligatoria")
-    private Long idSucursalOrigen;
+    private String idSucursalOrigen;
 
     @NotNull(message = "La sucursal de destino es obligatoria")
-    private Long idSucursalDestino;
+    private String idSucursalDestino;
 
     @NotNull(message = "La cantidad es obligatoria")
     @Positive(message = "La cantidad debe ser mayor a cero")
@@ -22,10 +22,10 @@ public class CrearTransferenciaRequest {
 
     public Long getIdProducto() { return idProducto; }
     public void setIdProducto(Long idProducto) { this.idProducto = idProducto; }
-    public Long getIdSucursalOrigen() { return idSucursalOrigen; }
-    public void setIdSucursalOrigen(Long idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
-    public Long getIdSucursalDestino() { return idSucursalDestino; }
-    public void setIdSucursalDestino(Long idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
+    public String getIdSucursalOrigen() { return idSucursalOrigen; }
+    public void setIdSucursalOrigen(String idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
+    public String getIdSucursalDestino() { return idSucursalDestino; }
+    public void setIdSucursalDestino(String idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public String getObservacion() { return observacion; }

@@ -19,8 +19,8 @@ public class DashboardServiceTest {
 
     @Test
     void testCargarIndicadoresCasoFeliz() {
-        Dashboard d = service.cargarIndicadores(1L);
-        assertEquals("1", d.getSucursal());
+        Dashboard d = service.cargarIndicadores("CHILLAN");
+        assertEquals("CHILLAN", d.getSucursal());
         assertEquals(0, d.getCitasHoy());
         assertEquals(0, d.getOrdenesHoy());
         assertEquals(0.0, d.getVentasHoy());

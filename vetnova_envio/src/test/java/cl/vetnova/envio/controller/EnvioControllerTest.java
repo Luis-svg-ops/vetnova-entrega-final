@@ -44,7 +44,7 @@ public class EnvioControllerTest {
         when(envioService.crearEnvio(any())).thenReturn(envio("PREPARANDO"));
 
         String body = """
-                {"ordenId":1,"tipoEnvio":"DOMICILIO","idSucursalOrigen":1,"direccionEntrega":"Av. Libertad 123"}
+                {"ordenId":1,"tipoEnvio":"DOMICILIO","idSucursalOrigen":"CHILLAN","direccionEntrega":"Av. Libertad 123"}
                 """;
         mockMvc.perform(post("/api/v1/envios").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
@@ -54,7 +54,7 @@ public class EnvioControllerTest {
     @Test
     void testCrearEnvioSinOrdenIdResponde400() throws Exception {
         String body = """
-                {"tipoEnvio":"DOMICILIO","idSucursalOrigen":1}
+                {"tipoEnvio":"DOMICILIO","idSucursalOrigen":"CHILLAN"}
                 """;
         mockMvc.perform(post("/api/v1/envios").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest())

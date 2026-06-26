@@ -49,7 +49,7 @@ public class DocumentoTributarioServiceTest {
         r.setTipo("BOLETA");
         r.setNeto(1000.0);
         r.setRutEmisor("11.111.111-1");
-        r.setSucursal(1L);
+        r.setSucursal("CHILLAN");
         return r;
     }
 
@@ -187,7 +187,7 @@ public class DocumentoTributarioServiceTest {
     @Test
     void testEmitirSinFolioDisponible() {
         ordenValida();
-        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(1L, "BOLETA", 0))
+        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan("CHILLAN", "BOLETA", 0))
                 .thenReturn(Optional.empty());
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.emitir(req()));
         assertEquals("No hay folios disponibles para emitir el documento", ex.getMessage());
@@ -206,7 +206,7 @@ public class DocumentoTributarioServiceTest {
     @Test
     void testEmitirCasoFeliz() {
         ordenValida();
-        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(1L, "BOLETA", 0))
+        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan("CHILLAN", "BOLETA", 0))
                 .thenReturn(Optional.of(folioDisponible()));
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
         when(documentoRepository.save(any(DocumentoTributario.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -220,7 +220,7 @@ public class DocumentoTributarioServiceTest {
     @Test
     void testEmitirNetoNullUsaCero() {
         ordenValida();
-        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(1L, "BOLETA", 0))
+        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan("CHILLAN", "BOLETA", 0))
                 .thenReturn(Optional.of(folioDisponible()));
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
         when(documentoRepository.save(any(DocumentoTributario.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -234,7 +234,7 @@ public class DocumentoTributarioServiceTest {
     @Test
     void testEmitirTotalConsistente() {
         ordenValida();
-        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(1L, "BOLETA", 0))
+        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan("CHILLAN", "BOLETA", 0))
                 .thenReturn(Optional.of(folioDisponible()));
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
         when(documentoRepository.save(any(DocumentoTributario.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -246,7 +246,7 @@ public class DocumentoTributarioServiceTest {
     @Test
     void testEmitirFacturaCasoFeliz() {
         ordenValida();
-        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan(1L, "FACTURA", 0))
+        when(folioRepository.findFirstBySucursalAndTipoDocumentoAndActivoTrueAndFoliosRestantesGreaterThan("CHILLAN", "FACTURA", 0))
                 .thenReturn(Optional.of(folioDisponible()));
         when(folioRepository.save(any(Folio.class))).thenAnswer(inv -> inv.getArgument(0));
         when(documentoRepository.save(any(DocumentoTributario.class))).thenAnswer(inv -> inv.getArgument(0));

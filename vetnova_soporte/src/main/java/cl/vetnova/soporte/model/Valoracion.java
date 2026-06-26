@@ -29,8 +29,8 @@ public class Valoracion {
     @Column(name = "comentario", length = 1000)
     private String comentario;
 
-    @Column(name = "sucursal_id")
-    private Long sucursalId;
+    @Column(name = "sucursal_id", length = 30)
+    private String sucursalId;
 
     @Column(name = "fecha")
     private LocalDateTime fecha;
@@ -53,8 +53,8 @@ public class Valoracion {
     public String getComentario() { return comentario; }
     public void setComentario(String comentario) { this.comentario = comentario; }
 
-    public Long getSucursalId() { return sucursalId; }
-    public void setSucursalId(Long sucursalId) { this.sucursalId = sucursalId; }
+    public String getSucursalId() { return sucursalId; }
+    public void setSucursalId(String sucursalId) { this.sucursalId = sucursalId; }
 
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }

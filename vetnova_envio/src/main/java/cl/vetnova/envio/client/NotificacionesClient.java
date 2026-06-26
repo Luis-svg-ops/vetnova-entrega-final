@@ -21,17 +21,12 @@ public class NotificacionesClient {
     public void avisarCambioEstado(Long clienteId, Long envioId, String estado) {
         try {
             Map<String, Object> body = Map.of(
-                    "destinatarioId", clienteId,
-                    "tipoDestinatario", "CLIENTE",
-                    "canal", "EMAIL",
-                    "motivo", "ESTADO_ENVIO",
-                    "asunto", "Actualización de tu envío",
-                    "mensaje", "Tu envío " + envioId + " cambió a estado " + estado,
-                    "estado", "PENDIENTE",
-                    "intentos", 0
+                    "usuarioId", clienteId,
+                    "tipo", "EMAIL",
+                    "mensaje", "Tu envío " + envioId + " cambió a estado " + estado
             );
             webClient.post()
-                    .uri("/api/v1/notificaciones")
+                    .uri("/notificaciones")
                     .bodyValue(body)
                     .retrieve()
                     .toBodilessEntity()

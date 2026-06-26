@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8085/api/v1/rutas
-method: GET
-order: 9000

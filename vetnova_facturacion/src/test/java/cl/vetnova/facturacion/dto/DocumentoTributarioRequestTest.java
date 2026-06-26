@@ -16,7 +16,7 @@ public class DocumentoTributarioRequestTest {
         r.setTotal(1190.0);
         r.setRutEmisor("76.000.000-0");
         r.setRutReceptor("11.111.111-1");
-        r.setSucursal(1L);
+        r.setSucursal("CHILLAN");
         assertEquals(1L, r.getOrdenId());
         assertEquals(2L, r.getClienteId());
         assertEquals("BOLETA", r.getTipo());
@@ -24,6 +24,6 @@ public class DocumentoTributarioRequestTest {
         assertEquals(1190.0, r.getTotal());
         assertEquals("76.000.000-0", r.getRutEmisor());
         assertEquals("11.111.111-1", r.getRutReceptor());
-        assertEquals(1L, r.getSucursal());
+        assertEquals("CHILLAN", r.getSucursal());
     }
 }

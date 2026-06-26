@@ -13,8 +13,8 @@ public class CrearOrdenRequestTest {
         CrearOrdenRequest crearOrdenRequest = new CrearOrdenRequest();
         crearOrdenRequest.setClienteId(1L);
         assertEquals(1L, crearOrdenRequest.getClienteId());
-        crearOrdenRequest.setIdSucursal(1L);
-        assertEquals(1L, crearOrdenRequest.getIdSucursal());
+        crearOrdenRequest.setSucursal("CHILLAN");
+        assertEquals("CHILLAN", crearOrdenRequest.getSucursal());
         crearOrdenRequest.setDetalles(new ArrayList<>());
         assertNotNull(crearOrdenRequest.getDetalles());
     }

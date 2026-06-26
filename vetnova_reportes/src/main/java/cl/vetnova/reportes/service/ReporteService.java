@@ -42,7 +42,7 @@ public class ReporteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reporte> filtrarPorSucursal(Long sucursal) {
+    public List<Reporte> filtrarPorSucursal(String sucursal) {
         return reporteRepository.findBySucursal(sucursal);
     }
 

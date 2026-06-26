@@ -73,7 +73,7 @@ public class ValoracionService {
     }
 
     @Transactional(readOnly = true)
-    public PromedioValoracionResponse promedioPorSucursal(Long sucursalId) {
+    public PromedioValoracionResponse promedioPorSucursal(String sucursalId) {
         List<Valoracion> valoraciones = valoracionRepository.findBySucursalId(sucursalId);
         long total = valoraciones.size();
         double promedio = 0.0;

@@ -8,16 +8,16 @@ public class PromedioValoracionResponseTest {
 
     @Test
     void testConstructorYSetters() {
-        PromedioValoracionResponse r = new PromedioValoracionResponse(1L, 4.3, 10);
-        assertEquals(1L, r.getSucursalId());
+        PromedioValoracionResponse r = new PromedioValoracionResponse("CHILLAN", 4.3, 10);
+        assertEquals("CHILLAN", r.getSucursalId());
         assertEquals(4.3, r.getPromedio());
         assertEquals(10, r.getTotal());
 
         PromedioValoracionResponse vacio = new PromedioValoracionResponse();
-        vacio.setSucursalId(2L);
+        vacio.setSucursalId("LOS_ANGELES");
         vacio.setPromedio(5.0);
         vacio.setTotal(3);
-        assertEquals(2L, vacio.getSucursalId());
+        assertEquals("LOS_ANGELES", vacio.getSucursalId());
         assertEquals(5.0, vacio.getPromedio());
         assertEquals(3, vacio.getTotal());
     }

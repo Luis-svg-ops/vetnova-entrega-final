@@ -14,11 +14,11 @@ public class TransferenciaSucursal {
     @Column(nullable = false)
     private Long idProducto;
 
-    @Column(nullable = false)
-    private Long idSucursalOrigen;
+    @Column(nullable = false, length = 30)
+    private String idSucursalOrigen;
 
-    @Column(nullable = false)
-    private Long idSucursalDestino;
+    @Column(nullable = false, length = 30)
+    private String idSucursalDestino;
 
     @Column(nullable = false)
     private Integer cantidad;
@@ -39,10 +39,10 @@ public class TransferenciaSucursal {
     public void setId(Long id) { this.id = id; }
     public Long getIdProducto() { return idProducto; }
     public void setIdProducto(Long idProducto) { this.idProducto = idProducto; }
-    public Long getIdSucursalOrigen() { return idSucursalOrigen; }
-    public void setIdSucursalOrigen(Long idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
-    public Long getIdSucursalDestino() { return idSucursalDestino; }
-    public void setIdSucursalDestino(Long idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
+    public String getIdSucursalOrigen() { return idSucursalOrigen; }
+    public void setIdSucursalOrigen(String idSucursalOrigen) { this.idSucursalOrigen = idSucursalOrigen; }
+    public String getIdSucursalDestino() { return idSucursalDestino; }
+    public void setIdSucursalDestino(String idSucursalDestino) { this.idSucursalDestino = idSucursalDestino; }
     public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public String getEstado() { return estado; }

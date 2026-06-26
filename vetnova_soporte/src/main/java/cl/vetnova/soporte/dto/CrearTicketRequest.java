@@ -4,7 +4,7 @@ public class CrearTicketRequest {
     private Long clienteId;
     private String motivo;
     private String descripcion;
-    private Long sucursalId;
+    private String sucursalId;
 
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
@@ -12,6 +12,6 @@ public class CrearTicketRequest {
     public void setMotivo(String motivo) { this.motivo = motivo; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public Long getSucursalId() { return sucursalId; }
-    public void setSucursalId(Long sucursalId) { this.sucursalId = sucursalId; }
+    public String getSucursalId() { return sucursalId; }
+    public void setSucursalId(String sucursalId) { this.sucursalId = sucursalId; }
 }

@@ -37,7 +37,7 @@ private WebClient webClient;
         NotificacionesClient client = new NotificacionesClient(builderSimulado(), "http://localhost:8092");
         simularPost(Mono.just(ResponseEntity.ok().build()));
 
-        assertDoesNotThrow(() -> client.alertarStockCritico(1L, 1L, 2));
+        assertDoesNotThrow(() -> client.alertarStockCritico(1L, "CHILLAN", 2));
     }
 
     @Test
@@ -45,7 +45,7 @@ private WebClient webClient;
         NotificacionesClient client = new NotificacionesClient(builderSimulado(), "http://localhost:8092");
         simularPost(Mono.error(new RuntimeException("conexion rechazada")));
 
-        assertDoesNotThrow(() -> client.alertarStockCritico(1L, 1L, 2));
+        assertDoesNotThrow(() -> client.alertarStockCritico(1L, "CHILLAN", 2));
     }
 
 }

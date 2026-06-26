@@ -18,8 +18,8 @@ public class EnvioTest {
         assertEquals(1L, envio.getOrdenId());
         envio.setTipoEnvio(TipoEnvio.DOMICILIO);
         assertEquals(TipoEnvio.DOMICILIO, envio.getTipoEnvio());
-        envio.setIdSucursalOrigen(1L);
-        assertEquals(1L, envio.getIdSucursalOrigen());
+        envio.setIdSucursalOrigen("CHILLAN");
+        assertEquals("CHILLAN", envio.getIdSucursalOrigen());
         envio.setDireccionEntrega("x");
         assertEquals("x", envio.getDireccionEntrega());
         envio.setEstadoActual(EstadoEnvio.PREPARANDO);

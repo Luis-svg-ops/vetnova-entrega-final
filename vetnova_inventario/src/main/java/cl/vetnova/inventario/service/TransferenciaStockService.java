@@ -98,6 +98,9 @@ public class TransferenciaStockService {
         if (RECIBIDA.equals(transferencia.getEstado())) {
             throw new BusinessRuleException("La transferencia ya fue recibida");
         }
+        if (!EN_TRANSITO.equals(transferencia.getEstado())) {
+            throw new BusinessRuleException("Solo se puede confirmar recepción de una transferencia en tránsito");
+        }
         Inventario destino = buscarInventario(transferencia.getProductoId(), transferencia.getSucursalDestino());
         destino.setStockTransito(valor(destino.getStockTransito()) - transferencia.getCantidad());
         destino.setStockDisponible(valor(destino.getStockDisponible()) + transferencia.getCantidad());

@@ -50,9 +50,9 @@ private WebClient webClient;
     @Test
     void testConsultarStockDevuelveLaCantidad() {
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
-        simularGetConUriBuilder(Mono.just(Map.of("idProducto", 1L, "idSucursal", 1L, "cantidadDisponible", 50)));
+        simularGetConUriBuilder(Mono.just(Map.of("id", 1L, "stockDisponible", 50)));
 
-        assertEquals(50, client.consultarStock(1L, 1L));
+        assertEquals(50, client.consultarStock(1L, "CHILLAN"));
     }
 
     @Test
@@ -60,7 +60,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularGetConUriBuilder(Mono.error(new RuntimeException("conexion rechazada")));
 
-        assertThrows(RemoteServiceException.class, () -> client.consultarStock(1L, 1L));
+        assertThrows(RemoteServiceException.class, () -> client.consultarStock(1L, "CHILLAN"));
     }
 
     @Test
@@ -68,7 +68,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularPost(Mono.just(ResponseEntity.ok().build()));
 
-        assertDoesNotThrow(() -> client.registrarSalida(1L, 1L, 2, "Venta orden 1"));
+        assertDoesNotThrow(() -> client.registrarSalida(1L, "CHILLAN", 2, "Venta orden 1"));
     }
 
     @Test
@@ -76,7 +76,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularPost(Mono.error(new RuntimeException("conexion rechazada")));
 
-        assertThrows(RemoteServiceException.class, () -> client.registrarSalida(1L, 1L, 2, "Venta"));
+        assertThrows(RemoteServiceException.class, () -> client.registrarSalida(1L, "CHILLAN", 2, "Venta"));
     }
 
     @Test
@@ -84,7 +84,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularPost(Mono.just(ResponseEntity.ok().build()));
 
-        assertDoesNotThrow(() -> client.registrarEntrada(1L, 1L, 2, "Cancelación orden 1"));
+        assertDoesNotThrow(() -> client.registrarEntrada(1L, "CHILLAN", 2, "Cancelación orden 1"));
     }
 
     @Test
@@ -92,7 +92,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularPost(Mono.error(new RuntimeException("conexion rechazada")));
 
-        assertThrows(RemoteServiceException.class, () -> client.registrarEntrada(1L, 1L, 2, "Cancelación"));
+        assertThrows(RemoteServiceException.class, () -> client.registrarEntrada(1L, "CHILLAN", 2, "Cancelación"));
     }
 
     @Test
@@ -100,7 +100,7 @@ private WebClient webClient;
         InventarioClient client = new InventarioClient(builderSimulado(), "http://localhost:8083");
         simularGetConUriBuilder(Mono.empty());
 
-        assertEquals(0, client.consultarStock(1L, 1L));
+        assertEquals(0, client.consultarStock(1L, "CHILLAN"));
     }
 
 }

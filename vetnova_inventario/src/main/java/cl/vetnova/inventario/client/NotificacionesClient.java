@@ -18,21 +18,16 @@ public class NotificacionesClient {
     }
 
     // La alerta es informativa: si Notificaciones no responde, el movimiento de stock no debe fallar.
-    public void alertarStockCritico(Long idProducto, Long idSucursal, Integer cantidad) {
+    public void alertarStockCritico(Long idProducto, String idSucursal, Integer cantidad) {
         try {
             Map<String, Object> body = Map.of(
-                    "destinatarioId", 1L,
-                    "tipoDestinatario", "BODEGA",
-                    "canal", "EMAIL",
-                    "motivo", "STOCK_CRITICO",
-                    "asunto", "Alerta de stock crítico",
+                    "usuarioId", 1L,
+                    "tipo", "EMAIL",
                     "mensaje", "El producto " + idProducto + " quedó con stock " + cantidad
-                            + " en la sucursal " + idSucursal,
-                    "estado", "PENDIENTE",
-                    "intentos", 0
+                            + " en la sucursal " + idSucursal
             );
             webClient.post()
-                    .uri("/api/v1/notificaciones")
+                    .uri("/notificaciones")
                     .bodyValue(body)
                     .retrieve()
                     .toBodilessEntity()
