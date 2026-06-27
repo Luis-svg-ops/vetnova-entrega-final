@@ -1,0 +1,17 @@
+$kind: http-request
+url: localhost:8088/tickets
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "clienteId": 2,
+      "motivo": "Mi mascota no mejoró luego de la consulta",
+      "descripcion": "Llevé a Firulais hace 3 días por vómitos pero sigue igual, pido revisión",
+      "categoriaId": 1,
+      "prioridad": "ALTA",
+      "sucursalId": 1
+    }
+order: 3000

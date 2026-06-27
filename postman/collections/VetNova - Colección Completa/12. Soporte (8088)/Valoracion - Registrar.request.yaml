@@ -1,0 +1,15 @@
+$kind: http-request
+url: localhost:8088/valoraciones
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "clienteId": 2,
+      "puntuacion": 5,
+      "comentario": "Excelente atención, resolvieron mi problema rápidamente",
+      "sucursalId": 1
+    }
+order: 10000

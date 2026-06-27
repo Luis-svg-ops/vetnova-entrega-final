@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8085/api/v1/rutadespachos
+method: GET
+order: 9000

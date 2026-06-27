@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import cl.vetnova.fichaclinica.client.AgendaClient;
 import cl.vetnova.fichaclinica.exception.BusinessRuleException;
 import cl.vetnova.fichaclinica.exception.ResourceNotFoundException;
 import cl.vetnova.fichaclinica.model.Evolucion;
@@ -17,6 +19,8 @@ import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 @Service
 public class EvolucionService {
 
+    private static final Logger log = LoggerFactory.getLogger(EvolucionService.class);
+
     @Autowired
     private EvolucionRepository evolucionRepository;
 
@@ -24,7 +28,7 @@ public class EvolucionService {
     private FichaClinicaRepository fichaClinicaRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private AgendaClient agendaClient;
 
     public Evolucion crear(Evolucion evolucion) {
         if (evolucion.getFichaId() == null) {
@@ -41,10 +45,7 @@ public class EvolucionService {
         }
         if (evolucion.getCitaId() != null) {
             try {
-                String url = "http://localhost:8086/api/v1/citas/" + evolucion.getCitaId();
-                @SuppressWarnings("unchecked")
-                java.util.Map<String, Object> citaData =
-                        restTemplate.getForObject(url, java.util.Map.class);
+                java.util.Map<Object, Object> citaData = agendaClient.obtenerCita(evolucion.getCitaId());
                 if (citaData != null && citaData.get("mascotaId") != null) {
                     Long citaMascotaId = ((Number) citaData.get("mascotaId")).longValue();
                     cl.vetnova.fichaclinica.model.FichaClinica ficha =
@@ -57,7 +58,8 @@ public class EvolucionService {
             } catch (BusinessRuleException ex) {
                 throw ex;
             } catch (Exception e) {
-                throw new BusinessRuleException("La cita no existe en el sistema");
+                log.warn("event=agenda_no_disponible citaId={} — evolución creada sin validar cita: {}",
+                        evolucion.getCitaId(), e.getMessage());
             }
         }
         if (evolucion.getDescripcion() == null) {

@@ -26,7 +26,7 @@ import cl.vetnova.inventario.repository.ProveedorRepository;
 @Service
 public class PedidoProveedorService {
 
-    private static final Set<String> SUCURSALES = Set.of("SANTIAGO", "CHILLAN", "TALCA", "LOS_ANGELES");
+    private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA");
     private static final String PENDIENTE = "pendiente";
     private static final String ENVIADO = "enviado";
     private static final String RECIBIDO = "recibido";
@@ -72,7 +72,7 @@ public class PedidoProveedorService {
             throw new BusinessRuleException("La sucursal es obligatoria");
         }
         if (!SUCURSALES.contains(request.getSucursal())) {
-            throw new ResourceNotFoundException("Sucursal no encontrada");
+            throw new BusinessRuleException("Sucursal no válida. Opciones: CHILLAN, LOS_ANGELES, TALCA");
         }
         if (request.getDetalles() == null || request.getDetalles().isEmpty()) {
             throw new BusinessRuleException("El pedido debe tener al menos un detalle");

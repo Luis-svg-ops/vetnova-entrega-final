@@ -1,0 +1,15 @@
+$kind: http-request
+url: localhost:8092/plantillas
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Recordatorio de cita",
+      "tipo": "RECORDATORIO_CITA",
+      "contenido": "Estimado cliente, le recordamos su cita en VetNova el {fecha} a las {hora}.",
+      "activa": true
+    }
+order: 6000

@@ -9,6 +9,7 @@ import cl.vetnova.envio.dto.CrearTransferenciaRequest;
 import cl.vetnova.envio.dto.TransferenciaResponse;
 import cl.vetnova.envio.exception.BusinessRuleException;
 import cl.vetnova.envio.model.TransferenciaSucursal;
+import cl.vetnova.envio.repository.RutaDespachoRepository;
 import cl.vetnova.envio.repository.TransferenciaSucursalRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,8 @@ public class TransferenciaServiceTest {
     private TransferenciaSucursalRepository transferenciaRepository;
     @Mock
     private InventarioClient inventarioClient;
+    @Mock
+    private RutaDespachoRepository rutaDespachoRepository;
 
     @InjectMocks
     private TransferenciaService transferenciaService;
@@ -30,6 +33,7 @@ public class TransferenciaServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(rutaDespachoRepository.existsBySucursalOrigenAndSucursalDestino(any(), any())).thenReturn(true);
     }
 
     private CrearTransferenciaRequest request(String origen, String destino) {

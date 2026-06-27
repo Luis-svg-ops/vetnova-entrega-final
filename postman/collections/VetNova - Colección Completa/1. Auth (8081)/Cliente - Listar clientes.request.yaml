@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8081/api/v1/clientes
+method: GET
+order: 8000

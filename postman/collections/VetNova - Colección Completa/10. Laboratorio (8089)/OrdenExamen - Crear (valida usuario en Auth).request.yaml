@@ -1,0 +1,16 @@
+$kind: http-request
+url: localhost:8089/ordenes-examen
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "mascotaId": 1,
+      "veterinarioId": 3,
+      "tipoExamenId": 1,
+      "descripcion": "Hemograma de control por decaimiento del paciente",
+      "estado": "PENDIENTE"
+    }
+order: 3000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8084/api/v1/ordenes
+method: GET
+order: 2000

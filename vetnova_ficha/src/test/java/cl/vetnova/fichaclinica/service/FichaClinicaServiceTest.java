@@ -75,7 +75,7 @@ public class FichaClinicaServiceTest {
     @Test
     void testBuscarPorMascota() {
         when(fichaClinicaRepository.findByMascotaId(1L)).thenReturn(Optional.of(ficha(1L)));
-        assertEquals(1L, fichaClinicaService.buscarPorMascota(1L).getMascotaId());
+        assertEquals(1L, fichaClinicaService.buscarPorMascota(1L).mascotaId());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class FichaClinicaServiceTest {
     @Test
     void testObtenerPorIdExistente() {
         when(fichaClinicaRepository.findById(1L)).thenReturn(Optional.of(ficha(1L)));
-        assertEquals(1L, fichaClinicaService.obtenerPorId(1L).getMascotaId());
+        assertEquals(1L, fichaClinicaService.obtenerPorId(1L).mascotaId());
     }
 
     @Test

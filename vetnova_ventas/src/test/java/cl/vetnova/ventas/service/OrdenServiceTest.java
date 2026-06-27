@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import cl.vetnova.ventas.client.CatalogoClient;
 import cl.vetnova.ventas.client.InventarioClient;
 import cl.vetnova.ventas.dto.ActualizarCantidadRequest;
 import cl.vetnova.ventas.dto.CambiarEstadoRequest;
@@ -33,14 +34,17 @@ public class OrdenServiceTest {
     private InventarioClient inventarioClient;
     @Mock
     private cl.vetnova.ventas.client.AuthClient authClient;
+    @Mock
+    private CatalogoClient catalogoClient;
 
     private OrdenService ordenService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, 0.19);
+        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, catalogoClient, 0.19);
         when(authClient.clienteExiste(any(Long.class))).thenReturn(true);
+        doNothing().when(catalogoClient).validarProductoExiste(any(Long.class));
     }
 
     private CrearOrdenRequest requestConUnDetalle(int cantidad, double precio) {

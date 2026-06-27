@@ -1,0 +1,16 @@
+$kind: http-request
+url: localhost:8089/procesamientos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "muestraId": 1,
+      "tecnicoId": 4,
+      "metodologia": "Conteo automatizado Sysmex",
+      "estado": "EN_PROCESO",
+      "fechaInicio": "2026-06-24T09:00:00"
+    }
+order: 7000

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.Map;
 import org.springframework.web.client.RestTemplate;
 
 import cl.vetnova.notificaciones.exception.BusinessRuleException;
@@ -65,35 +66,35 @@ public class NotificacionServiceTest {
 
     @Test
     void testCrearTipoNull() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, null, "m")));
         assertEquals("El tipo de notificación es obligatorio", ex.getMessage());
     }
 
     @Test
     void testCrearTipoInvalido() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "FAX", "m")));
         assertEquals("Tipo no válido. Valores permitidos: EMAIL, SMS, PUSH, SISTEMA", ex.getMessage());
     }
 
     @Test
     void testCrearMensajeNull() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "EMAIL", null)));
         assertEquals("El mensaje es obligatorio", ex.getMessage());
     }
 
     @Test
     void testCrearMensajeVacio() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "EMAIL", "  ")));
         assertEquals("El mensaje no puede estar vacío", ex.getMessage());
     }
 
     @Test
     void testCrearCanalNoConfigurado() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         when(canalRepository.findByUsuarioIdAndTipo(1L, "SMS")).thenReturn(Optional.empty());
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "SMS", "m")));
         assertEquals("El usuario no tiene configurado el canal SMS", ex.getMessage());
@@ -101,7 +102,7 @@ public class NotificacionServiceTest {
 
     @Test
     void testCrearCanalInactivo() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object());
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true));
         when(canalRepository.findByUsuarioIdAndTipo(1L, "EMAIL")).thenReturn(Optional.of(canal(false)));
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.crear(req(1L, "EMAIL", "m")));
         assertEquals("El canal EMAIL del usuario está inactivo", ex.getMessage());
@@ -109,7 +110,7 @@ public class NotificacionServiceTest {
 
     @Test
     void testCrearCasoFeliz() {
-        when(restTemplate.getForObject(anyString(), eq(Object.class))).thenReturn(new Object()); 
+        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(Map.of("existe", true)); 
         when(canalRepository.findByUsuarioIdAndTipo(1L, "EMAIL")).thenReturn(Optional.of(canal(true)));
         when(notificacionRepository.save(any(Notificacion.class))).thenAnswer(inv -> inv.getArgument(0));
         Notificacion n = service.crear(req(1L, "EMAIL", "Su cita fue confirmada"));

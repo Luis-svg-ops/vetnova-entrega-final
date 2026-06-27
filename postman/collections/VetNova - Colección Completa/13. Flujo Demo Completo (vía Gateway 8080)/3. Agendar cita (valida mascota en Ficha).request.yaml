@@ -1,0 +1,21 @@
+$kind: http-request
+url: http://localhost:8080/api/v1/citas
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "clienteId": 2,
+      "mascotaId": 1,
+      "veterinarioId": 3,
+      "servicioId": 1,
+      "boxId": 1,
+      "sucursal": "CHILLAN",
+      "fechaHora": "2026-07-10T10:00:00",
+      "duracionMinutos": 30,
+      "estado": "RESERVADA",
+      "canal": "WEB"
+    }
+order: 3000

@@ -1,5 +1,10 @@
 # VetNova - Backend de Microservicios
 
+
+compilar-todos.ps1
+
+
+
 Plataforma backend para una clínica veterinaria con sucursales en Chillán, Los Ángeles y Talca.
 Proyecto de Desarrollo Full Stack 1 (Duoc UC).
 
@@ -192,3 +197,9 @@ Todos los servicios responden errores con el mismo formato JSON:
 
 `diagrama_microservicios_vetnova.html` (raíz del repo) tiene el diagrama de clases de cada
 microservicio en Mermaid, coherente con el código. Se abre directo en el navegador.
+
+
+
+
+.\arrancar-todos.ps1
+.\compilar-todos.ps1

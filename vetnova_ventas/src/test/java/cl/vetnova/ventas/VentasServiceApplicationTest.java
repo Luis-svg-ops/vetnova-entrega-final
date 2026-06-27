@@ -2,10 +2,12 @@ package cl.vetnova.ventas;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class VentasServiceApplicationTest {
 
+    @Disabled("Requiere servicios externos corriendo")
     @Test
     void testMainLevantaLaAplicacion() {
         assertDoesNotThrow(() -> VentasServiceApplication.main(new String[] {

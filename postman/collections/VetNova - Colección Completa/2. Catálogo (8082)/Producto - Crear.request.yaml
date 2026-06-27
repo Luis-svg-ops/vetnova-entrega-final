@@ -1,0 +1,18 @@
+$kind: http-request
+url: http://localhost:8082/api/v1/productos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Alimento perro adulto 15kg",
+      "descripcion": "Alimento balanceado para perros adultos razas medianas",
+      "precio": 35990.0,
+      "activo": true,
+      "categoriaId": 1,
+      "imagenUrl": "https://ejemplo.cl/img/alimento-perro.jpg",
+      "fechaActualizacion": "2026-06-24"
+    }
+order: 4000

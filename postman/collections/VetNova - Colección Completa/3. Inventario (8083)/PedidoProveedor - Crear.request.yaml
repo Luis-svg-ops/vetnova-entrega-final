@@ -1,0 +1,18 @@
+$kind: http-request
+url: localhost:8083/api/v1/pedidoproveedors
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "proveedorId": 1,
+      "sucursal": "CHILLAN",
+      "estado": "PENDIENTE",
+      "responsable": "Bodeguero Chillán",
+      "detalles": [
+        { "productoId": 1, "cantidad": 50, "precioUnitario": 28000 }
+      ]
+    }
+order: 10000

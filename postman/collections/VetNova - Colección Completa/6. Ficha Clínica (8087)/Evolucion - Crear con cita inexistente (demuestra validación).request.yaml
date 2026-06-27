@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8087/api/v1/evoluciones
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fichaId": 1,
+      "veterinarioId": 3,
+      "citaId": 999,
+      "descripcion": "Prueba de validación"
+    }
+order: 9000

@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import cl.vetnova.laboratorio.client.AuthClient;
+import cl.vetnova.laboratorio.client.FichaClient;
 import cl.vetnova.laboratorio.dto.CancelarOrdenRequest;
 import cl.vetnova.laboratorio.dto.CrearOrdenExamenRequest;
 import cl.vetnova.laboratorio.dto.ProgramarOrdenRequest;
@@ -30,11 +31,13 @@ public class OrdenExamenServiceTest {
     @Mock private OrdenExamenRepository ordenRepository;
     @Mock private TipoExamenRepository tipoExamenRepository;
     @Mock private AuthClient authClient;
+    @Mock private FichaClient fichaClient;
     @InjectMocks private OrdenExamenService service;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(fichaClient.obtenerNombreMascota(any())).thenReturn("Mascota Test");
     }
 
     private CrearOrdenExamenRequest crearReq(Long mascotaId, Long vetId, Long tipoId) {

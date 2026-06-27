@@ -20,7 +20,7 @@ import cl.vetnova.agenda.repository.DisponibilidadProfesionalRepository;
 public class DisponibilidadProfesionalService {
 
     private static final Set<String> DIAS = Set.of("LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO");
-    private static final Set<String> SUCURSALES = Set.of("SANTIAGO", "CHILLAN", "TALCA", "LOS_ANGELES");
+    private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA", "SANTIAGO");
     private static final Pattern HORA = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]$");
 
     @Autowired

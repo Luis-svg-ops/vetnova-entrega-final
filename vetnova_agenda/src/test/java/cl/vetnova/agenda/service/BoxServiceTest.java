@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import cl.vetnova.agenda.exception.BusinessRuleException;
 import cl.vetnova.agenda.exception.ResourceNotFoundException;
 import cl.vetnova.agenda.model.Box;
 import cl.vetnova.agenda.repository.BoxRepository;
@@ -70,6 +71,7 @@ public class BoxServiceTest {
     void testCrearYListarBoxes() {
         Box b = new Box();
         b.setNombre("Box 1");
+        b.setSucursal("CHILLAN");
         when(boxRepository.save(any(Box.class))).thenAnswer(inv -> inv.getArgument(0));
         when(boxRepository.findAll()).thenReturn(List.of(b));
 
@@ -83,5 +85,47 @@ public class BoxServiceTest {
         boxService.eliminar(1L);
 
         verify(boxRepository).deleteById(1L);
+    }
+
+    @Test
+    void testCrearNombreNullLanzaException() {
+        Box b = new Box();
+        b.setSucursal("CHILLAN");
+        assertThrows(BusinessRuleException.class, () -> boxService.crear(b));
+    }
+
+    @Test
+    void testCrearNombreBlankLanzaException() {
+        Box b = new Box();
+        b.setNombre("   ");
+        b.setSucursal("CHILLAN");
+        assertThrows(BusinessRuleException.class, () -> boxService.crear(b));
+    }
+
+    @Test
+    void testCrearSucursalNullLanzaException() {
+        Box b = new Box();
+        b.setNombre("Box 1");
+        assertThrows(BusinessRuleException.class, () -> boxService.crear(b));
+    }
+
+    @Test
+    void testCrearSucursalBlankLanzaException() {
+        Box b = new Box();
+        b.setNombre("Box 1");
+        b.setSucursal("  ");
+        assertThrows(BusinessRuleException.class, () -> boxService.crear(b));
+    }
+
+    @Test
+    void testReservarBoxYaReservadoLanzaException() {
+        when(boxRepository.findById(1L)).thenReturn(Optional.of(box(false)));
+        assertThrows(BusinessRuleException.class, () -> boxService.reservar(1L));
+    }
+
+    @Test
+    void testLiberarBoxYaDisponibleLanzaException() {
+        when(boxRepository.findById(1L)).thenReturn(Optional.of(box(true)));
+        assertThrows(BusinessRuleException.class, () -> boxService.liberar(1L));
     }
 }

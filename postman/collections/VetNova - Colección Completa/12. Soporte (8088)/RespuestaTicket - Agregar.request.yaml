@@ -1,0 +1,14 @@
+$kind: http-request
+url: localhost:8088/tickets/1/respuestas
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "autorId": 3,
+      "contenido": "Estimado cliente, hemos revisado el caso y lo contactaremos a la brevedad.",
+      "visible": true
+    }
+order: 8000

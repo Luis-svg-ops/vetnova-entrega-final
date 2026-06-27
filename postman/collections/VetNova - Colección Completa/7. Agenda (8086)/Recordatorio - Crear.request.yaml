@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:8086/api/v1/recordatorios
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "citaId": 1,
+      "tipo": "EMAIL",
+      "fechaEnvio": "2026-07-09T10:00:00",
+      "mensaje": "Recuerda tu cita mañana a las 10:00 en VetNova Chillán",
+      "enviado": false,
+      "cancelado": false
+    }
+order: 12000

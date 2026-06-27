@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import cl.vetnova.fichaclinica.dto.MascotaDesactivacionResponse;
+import cl.vetnova.fichaclinica.dto.MascotaResponse;
 import cl.vetnova.fichaclinica.model.Mascota;
 import cl.vetnova.fichaclinica.service.MascotaService;
 
@@ -30,8 +31,9 @@ public class MascotaControllerTest {
 
     @Test
     void testEndpointsCrud() throws Exception {
-        when(mascotaService.listar()).thenReturn(List.of(new Mascota()));
-        when(mascotaService.obtenerPorId(1L)).thenReturn(new Mascota());
+        MascotaResponse resp = new MascotaResponse(new Mascota(), null);
+        when(mascotaService.listarConCliente()).thenReturn(List.of(resp));
+        when(mascotaService.obtenerPorIdConCliente(1L)).thenReturn(resp);
         when(mascotaService.crear(any(Mascota.class))).thenReturn(new Mascota());
         when(mascotaService.actualizar(eq(1L), any(Mascota.class))).thenReturn(new Mascota());
         when(mascotaService.desactivar(1L)).thenReturn(new MascotaDesactivacionResponse(new Mascota(), "Mascota desactivada"));

@@ -3,11 +3,16 @@ package cl.vetnova.agenda.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import cl.vetnova.agenda.client.AuthClient;
+import cl.vetnova.agenda.client.FichaClient;
+import cl.vetnova.agenda.dto.CitaResponse;
 import cl.vetnova.agenda.exception.BusinessRuleException;
 import cl.vetnova.agenda.exception.ConflictException;
 import cl.vetnova.agenda.exception.ResourceNotFoundException;
@@ -17,7 +22,9 @@ import cl.vetnova.agenda.repository.CitaRepository;
 @Service
 public class CitaService {
 
-    private static final Set<String> SUCURSALES = Set.of("SANTIAGO", "CHILLAN", "TALCA", "LOS_ANGELES");
+    private static final Logger log = LoggerFactory.getLogger(CitaService.class);
+
+    private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA", "SANTIAGO");
     private static final int DURACION_POR_DEFECTO = 30;
     private static final String PENDIENTE = "pendiente";
     private static final String CONFIRMADA = "confirmada";
@@ -32,10 +39,31 @@ public class CitaService {
     private RecordatorioGenerador recordatorioGenerador;
 
     @Autowired
-private RestTemplate restTemplate;
+    private AuthClient authClient;
+
+    @Autowired
+    private FichaClient fichaClient;
 
     public List<Cita> listar() {
         return citaRepository.findAll();
+    }
+
+    public List<CitaResponse> listarConNombres() {
+        return citaRepository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<Cita> agendaDelDia(LocalDateTime fecha) {
+        LocalDateTime inicio = fecha.toLocalDate().atStartOfDay();
+        LocalDateTime fin = inicio.plusDays(1).minusSeconds(1);
+        return citaRepository.findByFechaHoraBetweenOrderByFechaHoraAsc(inicio, fin);
+    }
+
+    public List<CitaResponse> agendaDelDiaConNombres(LocalDateTime fecha) {
+        return agendaDelDia(fecha).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     public Cita obtenerPorId(Long id) {
@@ -43,21 +71,64 @@ private RestTemplate restTemplate;
                 .orElseThrow(() -> new ResourceNotFoundException("Cita no encontrada con id " + id));
     }
 
-    public Cita crear(Cita cita) {
-        if (cita.getClienteId() == null) {
-            throw new BusinessRuleException("El clienteId es obligatorio");
+    public CitaResponse obtenerConNombres(Long id) {
+        return toResponse(obtenerPorId(id));
+    }
+
+    public CitaResponse toResponse(Cita cita) {
+        String nombreCliente = null;
+        String nombreMascota = null;
+        String nombreVeterinario = null;
+        try {
+            nombreCliente = authClient.obtenerNombre(cita.getClienteId());
+        } catch (Exception e) {
+            log.warn("event=auth_no_disponible clienteId={} — degradación suave en toResponse", cita.getClienteId());
+        }
+        if (cita.getMascotaId() != null) {
+            try {
+                nombreMascota = fichaClient.obtenerNombreMascota(cita.getMascotaId());
+            } catch (Exception e) {
+                log.warn("event=ficha_no_disponible mascotaId={} — degradación suave en toResponse", cita.getMascotaId());
+            }
         }
         try {
-            String urlCliente = "http://localhost:8081/api/usuarios/" + cita.getClienteId() + "/existe";
-            @SuppressWarnings("unchecked")
-            java.util.Map<String, Object> resp = restTemplate.getForObject(urlCliente, java.util.Map.class);
-            if (resp == null || !Boolean.TRUE.equals(resp.get("existe"))) {
-                throw new ResourceNotFoundException("Cliente no encontrado en el sistema");
-            }
-        } catch (ResourceNotFoundException ex) {
-            throw ex;
+            nombreVeterinario = authClient.obtenerNombre(cita.getVeterinarioId());
         } catch (Exception e) {
-            throw new ResourceNotFoundException("No se pudo verificar el cliente en el sistema");
+            log.warn("event=auth_no_disponible veterinarioId={} — degradación suave en toResponse", cita.getVeterinarioId());
+        }
+        return new CitaResponse(cita, nombreCliente, nombreMascota, nombreVeterinario);
+    }
+
+    public Cita reprogramar(Long id, LocalDateTime nuevaFecha, Integer nuevaDuracion) {
+        Cita cita = obtenerPorId(id);
+        if (COMPLETADA.equals(cita.getEstado()) || CANCELADA.equals(cita.getEstado())) {
+            throw new BusinessRuleException("No se puede reprogramar una cita " + cita.getEstado());
+        }
+        if (nuevaFecha == null) {
+            throw new BusinessRuleException("La nueva fecha y hora son obligatorias");
+        }
+        if (!nuevaFecha.isAfter(LocalDateTime.now())) {
+            throw new BusinessRuleException("La nueva fecha y hora deben ser futuras");
+        }
+        Cita temporal = new Cita();
+        temporal.setId(id);
+        temporal.setVeterinarioId(cita.getVeterinarioId());
+        temporal.setFechaHora(nuevaFecha);
+        temporal.setDuracionMinutos(nuevaDuracion != null ? nuevaDuracion : cita.getDuracionMinutos());
+        if (haySolapamiento(temporal)) {
+            throw new ConflictException("El veterinario no está disponible en ese horario");
+        }
+        cita.setFechaHora(nuevaFecha);
+        if (nuevaDuracion != null) {
+            cita.setDuracionMinutos(nuevaDuracion);
+        }
+        return citaRepository.save(cita);
+    }
+
+    public Cita crear(Cita cita) {
+        // Validaciones de nulos primero (sin llamadas remotas)
+        if (cita.getClienteId() == null) {
+            throw new BusinessRuleException("El clienteId es obligatorio");
         }
         if (cita.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
@@ -71,19 +142,16 @@ private RestTemplate restTemplate;
         if (!cita.getFechaHora().isAfter(LocalDateTime.now())) {
             throw new BusinessRuleException("La fecha y hora deben ser futuras");
         }
-        if (cita.getMascotaId() != null) {
-            try {
-                String url = "http://localhost:8087/api/v1/mascotas/" + cita.getMascotaId();
-                restTemplate.getForObject(url, Object.class);
-            } catch (Exception e) {
-                throw new ResourceNotFoundException("Mascota no encontrada en el sistema");
-            }
-        }
         if (cita.getSucursal() == null) {
             throw new BusinessRuleException("La sucursal es obligatoria");
         }
         if (!SUCURSALES.contains(cita.getSucursal())) {
             throw new ResourceNotFoundException("Sucursal no encontrada");
+        }
+        // Validaciones remotas (hard) después de todos los null checks
+        authClient.verificarCliente(cita.getClienteId());
+        if (cita.getMascotaId() != null) {
+            fichaClient.verificarMascota(cita.getMascotaId());
         }
         if (haySolapamiento(cita)) {
             throw new ConflictException("El veterinario no está disponible en ese horario");

@@ -1,0 +1,15 @@
+$kind: http-request
+url: localhost:8092/notificaciones
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "usuarioId": 2,
+      "tipo": "RECORDATORIO_CITA",
+      "mensaje": "Tienes una cita mañana a las 10:00 en VetNova Chillán",
+      "estado": "PENDIENTE"
+    }
+order: 1000

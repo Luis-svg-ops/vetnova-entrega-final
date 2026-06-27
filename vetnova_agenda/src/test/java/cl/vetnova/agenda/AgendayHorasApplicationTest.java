@@ -2,10 +2,12 @@ package cl.vetnova.agenda;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class AgendayHorasApplicationTest {
 
+    @Disabled("Requiere servicios externos (auth, ficha) corriendo")
     @Test
     void testMainLevantaLaAplicacion() {
         assertDoesNotThrow(() -> AgendayHorasApplication.main(new String[] {

@@ -313,6 +313,7 @@ public class TicketServiceTest {
     @Test
     void testCerrarCasoFeliz() {
         when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket(1L, "DERIVADO")));
+        when(respuestaRepository.findByTicketIdOrderByFechaAsc(1L)).thenReturn(List.of(new RespuestaTicket()));
         when(ticketRepository.save(any(Ticket.class))).thenAnswer(inv -> inv.getArgument(0));
         Ticket cerrado = service.cerrar(1L, cerrarReq("Reembolso procesado"));
         assertEquals("CERRADO", cerrado.getEstado());

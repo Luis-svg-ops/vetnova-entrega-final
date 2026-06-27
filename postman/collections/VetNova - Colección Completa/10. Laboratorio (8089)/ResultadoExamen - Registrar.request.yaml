@@ -1,0 +1,18 @@
+$kind: http-request
+url: localhost:8089/resultados-examen
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "ordenExamenId": 1,
+      "muestraId": 1,
+      "tecnicoId": 4,
+      "resultado": "Eritrocitos: 5.2 M/uL (Normal). Leucocitos: 8.1 K/uL (Normal). Plaquetas: 245 K/uL (Normal).",
+      "observaciones": "Hemograma dentro de rangos normales para la especie",
+      "disponible": true,
+      "fichaId": 1
+    }
+order: 8000

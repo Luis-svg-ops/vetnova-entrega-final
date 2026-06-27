@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8090/reportes-tributarios
+method: GET
+order: 9000

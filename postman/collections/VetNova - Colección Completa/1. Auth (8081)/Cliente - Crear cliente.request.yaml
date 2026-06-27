@@ -1,0 +1,19 @@
+$kind: http-request
+url: localhost:8081/api/v1/clientes
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "usuarioId": 2,
+      "rut": "12.345.678-9",
+      "nombre": "María",
+      "apellido": "González",
+      "email": "maria@vetnova.cl",
+      "telefono": "+56987654321",
+      "direccion": "Av. O'Higgins 456, Chillán",
+      "activo": true
+    }
+order: 9000

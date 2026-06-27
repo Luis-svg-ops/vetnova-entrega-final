@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8083/api/v1/pedidoproveedors
+method: GET
+order: 11000

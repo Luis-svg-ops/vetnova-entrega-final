@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import cl.vetnova.fichaclinica.dto.MascotaDesactivacionResponse;
+import cl.vetnova.fichaclinica.dto.MascotaResponse;
 import cl.vetnova.fichaclinica.model.Mascota;
 import cl.vetnova.fichaclinica.service.MascotaService;
 
@@ -19,13 +20,13 @@ public class MascotaController {
     private MascotaService mascotaService;
 
     @GetMapping
-    public ResponseEntity<List<Mascota>> listar() {
-        return ResponseEntity.ok(mascotaService.listar());
+    public ResponseEntity<List<MascotaResponse>> listar() {
+        return ResponseEntity.ok(mascotaService.listarConCliente());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mascota> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(mascotaService.obtenerPorId(id));
+    public ResponseEntity<MascotaResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(mascotaService.obtenerPorIdConCliente(id));
     }
 
     @PostMapping

@@ -1,6 +1,7 @@
 package cl.vetnova.ventas.service;
 
 import cl.vetnova.ventas.client.AuthClient;
+import cl.vetnova.ventas.client.CatalogoClient;
 import cl.vetnova.ventas.client.InventarioClient;
 import cl.vetnova.ventas.dto.*;
 import cl.vetnova.ventas.exception.BusinessRuleException;
@@ -25,15 +26,18 @@ public class OrdenService {
     private final OrdenRepository ordenRepository;
     private final InventarioClient inventarioClient;
     private final AuthClient authClient;
+    private final CatalogoClient catalogoClient;
     private final double iva;
 
     public OrdenService(OrdenRepository ordenRepository,
                         InventarioClient inventarioClient,
                         AuthClient authClient,
+                        CatalogoClient catalogoClient,
                         @Value("${app.iva}") double iva) {
         this.ordenRepository = ordenRepository;
         this.inventarioClient = inventarioClient;
         this.authClient = authClient;
+        this.catalogoClient = catalogoClient;
         this.iva = iva;
     }
 
@@ -46,8 +50,9 @@ public class OrdenService {
             throw new ResourceNotFoundException("Cliente no encontrado con id " + request.getClienteId());
         }
 
-        // Regla de negocio: antes de crear la orden se valida stock contra Inventario
+        // Valida que cada producto exista en Catálogo y tiene stock suficiente en Inventario
         for (DetalleOrdenRequest detalle : request.getDetalles()) {
+            catalogoClient.validarProductoExiste(detalle.getProductoId());
             Integer disponible = inventarioClient.consultarStock(detalle.getProductoId(), request.getSucursal());
             if (disponible < detalle.getCantidad()) {
                 throw new BusinessRuleException("Stock insuficiente para el producto " + detalle.getProductoId()

@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:8080/api/v1/evoluciones
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fichaId": 1,
+      "veterinarioId": 3,
+      "citaId": 1,
+      "diagnostico": "Gastroenteritis leve",
+      "tratamiento": "Dieta blanda y probióticos",
+      "descripcion": "Paciente estable"
+    }
+order: 4000

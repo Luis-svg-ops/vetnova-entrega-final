@@ -1,0 +1,16 @@
+$kind: http-request
+url: localhost:8083/api/v1/movimientos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "idProducto": 1,
+      "idSucursal": 1,
+      "tipo": "ENTRADA",
+      "cantidad": 20,
+      "motivo": "Reposición mensual bodega Chillán"
+    }
+order: 5000

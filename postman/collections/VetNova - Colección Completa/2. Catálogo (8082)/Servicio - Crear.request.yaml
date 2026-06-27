@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:8082/api/v1/servicios
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Consulta general",
+      "descripcion": "Consulta veterinaria de rutina",
+      "precio": 25000.0,
+      "duracionMinutos": 30,
+      "activo": true,
+      "categoriaId": 1
+    }
+order: 7000

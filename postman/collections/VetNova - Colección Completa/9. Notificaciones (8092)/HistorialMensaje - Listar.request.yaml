@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8092/historial-mensajes
+method: GET
+order: 8000

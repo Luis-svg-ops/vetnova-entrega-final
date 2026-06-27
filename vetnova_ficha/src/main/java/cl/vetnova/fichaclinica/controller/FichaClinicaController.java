@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.vetnova.fichaclinica.dto.FichaClinicaRequest;
+import cl.vetnova.fichaclinica.dto.FichaClinicaResponse;
 import cl.vetnova.fichaclinica.exception.RegistroInmutableException;
 import cl.vetnova.fichaclinica.model.FichaClinica;
 import cl.vetnova.fichaclinica.service.FichaClinicaService;
@@ -35,17 +36,17 @@ public class FichaClinicaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FichaClinica>> listar() {
+    public ResponseEntity<List<FichaClinicaResponse>> listar() {
         return ResponseEntity.ok(fichaClinicaService.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FichaClinica> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<FichaClinicaResponse> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(fichaClinicaService.obtenerPorId(id));
     }
 
     @GetMapping(params = "mascotaId")
-    public ResponseEntity<FichaClinica> buscarPorMascota(@RequestParam Long mascotaId) {
+    public ResponseEntity<FichaClinicaResponse> buscarPorMascota(@RequestParam Long mascotaId) {
         return ResponseEntity.ok(fichaClinicaService.buscarPorMascota(mascotaId));
     }
 

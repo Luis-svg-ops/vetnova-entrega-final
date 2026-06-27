@@ -114,7 +114,7 @@ public class ResultadoExamenServiceTest {
     void testRegistrarSinMuestraIdTecnicoNull() {
         ordenEnProceso();
         BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> service.registrar(req(1L, null, null, "Normal")));
-        assertEquals("El tecnicoId es obligatorio", ex.getMessage());
+        assertEquals("El muestraId es obligatorio para registrar un resultado", ex.getMessage());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ResultadoExamenServiceTest {
         when(muestraRepository.findById(1L)).thenReturn(Optional.empty());
         when(authClient.usuarioExiste(999L)).thenReturn(false);
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> service.registrar(req(1L, 1L, 999L, "Normal")));
-        assertEquals("Técnico no encontrado", ex.getMessage());
+        assertEquals("Muestra no encontrada", ex.getMessage());
     }
 
     @Test

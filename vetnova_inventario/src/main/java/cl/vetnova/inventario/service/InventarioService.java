@@ -24,7 +24,7 @@ import cl.vetnova.inventario.repository.ProductoRepository;
 @Service
 public class InventarioService implements OperacionStock {
 
-    private static final Set<String> SUCURSALES = Set.of("SANTIAGO", "CHILLAN", "TALCA", "LOS_ANGELES");
+    private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA");
 
     @Autowired
     private InventarioRepository inventarioRepository;
@@ -58,7 +58,7 @@ public class InventarioService implements OperacionStock {
             throw new BusinessRuleException("La sucursal es obligatoria");
         }
         if (!SUCURSALES.contains(inventario.getSucursal())) {
-            throw new ResourceNotFoundException("Sucursal no encontrada");
+            throw new BusinessRuleException("Sucursal no válida. Opciones: CHILLAN, LOS_ANGELES, TALCA");
         }
         if (inventarioRepository.existsByProductoIdAndSucursal(inventario.getProductoId(), inventario.getSucursal())) {
             throw new ConflictException("Ya existe inventario para ese producto en esa sucursal");

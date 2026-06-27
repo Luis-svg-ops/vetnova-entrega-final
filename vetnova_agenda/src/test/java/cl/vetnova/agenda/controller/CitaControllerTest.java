@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import cl.vetnova.agenda.dto.CitaResponse;
 import cl.vetnova.agenda.exception.BusinessRuleException;
 import cl.vetnova.agenda.exception.ResourceNotFoundException;
 import cl.vetnova.agenda.model.Cita;
@@ -42,6 +43,10 @@ public class CitaControllerTest {
         return c;
     }
 
+    private CitaResponse response(String estado) {
+        return new CitaResponse(cita(estado), null, null, null);
+    }
+
     @Test
     void testCrearCitaValidaResponde201() throws Exception {
         when(citaService.crear(any())).thenReturn(cita("pendiente"));
@@ -61,13 +66,13 @@ public class CitaControllerTest {
 
     @Test
     void testListarRespondeLasCitas() throws Exception {
-        when(citaService.listar()).thenReturn(List.of(cita("pendiente")));
+        when(citaService.listarConNombres()).thenReturn(List.of(response("pendiente")));
         mockMvc.perform(get("/api/v1/citas")).andExpect(status().isOk());
     }
 
     @Test
     void testObtenerPorId() throws Exception {
-        when(citaService.obtenerPorId(1L)).thenReturn(cita("pendiente"));
+        when(citaService.obtenerConNombres(1L)).thenReturn(response("pendiente"));
         mockMvc.perform(get("/api/v1/citas/1")).andExpect(status().isOk());
     }
 

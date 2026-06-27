@@ -1,8 +1,10 @@
 package cl.vetnova.laboratorio.service;
 
 import cl.vetnova.laboratorio.client.AuthClient;
+import cl.vetnova.laboratorio.client.FichaClient;
 import cl.vetnova.laboratorio.dto.CancelarOrdenRequest;
 import cl.vetnova.laboratorio.dto.CrearOrdenExamenRequest;
+import cl.vetnova.laboratorio.dto.OrdenExamenResponse;
 import cl.vetnova.laboratorio.dto.ProgramarOrdenRequest;
 import cl.vetnova.laboratorio.exception.BusinessRuleException;
 import cl.vetnova.laboratorio.exception.ResourceNotFoundException;
@@ -22,12 +24,14 @@ public class OrdenExamenService {
     private final OrdenExamenRepository ordenRepository;
     private final TipoExamenRepository tipoExamenRepository;
     private final AuthClient authClient;
+    private final FichaClient fichaClient;
 
     public OrdenExamenService(OrdenExamenRepository ordenRepository, TipoExamenRepository tipoExamenRepository,
-                              AuthClient authClient) {
+                              AuthClient authClient, FichaClient fichaClient) {
         this.ordenRepository = ordenRepository;
         this.tipoExamenRepository = tipoExamenRepository;
         this.authClient = authClient;
+        this.fichaClient = fichaClient;
     }
 
     @Transactional(readOnly = true)
@@ -37,8 +41,21 @@ public class OrdenExamenService {
     }
 
     @Transactional(readOnly = true)
+    public List<OrdenExamenResponse> listarConNombre(Long mascotaId) {
+        return listar(mascotaId).stream()
+                .map(o -> new OrdenExamenResponse(o, fichaClient.obtenerNombreMascota(o.getMascotaId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public OrdenExamen buscar(Long id) {
         return ordenRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Orden de examen no encontrada"));
+    }
+
+    @Transactional(readOnly = true)
+    public OrdenExamenResponse buscarConNombre(Long id) {
+        OrdenExamen o = buscar(id);
+        return new OrdenExamenResponse(o, fichaClient.obtenerNombreMascota(o.getMascotaId()));
     }
 
     @Transactional
@@ -46,7 +63,7 @@ public class OrdenExamenService {
         if (request.getMascotaId() == null) {
             throw new BusinessRuleException("El mascotaId es obligatorio");
         }
-        // La existencia y el estado activo de la mascota viven en MS Ficha Clínica → verificación diferida.
+        fichaClient.validarMascotaActiva(request.getMascotaId());
         if (request.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
         }

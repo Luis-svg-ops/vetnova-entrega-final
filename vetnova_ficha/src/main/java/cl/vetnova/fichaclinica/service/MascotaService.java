@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.vetnova.fichaclinica.client.AuthClient;
 import cl.vetnova.fichaclinica.dto.MascotaDesactivacionResponse;
+import cl.vetnova.fichaclinica.dto.MascotaResponse;
 import cl.vetnova.fichaclinica.exception.BusinessRuleException;
 import cl.vetnova.fichaclinica.exception.ConflictException;
 import cl.vetnova.fichaclinica.exception.ResourceNotFoundException;
@@ -25,13 +27,27 @@ public class MascotaService {
     @Autowired
     private FichaClinicaRepository fichaClinicaRepository;
 
+    @Autowired
+    private AuthClient authClient;
+
     public List<Mascota> listar() {
         return mascotaRepository.findAll();
+    }
+
+    public List<MascotaResponse> listarConCliente() {
+        return mascotaRepository.findAll().stream()
+                .map(m -> new MascotaResponse(m, authClient.obtenerNombreCliente(m.getClienteId())))
+                .toList();
     }
 
     public Mascota obtenerPorId(Long id) {
         return mascotaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mascota no encontrado con id " + id));
+    }
+
+    public MascotaResponse obtenerPorIdConCliente(Long id) {
+        Mascota m = obtenerPorId(id);
+        return new MascotaResponse(m, authClient.obtenerNombreCliente(m.getClienteId()));
     }
 
     // CA-MAS-01..14: registra una mascota y crea su FichaClinica automáticamente.

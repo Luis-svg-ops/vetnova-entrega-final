@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8087/api/v1/evoluciones
+method: GET
+order: 10000

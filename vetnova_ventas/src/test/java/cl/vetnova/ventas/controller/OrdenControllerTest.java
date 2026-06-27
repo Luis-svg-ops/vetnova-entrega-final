@@ -46,7 +46,7 @@ public class OrdenControllerTest {
         when(ordenService.crearOrden(any())).thenReturn(ordenPendiente());
 
         String body = """
-                {"clienteId":2,"idSucursal":1,
+                {"clienteId":2,"sucursal":"CHILLAN",
                  "detalles":[{"productoId":1,"nombreProducto":"Alimento","cantidad":2,"precioUnitario":35990}]}
                 """;
         mockMvc.perform(post("/api/v1/ordenes").contentType(MediaType.APPLICATION_JSON).content(body))

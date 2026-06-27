@@ -1,0 +1,18 @@
+$kind: http-request
+url: localhost:8083/api/v1/proveedors
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "rut": "76.543.210-K",
+      "nombre": "Distribuidora Pet Supply Ltda.",
+      "contacto": "Juan Soto",
+      "telefono": "+56932100001",
+      "email": "ventas@petsupply.cl",
+      "direccion": "Ruta 5 Sur km 400, Chillán",
+      "activo": true
+    }
+order: 9000

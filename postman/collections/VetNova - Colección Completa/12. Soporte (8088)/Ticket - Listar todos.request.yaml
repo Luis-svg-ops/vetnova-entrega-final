@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8088/tickets
+method: GET
+order: 4000

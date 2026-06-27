@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8084/api/v1/carritos
+method: GET
+order: 12000

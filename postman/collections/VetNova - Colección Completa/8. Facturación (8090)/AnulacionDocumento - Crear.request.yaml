@@ -1,0 +1,14 @@
+$kind: http-request
+url: localhost:8090/anulaciones
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "documentoId": 1,
+      "administradorId": 1,
+      "motivo": "Error en monto cobrado al cliente"
+    }
+order: 7000

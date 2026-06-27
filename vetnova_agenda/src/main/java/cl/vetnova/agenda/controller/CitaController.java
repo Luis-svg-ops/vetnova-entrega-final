@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.vetnova.agenda.dto.CancelarCitaRequest;
 import cl.vetnova.agenda.dto.CitaRequest;
+import cl.vetnova.agenda.dto.CitaResponse;
+import cl.vetnova.agenda.dto.ReprogramarCitaRequest;
 import cl.vetnova.agenda.model.Cita;
 import cl.vetnova.agenda.service.CitaService;
 
@@ -41,13 +43,23 @@ public class CitaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cita>> listar() {
-        return ResponseEntity.ok(citaService.listar());
+    public ResponseEntity<List<CitaResponse>> listar() {
+        return ResponseEntity.ok(citaService.listarConNombres());
+    }
+
+    @GetMapping("/agenda")
+    public ResponseEntity<List<CitaResponse>> agendaHoy() {
+        return ResponseEntity.ok(citaService.agendaDelDiaConNombres(java.time.LocalDateTime.now()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cita> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(citaService.obtenerPorId(id));
+    public ResponseEntity<CitaResponse> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(citaService.obtenerConNombres(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Cita> reprogramar(@PathVariable Long id, @RequestBody ReprogramarCitaRequest request) {
+        return ResponseEntity.ok(citaService.reprogramar(id, request.fechaHora(), request.duracionMinutos()));
     }
 
     @PutMapping("/{id}/confirmar")

@@ -11,6 +11,8 @@ import cl.vetnova.agenda.model.Cita;
 @Repository
 public interface CitaRepository extends JpaRepository<Cita, Long> {
 
+    List<Cita> findByFechaHoraBetweenOrderByFechaHoraAsc(LocalDateTime desde, LocalDateTime hasta);
+
     List<Cita> findByVeterinarioIdAndEstado(Long veterinarioId, String estado);
 
     List<Cita> findByBoxIdAndEstado(Long boxId, String estado);

@@ -16,7 +16,7 @@ import cl.vetnova.catalogo.repository.ServicioRepository;
 @Service
 public class CatalogoBuscadorService {
 
-    private static final Set<String> SUCURSALES = Set.of("SANTIAGO", "CHILLAN", "TALCA", "LOS_ANGELES");
+    private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA", "SANTIAGO");
 
     @Autowired
     private ProductoRepository productoRepository;

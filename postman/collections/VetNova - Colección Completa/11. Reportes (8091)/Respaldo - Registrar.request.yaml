@@ -1,0 +1,17 @@
+$kind: http-request
+url: localhost:8091/respaldos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "tipo": "COMPLETO",
+      "alcance": "TODOS_LOS_MICROSERVICIOS",
+      "ubicacion": "/backups/vetnova-2026-06-24.zip",
+      "tamanoBytes": 524288000,
+      "estado": "COMPLETADO",
+      "ejecutadoPor": 1
+    }
+order: 8000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: localhost:8083/api/v1/alertastocks
+method: GET
+order: 4000

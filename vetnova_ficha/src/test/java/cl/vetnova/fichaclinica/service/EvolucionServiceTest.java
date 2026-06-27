@@ -12,9 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import cl.vetnova.fichaclinica.client.AgendaClient;
 import cl.vetnova.fichaclinica.exception.BusinessRuleException;
 import cl.vetnova.fichaclinica.exception.ResourceNotFoundException;
 import cl.vetnova.fichaclinica.model.Evolucion;
+import cl.vetnova.fichaclinica.model.FichaClinica;
 import cl.vetnova.fichaclinica.repository.EvolucionRepository;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 
@@ -24,18 +30,27 @@ public class EvolucionServiceTest {
     private EvolucionRepository evolucionRepository;
     @Mock
     private FichaClinicaRepository fichaClinicaRepository;
+    @Mock
+    private AgendaClient agendaClient;
     @InjectMocks
     private EvolucionService evolucionService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        Map<Object, Object> citaData = new HashMap<>();
+        citaData.put("mascotaId", 1L);
+        doReturn(citaData).when(agendaClient).obtenerCita(any());
+        FichaClinica ficha = new FichaClinica();
+        ficha.setMascotaId(1L);
+        when(fichaClinicaRepository.findById(1L)).thenReturn(Optional.of(ficha));
     }
 
     private Evolucion evolucion(Long fichaId, Long vetId, String descripcion) {
         Evolucion e = new Evolucion();
         e.setFichaId(fichaId);
         e.setVeterinarioId(vetId);
+        e.setCitaId(1L);
         e.setDescripcion(descripcion);
         return e;
     }

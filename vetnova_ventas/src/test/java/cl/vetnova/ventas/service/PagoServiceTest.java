@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import cl.vetnova.ventas.client.CatalogoClient;
 import cl.vetnova.ventas.client.InventarioClient;
 import cl.vetnova.ventas.dto.CrearPagoRequest;
 import cl.vetnova.ventas.dto.OrdenResponse;
@@ -36,6 +37,8 @@ public class PagoServiceTest {
     private PasarelaPago pasarelaPago;
     @Mock
     private cl.vetnova.ventas.client.AuthClient authClient;
+    @Mock
+    private CatalogoClient catalogoClient;
 
     private OrdenService ordenService;
     private PagoService pagoService;
@@ -44,7 +47,7 @@ public class PagoServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, 0.19);
+        ordenService = new OrdenService(ordenRepository, inventarioClient, authClient, catalogoClient, 0.19);
         pagoService = new PagoService(ordenRepository, ordenService, inventarioClient, pagoRepository, pasarelaPago);
 
         orden = new Orden();

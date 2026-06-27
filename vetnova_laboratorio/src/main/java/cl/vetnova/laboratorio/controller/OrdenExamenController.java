@@ -2,6 +2,7 @@ package cl.vetnova.laboratorio.controller;
 
 import cl.vetnova.laboratorio.dto.CancelarOrdenRequest;
 import cl.vetnova.laboratorio.dto.CrearOrdenExamenRequest;
+import cl.vetnova.laboratorio.dto.OrdenExamenResponse;
 import cl.vetnova.laboratorio.dto.ProgramarOrdenRequest;
 import cl.vetnova.laboratorio.model.OrdenExamen;
 import cl.vetnova.laboratorio.service.OrdenExamenService;
@@ -21,13 +22,13 @@ public class OrdenExamenController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrdenExamen>> listar(@RequestParam(required = false) Long mascotaId) {
-        return ResponseEntity.ok(service.listar(mascotaId));
+    public ResponseEntity<List<OrdenExamenResponse>> listar(@RequestParam(required = false) Long mascotaId) {
+        return ResponseEntity.ok(service.listarConNombre(mascotaId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrdenExamen> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscar(id));
+    public ResponseEntity<OrdenExamenResponse> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarConNombre(id));
     }
 
     @PostMapping

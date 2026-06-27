@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import cl.vetnova.fichaclinica.dto.FichaClinicaResponse;
 import cl.vetnova.fichaclinica.exception.BusinessRuleException;
 import cl.vetnova.fichaclinica.model.FichaClinica;
 import cl.vetnova.fichaclinica.service.FichaClinicaService;
@@ -47,21 +48,25 @@ public class FichaClinicaControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    private FichaClinicaResponse response(Long id, Long mascotaId) {
+        return new FichaClinicaResponse(id, mascotaId, null, null, null, null, null);
+    }
+
     @Test
     void testListarRespondeLasFichas() throws Exception {
-        when(fichaClinicaService.listar()).thenReturn(List.of(new FichaClinica()));
+        when(fichaClinicaService.listar()).thenReturn(List.of(response(1L, 1L)));
         mockMvc.perform(get("/api/v1/fichas")).andExpect(status().isOk());
     }
 
     @Test
     void testObtenerPorId() throws Exception {
-        when(fichaClinicaService.obtenerPorId(1L)).thenReturn(new FichaClinica());
+        when(fichaClinicaService.obtenerPorId(1L)).thenReturn(response(1L, 1L));
         mockMvc.perform(get("/api/v1/fichas/1")).andExpect(status().isOk());
     }
 
     @Test
     void testBuscarPorMascota() throws Exception {
-        when(fichaClinicaService.buscarPorMascota(1L)).thenReturn(new FichaClinica());
+        when(fichaClinicaService.buscarPorMascota(1L)).thenReturn(response(1L, 1L));
         mockMvc.perform(get("/api/v1/fichas").param("mascotaId", "1")).andExpect(status().isOk());
     }
 

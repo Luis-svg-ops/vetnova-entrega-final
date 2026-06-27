@@ -1,0 +1,20 @@
+$kind: http-request
+url: localhost:8090/documentos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "ordenId": 1,
+      "clienteId": 2,
+      "tipo": "BOLETA",
+      "folio": "1",
+      "neto": 71980,
+      "iva": 0,
+      "total": 71980,
+      "rutEmisor": "76.123.456-7",
+      "sucursal": 1
+    }
+order: 1000
