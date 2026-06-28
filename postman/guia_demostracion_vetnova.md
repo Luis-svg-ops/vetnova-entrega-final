@@ -8,17 +8,18 @@
 
 ## 1. vetnova_auth — puerto 8081
 
-### Paso 1 — Registrar usuario (cliente web)
+### Paso 1 — Registrar usuario cliente
 **POST** `http://localhost:8081/api/auth/register`
 ```json
 {
-  "nombre": "María",
-  "apellido": "González",
+  "nombre": "María González",
   "email": "maria@gmail.com",
-  "password": "Pass1234!"
+  "telefono": "+56912345678",
+  "password": "Pass1234!",
+  "rol": "CLIENTE"
 }
 ```
-**Verificar:** `201` · campo `email` = `"maria@gmail.com"`
+**Verificar:** `201` · campo `email` presente
 
 ---
 
@@ -38,6 +39,8 @@
 **POST** `http://localhost:8081/api/v1/clientes`
 ```json
 {
+  "usuarioId": 1,
+  "rut": "12345678-9",
   "nombre": "María",
   "apellido": "González",
   "email": "maria@gmail.com",
@@ -49,46 +52,50 @@
 
 ---
 
-### Paso 4 — Crear usuario interno (recepcionista)
+### Paso 4 — Crear usuario interno (veterinario)
 **POST** `http://localhost:8081/api/usuarios`
 ```json
 {
-  "nombre": "Ana",
-  "apellido": "Soto",
-  "email": "ana.soto@vetnova.cl",
+  "nombre": "Dr. Carlos Ruiz",
+  "email": "carlos.ruiz@vetnova.cl",
+  "telefono": "+56911111111",
   "password": "Admin1234!",
-  "rolId": 1
+  "nombreRol": "VETERINARIO"
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `veterinarioId` (simula veterinario)
+**Verificar:** `201` · campo `id` → guardar como `veterinarioId`
 
 ---
 
-### Paso 5 — Crear rol y asignar permiso
+### Paso 5 — Crear rol con permisos
 **POST** `http://localhost:8081/api/roles`
 ```json
 {
-  "nombre": "RECEPCIONISTA",
-  "descripcion": "Gestión de citas y clientes"
+  "nombreRol": "RECEPCIONISTA",
+  "descripcion": "Gestión de citas y clientes",
+  "permisos": ["CREAR_CITA", "CANCELAR_CITA"]
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `rolId`
 
+---
+
+### Paso 6 — Asignar permiso adicional
 **PUT** `http://localhost:8081/api/roles/{rolId}/permisos`
 ```json
 {
-  "permiso": "CREAR_CITA"
+  "permiso": "VER_HISTORIAL"
 }
 ```
 **Verificar:** `200`
 
 ---
 
-### Paso 6 — Desactivar y reactivar cuenta
-**PATCH** `http://localhost:8081/api/usuarios/{id}/desactivar`  
+### Paso 7 — Desactivar y reactivar cuenta
+**PATCH** `http://localhost:8081/api/usuarios/{veterinarioId}/desactivar`  
 **Verificar:** `200`
 
-**PATCH** `http://localhost:8081/api/usuarios/{id}/activar`  
+**PATCH** `http://localhost:8081/api/usuarios/{veterinarioId}/activar`  
 **Verificar:** `200`
 
 ---
@@ -97,13 +104,14 @@
 **POST** `http://localhost:8081/api/auth/register`
 ```json
 {
-  "nombre": "Otro",
-  "apellido": "Usuario",
+  "nombre": "Copia",
   "email": "maria@gmail.com",
-  "password": "Pass1234!"
+  "telefono": "+56999999999",
+  "password": "Pass1234!",
+  "rol": "CLIENTE"
 }
 ```
-**Verificar:** `400` o `409` · mensaje de email ya registrado
+**Verificar:** `400` o `409` · email ya registrado
 
 ---
 
@@ -113,18 +121,22 @@
 **POST** `http://localhost:8087/api/v1/mascotas`
 ```json
 {
+  "clienteId": 1,
   "nombre": "Firulais",
   "especie": "Perro",
   "raza": "Labrador",
+  "sexo": "Macho",
   "fechaNacimiento": "2020-03-15",
-  "clienteId": 1
+  "peso": 28.5,
+  "microchip": "985112345678901",
+  "activo": true
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `mascotaId` · campo `activo` = `true`
+**Verificar:** `201` · campo `id` → guardar como `mascotaId` · `activo` = `true`
 
 ---
 
-### Paso 2 — Consultar mascota (enriquecida con nombre cliente)
+### Paso 2 — Consultar mascota (con nombre cliente enriquecido)
 **GET** `http://localhost:8087/api/v1/mascotas/{mascotaId}`  
 **Verificar:** `200` · campo `nombreCliente` presente (puede ser `null` si auth no responde)
 
@@ -134,7 +146,8 @@
 **POST** `http://localhost:8087/api/v1/fichas`
 ```json
 {
-  "mascotaId": 1
+  "mascotaId": 1,
+  "observacionesGenerales": "Paciente sano, vacunas al día"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `fichaId`
@@ -146,9 +159,13 @@
 ```json
 {
   "fichaId": 1,
-  "mascotaId": 1,
-  "descripcion": "Paciente presenta fiebre 39.5°C. Se administra antitérmico.",
-  "citaId": 1
+  "veterinarioId": 1,
+  "citaId": 1,
+  "anamnesis": "Dueño reporta decaimiento y fiebre desde ayer",
+  "examenFisico": "Temperatura 39.5°C, mucosas rosadas, linfonodos normales",
+  "diagnostico": "Síndrome febril agudo",
+  "tratamiento": "Dipirona 500mg IM, reposo y abundante agua",
+  "observaciones": "Control en 48 horas si no mejora"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `evolucionId`
@@ -160,10 +177,16 @@
 ```json
 {
   "fichaId": 1,
-  "mascotaId": 1,
-  "medicamento": "Amoxicilina 500mg",
-  "dosis": "1 comprimido cada 8 horas por 7 días",
-  "veterinarioId": 1
+  "veterinarioId": 1,
+  "medicamentos": [
+    {
+      "nombre": "Amoxicilina 500mg",
+      "dosis": "1 comprimido",
+      "frecuencia": "Cada 8 horas",
+      "duracionDias": 7
+    }
+  ],
+  "fechaVencimiento": "2025-07-27"
 }
 ```
 **Verificar:** `201`
@@ -175,11 +198,10 @@
 ```json
 {
   "fichaId": 1,
-  "mascotaId": 1,
+  "veterinarioId": 1,
   "nombre": "Antirrábica",
   "fechaAplicacion": "2025-06-27",
-  "proximaFecha": "2026-06-27",
-  "veterinarioId": 1
+  "proximaFecha": "2026-06-27"
 }
 ```
 **Verificar:** `201`
@@ -191,10 +213,26 @@
 ```json
 {
   "fichaId": 1,
-  "mascotaId": 1,
+  "veterinarioId": 1,
   "tipo": "SALUD",
-  "descripcion": "El paciente Firulais se encuentra en buen estado de salud.",
-  "veterinarioId": 1
+  "descripcion": "El paciente Firulais se encuentra en buen estado de salud general."
+}
+```
+**Verificar:** `201`
+
+---
+
+### Paso 8 — Registrar procedimiento
+**POST** `http://localhost:8087/api/v1/procedimientos`
+```json
+{
+  "fichaId": 1,
+  "veterinarioId": 1,
+  "nombre": "Limpieza dental",
+  "tipo": "PROFILAXIS",
+  "descripcion": "Limpieza dental con ultrasonido bajo anestesia local",
+  "fecha": "2025-06-27",
+  "resultado": "Exitoso, sin complicaciones"
 }
 ```
 **Verificar:** `201`
@@ -205,10 +243,10 @@
 **PUT** `http://localhost:8087/api/v1/evoluciones/{evolucionId}`
 ```json
 {
-  "descripcion": "Intentando editar"
+  "diagnostico": "Intentando editar"
 }
 ```
-**Verificar:** `422` · mensaje indica registro inmutable
+**Verificar:** `422` · registro inmutable
 
 ---
 
@@ -228,7 +266,7 @@
   "sucursal": "CHILLAN"
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `boxId` · campo `disponible` = `true`
+**Verificar:** `201` · campo `id` → guardar como `boxId` · `disponible` = `true`
 
 ---
 
@@ -262,13 +300,13 @@
   "canal": "WEB"
 }
 ```
-**Verificar:** `201` · campo `estado` = `"pendiente"` · campo `id` → guardar como `citaId`
+**Verificar:** `201` · `estado` = `"pendiente"` · campo `id` → guardar como `citaId`
 
 ---
 
 ### Paso 4 — Consultar agenda del día (enriquecida)
 **GET** `http://localhost:8086/api/v1/citas/agenda`  
-**Verificar:** `200` · lista con campos `nombreCliente`, `nombreMascota`, `nombreVeterinario`
+**Verificar:** `200` · campos `nombreCliente`, `nombreMascota`, `nombreVeterinario` presentes
 
 ---
 
@@ -280,25 +318,25 @@
   "duracionMinutos": 45
 }
 ```
-**Verificar:** `200` · campo `fechaHora` actualizado
+**Verificar:** `200` · `fechaHora` actualizado
 
 ---
 
 ### Paso 6 — Confirmar cita
 **PUT** `http://localhost:8086/api/v1/citas/{citaId}/confirmar`  
-**Verificar:** `200` · campo `estado` = `"confirmada"`
+**Verificar:** `200` · `estado` = `"confirmada"`
 
 ---
 
 ### Paso 7 — Iniciar atención
 **PUT** `http://localhost:8086/api/v1/citas/{citaId}/iniciar`  
-**Verificar:** `200` · campo `estado` = `"en curso"`
+**Verificar:** `200` · `estado` = `"en curso"`
 
 ---
 
 ### Paso 8 — Completar atención
 **PUT** `http://localhost:8086/api/v1/citas/{citaId}/completar`  
-**Verificar:** `200` · campo `estado` = `"completada"`
+**Verificar:** `200` · `estado` = `"completada"`
 
 ---
 
@@ -307,16 +345,14 @@
 ```json
 {
   "citaId": 1,
-  "clienteId": 1,
-  "mensaje": "Recordatorio: cita mañana a las 10:00 en sucursal Chillán",
-  "fechaEnvio": "2030-09-14T09:00:00"
+  "tipo": "EMAIL"
 }
 ```
 **Verificar:** `201`
 
 ---
 
-### ❌ Error — Cita con fecha pasada
+### ❌ Error — Fecha en el pasado
 **POST** `http://localhost:8086/api/v1/citas`
 ```json
 {
@@ -329,7 +365,7 @@
   "canal": "WEB"
 }
 ```
-**Verificar:** `400` · mensaje `"La fecha y hora deben ser futuras"`
+**Verificar:** `400` · `"La fecha y hora deben ser futuras"`
 
 ---
 
@@ -346,18 +382,7 @@
   "canal": "WEB"
 }
 ```
-**Verificar:** `404` · mensaje `"Sucursal no encontrada"`
-
----
-
-### ❌ Error — Cancelar cita ya completada
-**PUT** `http://localhost:8086/api/v1/citas/{citaId}/cancelar`
-```json
-{
-  "motivoCancelacion": "Error de prueba"
-}
-```
-**Verificar:** `400` · mensaje `"No se puede cancelar cita completada"`
+**Verificar:** `404` · `"Sucursal no encontrada"`
 
 ---
 
@@ -368,7 +393,8 @@
 ```json
 {
   "nombre": "Alimentos",
-  "descripcion": "Alimentos y suplementos para mascotas"
+  "descripcion": "Alimentos y suplementos para mascotas",
+  "tipo": "PRODUCTO"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `categoriaId`
@@ -382,9 +408,7 @@
   "nombre": "Purina Pro Plan 15kg",
   "descripcion": "Alimento premium para perros adultos",
   "precio": 45990.0,
-  "sku": "PPP15KG",
-  "categoriaId": 1,
-  "activo": true
+  "categoriaId": 1
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `productoId`
@@ -398,7 +422,9 @@
   "nombre": "Consulta General",
   "descripcion": "Consulta médica veterinaria estándar",
   "precio": 25000.0,
-  "activo": true
+  "duracionMinutos": 30,
+  "activo": true,
+  "categoriaId": 1
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `servicioId`
@@ -417,30 +443,53 @@
 
 ---
 
-### Paso 6 — Desactivar producto
+### Paso 6 — Crear oferta
+**POST** `http://localhost:8082/api/v1/ofertas`
+```json
+{
+  "productoId": 1,
+  "descuento": 15.0,
+  "fechaInicio": "2025-07-01",
+  "fechaFin": "2025-07-31",
+  "activa": true
+}
+```
+**Verificar:** `201`
+
+---
+
+### Paso 7 — Desactivar y reactivar producto
 **PUT** `http://localhost:8082/api/v1/productos/{productoId}/desactivar`  
-**Verificar:** `200` · campo `activo` = `false`
+**Verificar:** `200` · `activo` = `false`
 
 **PUT** `http://localhost:8082/api/v1/productos/{productoId}/activar`  
-**Verificar:** `200` · campo `activo` = `true`
+**Verificar:** `200` · `activo` = `true`
 
 ---
 
-### ❌ Error — Sucursal inválida en búsqueda
+### ❌ Error — Sucursal inválida
 **GET** `http://localhost:8082/api/v1/catalogo/disponibles?sucursal=INVALIDA`  
-**Verificar:** `404` · mensaje `"Sucursal no encontrada"`
-
----
-
-### ❌ Error — Nombre vacío en búsqueda
-**GET** `http://localhost:8082/api/v1/catalogo/buscar?nombre=`  
-**Verificar:** `400` · mensaje de nombre obligatorio
+**Verificar:** `404` · `"Sucursal no encontrada"`
 
 ---
 
 ## 5. vetnova_inventario — puerto 8083
 
-### Paso 1 — Registrar proveedor
+### Paso 1 — Registrar producto en inventario
+**POST** `http://localhost:8083/api/v1/inventario/productos`
+```json
+{
+  "sku": "PPP15KG",
+  "nombre": "Purina Pro Plan 15kg",
+  "descripcion": "Alimento premium para perros adultos",
+  "precio": 45990.0
+}
+```
+**Verificar:** `201` · campo `id` → guardar como `productoInvId`
+
+---
+
+### Paso 2 — Registrar proveedor
 **POST** `http://localhost:8083/api/v1/proveedors`
 ```json
 {
@@ -455,19 +504,18 @@
 
 ---
 
-### Paso 2 — Asociar producto al proveedor
+### Paso 3 — Asociar producto al proveedor
 **POST** `http://localhost:8083/api/v1/proveedors/{proveedorId}/productos`
 ```json
 {
-  "productoId": 1,
-  "precioProveedor": 35000.0
+  "productoId": 1
 }
 ```
-**Verificar:** `201` o `200`
+**Verificar:** `200` o `201`
 
 ---
 
-### Paso 3 — Abrir producto en inventario (sucursal)
+### Paso 4 — Abrir inventario en sucursal
 **POST** `http://localhost:8083/api/v1/inventarios`
 ```json
 {
@@ -481,40 +529,33 @@
 
 ---
 
-### Paso 4 — Registrar entrada de stock
+### Paso 5 — Registrar entrada de stock
 **POST** `http://localhost:8083/api/v1/inventarios/{inventarioId}/entrada`
 ```json
 {
   "cantidad": 20,
-  "referencia": "Pedido inicial proveedor"
+  "responsable": "Juan Bodeguero"
 }
 ```
-**Verificar:** `200` · campo `stockDisponible` = `20`
+**Verificar:** `200` · `stockDisponible` = `20`
 
 ---
 
-### Paso 5 — Consultar inventario
-**GET** `http://localhost:8083/api/v1/inventarios?sucursal=CHILLAN`  
-**Verificar:** `200` · lista con `stockDisponible: 20`
-
----
-
-### Paso 6 — Registrar salidas (bajar stock hasta crítico)
+### Paso 6 — Registrar salida (bajar stock a crítico)
 **POST** `http://localhost:8083/api/v1/inventarios/{inventarioId}/salida`
 ```json
 {
-  "cantidad": 3,
-  "referencia": "Venta directa"
+  "cantidad": 18,
+  "motivo": "Ventas del mes"
 }
 ```
-**Verificar:** `200` · `stockDisponible` = `17`  
-*Repetir hasta bajar a 2 (por debajo del mínimo 5)*
+**Verificar:** `200` · `stockDisponible` = `2` (bajo el mínimo de 5)
 
 ---
 
 ### Paso 7 — Ver alertas de stock crítico
 **GET** `http://localhost:8083/api/v1/alertastocks`  
-**Verificar:** `200` · aparece alerta automática para el producto con stock < mínimo
+**Verificar:** `200` · alerta automática para el producto con stock < 5
 
 ---
 
@@ -524,11 +565,12 @@
 {
   "proveedorId": 1,
   "sucursal": "CHILLAN",
+  "responsable": "Ana Administradora",
   "detalles": [
     {
       "productoId": 1,
       "cantidad": 50,
-      "precioUnitario": 35000
+      "precioUnitario": 35000.0
     }
   ]
 }
@@ -541,20 +583,19 @@
 **POST** `http://localhost:8083/api/v1/solicitudreposicions`
 ```json
 {
-  "sucursalOrigen": "LOS_ANGELES",
-  "sucursalDestino": "TALCA",
-  "productoId": 1,
+  "inventarioId": 1,
   "cantidadSolicitada": 10,
-  "solicitanteId": 1
+  "motivo": "Stock crítico en sucursal Chillán",
+  "solicitadoPor": 1
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `solicitudId` · `estado` = `"PENDIENTE"`
+**Verificar:** `201` · campo `id` → guardar como `solicitudId`
 
 ---
 
-### Paso 10 — Aprobar solicitud (Admin Sucursal)
+### Paso 10 — Aprobar solicitud
 **PUT** `http://localhost:8083/api/v1/solicitudreposicions/{solicitudId}/aprobar`  
-**Verificar:** `200` · `estado` = `"APROBADA"`
+**Verificar:** `200`
 
 ---
 
@@ -565,8 +606,7 @@
   "sucursalOrigen": "LOS_ANGELES",
   "sucursalDestino": "TALCA",
   "productoId": 1,
-  "cantidad": 10,
-  "solicitudId": 1
+  "cantidad": 10
 }
 ```
 **Verificar:** `201`
@@ -578,10 +618,10 @@
 ```json
 {
   "cantidad": 9999,
-  "referencia": "Error de prueba"
+  "motivo": "Prueba de error"
 }
 ```
-**Verificar:** `400` o `422` · mensaje de stock insuficiente
+**Verificar:** `400` o `422` · stock insuficiente
 
 ---
 
@@ -602,11 +642,14 @@
 **POST** `http://localhost:8084/api/v1/carritos/{carritoId}/items`
 ```json
 {
-  "productoId": 1,
-  "cantidad": 2
+  "itemId": 1,
+  "tipo": "PRODUCTO",
+  "nombre": "Purina Pro Plan 15kg",
+  "cantidad": 2,
+  "precio": 45990.0
 }
 ```
-**Verificar:** `201` · ítem agregado
+**Verificar:** `201`
 
 ---
 
@@ -625,8 +668,9 @@
   "detalles": [
     {
       "productoId": 1,
+      "nombreProducto": "Purina Pro Plan 15kg",
       "cantidad": 2,
-      "precioUnitario": 45990
+      "precioUnitario": 45990.0
     }
   ]
 }
@@ -637,7 +681,7 @@
 
 ### Paso 5 — Confirmar orden
 **PUT** `http://localhost:8084/api/v1/ordenes/{ordenId}/confirmar`  
-**Verificar:** `200` · campo `estado` = `"CONFIRMADA"`
+**Verificar:** `200` · `estado` = `"CONFIRMADA"`
 
 ---
 
@@ -646,8 +690,9 @@
 ```json
 {
   "ordenId": 1,
-  "monto": 91980,
-  "metodoPago": "TARJETA_CREDITO"
+  "metodo": "DEBITO",
+  "monto": 91980.0,
+  "referencia": "TXN-2025-001"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `pagoId`
@@ -656,13 +701,13 @@
 
 ### Paso 7 — Procesar pago
 **PUT** `http://localhost:8084/api/v1/pagos/{pagoId}/procesar`  
-**Verificar:** `200` · campo `estado` = `"PROCESADO"` o `"CONFIRMADO"`
+**Verificar:** `200`
 
 ---
 
 ### ❌ Error — Cancelar orden ya confirmada
 **PUT** `http://localhost:8084/api/v1/ordenes/{ordenId}/cancelar`  
-**Verificar:** `400` o `422` · mensaje de orden no cancelable en ese estado
+**Verificar:** `400` o `422`
 
 ---
 
@@ -672,12 +717,17 @@
 **POST** `http://localhost:8090/documentos`
 ```json
 {
-  "tipo": "BOLETA",
   "ordenId": 1,
-  "clienteId": 1
+  "clienteId": 1,
+  "tipo": "BOLETA",
+  "neto": 77294.0,
+  "total": 91980.0,
+  "rutEmisor": "76000001-1",
+  "rutReceptor": "12345678-9",
+  "sucursal": "CHILLAN"
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `documentoId` · campo `tipo` = `"BOLETA"`
+**Verificar:** `201` · campo `id` → guardar como `documentoId`
 
 ---
 
@@ -685,49 +735,66 @@
 **POST** `http://localhost:8090/documentos`
 ```json
 {
-  "tipo": "FACTURA",
   "ordenId": 1,
-  "clienteId": 1
+  "clienteId": 1,
+  "tipo": "FACTURA",
+  "neto": 77294.0,
+  "total": 91980.0,
+  "rutEmisor": "76000001-1",
+  "rutReceptor": "76543210-2",
+  "sucursal": "CHILLAN"
 }
 ```
 **Verificar:** `201`
 
 ---
 
-### Paso 3 — Consultar documentos emitidos
+### Paso 3 — Consultar documentos
 **GET** `http://localhost:8090/documentos`  
 **Verificar:** `200` · lista con los documentos creados
 
 ---
 
 ### Paso 4 — Anular documento
-**PUT** `http://localhost:8090/documentos/{documentoId}/anular`  
-**Verificar:** `200` · campo de estado indica anulado
+**PUT** `http://localhost:8090/documentos/{documentoId}/anular`
+```json
+{
+  "motivo": "Error en monto ingresado"
+}
+```
+**Verificar:** `200`
 
 ---
 
-### Paso 5 — Ver reporte tributario
-**POST** `http://localhost:8090/reportes-tributarios`
+### Paso 5 — Registrar folio SII
+**POST** `http://localhost:8090/folios`
 ```json
 {
-  "mes": 6,
-  "anio": 2025
+  "sucursal": "CHILLAN",
+  "tipoDocumento": "BOLETA",
+  "folioDesde": 1001,
+  "folioHasta": 2000
 }
 ```
 **Verificar:** `201`
 
 ---
 
-### ❌ Error — Documento con orden inexistente
+### ❌ Error — Orden inexistente
 **POST** `http://localhost:8090/documentos`
 ```json
 {
-  "tipo": "BOLETA",
   "ordenId": 99999,
-  "clienteId": 1
+  "clienteId": 1,
+  "tipo": "BOLETA",
+  "neto": 1000.0,
+  "total": 1190.0,
+  "rutEmisor": "76000001-1",
+  "rutReceptor": "12345678-9",
+  "sucursal": "CHILLAN"
 }
 ```
-**Verificar:** `404` o `400` · orden no encontrada
+**Verificar:** `404` · orden no encontrada
 
 ---
 
@@ -738,9 +805,9 @@
 ```json
 {
   "ordenId": 1,
-  "direccionDestino": "Av. O'Higgins 123, Chillán",
-  "sucursalOrigen": "CHILLAN",
-  "clienteId": 1
+  "tipoEnvio": "DOMICILIO",
+  "idSucursalOrigen": "CHILLAN",
+  "direccionEntrega": "Av. O'Higgins 123, Chillán"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `envioId`
@@ -751,27 +818,29 @@
 **PUT** `http://localhost:8085/api/v1/envios/{envioId}/estado`
 ```json
 {
-  "estado": "EN_TRANSITO"
+  "estado": "EN_RUTA",
+  "observacion": "Paquete en camino al domicilio"
 }
 ```
-**Verificar:** `200` · campo `estado` = `"EN_TRANSITO"`
+**Verificar:** `200` · `estado` = `"EN_RUTA"`
 
 ---
 
 ### Paso 3 — Tracking del envío
 **GET** `http://localhost:8085/api/v1/envios/{envioId}/tracking`  
-**Verificar:** `200` · historial de estados del envío
+**Verificar:** `200` · historial de estados
 
 ---
 
-### Paso 4 — Transferencia de stock entre sucursales (envío físico)
+### Paso 4 — Transferencia de stock entre sucursales
 **POST** `http://localhost:8085/api/v1/transferencias`
 ```json
 {
-  "sucursalOrigen": "LOS_ANGELES",
-  "sucursalDestino": "TALCA",
-  "productoId": 1,
-  "cantidad": 10
+  "idProducto": 1,
+  "idSucursalOrigen": "LOS_ANGELES",
+  "idSucursalDestino": "TALCA",
+  "cantidad": 10,
+  "observacion": "Reposición urgente por stock crítico"
 }
 ```
 **Verificar:** `201`
@@ -779,19 +848,25 @@
 ---
 
 ### Paso 5 — Marcar como entregado
-**PUT** `http://localhost:8085/api/v1/envios/{envioId}/entrega`  
-**Verificar:** `200` · campo `estado` = `"ENTREGADO"`
+**PUT** `http://localhost:8085/api/v1/envios/{envioId}/estado`
+```json
+{
+  "estado": "ENTREGADO",
+  "observacion": "Entregado al cliente en domicilio"
+}
+```
+**Verificar:** `200` · `estado` = `"ENTREGADO"`
 
 ---
 
-### ❌ Error — Envío con orden inexistente
+### ❌ Error — Orden inexistente
 **POST** `http://localhost:8085/api/v1/envios`
 ```json
 {
   "ordenId": 99999,
-  "direccionDestino": "Calle Falsa 123",
-  "sucursalOrigen": "CHILLAN",
-  "clienteId": 1
+  "tipoEnvio": "DOMICILIO",
+  "idSucursalOrigen": "CHILLAN",
+  "direccionEntrega": "Calle Falsa 123"
 }
 ```
 **Verificar:** `404` · orden no encontrada (dura vs ventas)
@@ -806,7 +881,9 @@
 {
   "nombre": "Hemograma Completo",
   "descripcion": "Análisis completo de sangre",
-  "tiempoEstimadoHoras": 24
+  "tiempoEstimadoHoras": 24,
+  "requiereMuestra": true,
+  "instrucciones": "Ayuno de 8 horas previo a la extracción"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `tipoExamenId`
@@ -820,7 +897,8 @@
   "mascotaId": 1,
   "veterinarioId": 1,
   "tipoExamenId": 1,
-  "observaciones": "Control post-operatorio, revisar glóbulos blancos"
+  "descripcion": "Control post-operatorio, revisar glóbulos blancos",
+  "fechaProgramada": "2030-08-16T09:00:00"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `ordenExamenId`
@@ -828,7 +906,12 @@
 ---
 
 ### Paso 3 — Programar orden
-**PUT** `http://localhost:8089/ordenes-examen/{ordenExamenId}/programar`  
+**PUT** `http://localhost:8089/ordenes-examen/{ordenExamenId}/programar`
+```json
+{
+  "fechaProgramada": "2030-08-16T09:00:00"
+}
+```
 **Verificar:** `200`
 
 ---
@@ -839,6 +922,7 @@
 {
   "ordenExamenId": 1,
   "tipo": "SANGRE",
+  "codigoMuestra": "MUE-2025-001",
   "descripcion": "Muestra de sangre venosa extraída en consulta"
 }
 ```
@@ -846,8 +930,13 @@
 
 ---
 
-### Paso 5 — Recepcionar muestra en laboratorio
-**PUT** `http://localhost:8089/muestras/{muestraId}/recepcion`  
+### Paso 5 — Recepcionar muestra
+**PUT** `http://localhost:8089/muestras/{muestraId}/recepcion`
+```json
+{
+  "responsableId": 2
+}
+```
 **Verificar:** `200`
 
 ---
@@ -858,7 +947,8 @@
 {
   "muestraId": 1,
   "tecnicoId": 2,
-  "procedimiento": "Análisis hematológico automatizado"
+  "metodologia": "Análisis hematológico automatizado Sysmex XN-1000",
+  "observaciones": "Muestra en buen estado"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `procesamientoId`
@@ -866,7 +956,13 @@
 ---
 
 ### Paso 7 — Completar procesamiento
-**PUT** `http://localhost:8089/procesamientos/{procesamientoId}/completar`  
+**PUT** `http://localhost:8089/procesamientos/{procesamientoId}/completar`
+```json
+{
+  "fechaFin": "2030-08-16T14:00:00",
+  "observaciones": "Procesamiento completado sin incidencias"
+}
+```
 **Verificar:** `200`
 
 ---
@@ -892,14 +988,14 @@
 
 ---
 
-### ❌ Error — Orden con mascota inactiva o inexistente
+### ❌ Error — Mascota inexistente
 **POST** `http://localhost:8089/ordenes-examen`
 ```json
 {
   "mascotaId": 99999,
   "veterinarioId": 1,
   "tipoExamenId": 1,
-  "observaciones": "Prueba de error"
+  "descripcion": "Prueba de error"
 }
 ```
 **Verificar:** `404` · `"Mascota no encontrada"` (dura vs vetnova_ficha)
@@ -908,7 +1004,20 @@
 
 ## 10. vetnova_notificaciones — puerto 8092
 
-### Paso 1 — Crear notificación manual
+### Paso 1 — Crear plantilla
+**POST** `http://localhost:8092/plantillas`
+```json
+{
+  "nombre": "RECORDATORIO_CITA",
+  "contenido": "Estimado {{nombre}}, le recordamos su cita el {{fecha}} a las {{hora}}.",
+  "tipo": "EMAIL"
+}
+```
+**Verificar:** `201` · campo `id` → guardar como `plantillaId`
+
+---
+
+### Paso 2 — Crear notificación manual
 **POST** `http://localhost:8092/notificaciones`
 ```json
 {
@@ -918,13 +1027,7 @@
   "canal": "EMAIL"
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `notificacionId` · campo `leida` = `false`
-
----
-
-### Paso 2 — Listar notificaciones
-**GET** `http://localhost:8092/notificaciones`  
-**Verificar:** `200` · lista con al menos 1 notificación
+**Verificar:** `201` · campo `id` → guardar como `notificacionId` · `leida` = `false`
 
 ---
 
@@ -936,7 +1039,7 @@
 
 ### Paso 4 — Marcar como leída
 **PUT** `http://localhost:8092/notificaciones/{notificacionId}/leer`  
-**Verificar:** `200` · campo `leida` = `true`
+**Verificar:** `200` · `leida` = `true`
 
 ---
 
@@ -946,30 +1049,9 @@
 
 ---
 
-### Paso 6 — Crear plantilla de mensaje
-**POST** `http://localhost:8092/plantillas`
-```json
-{
-  "nombre": "RECORDATORIO_CITA",
-  "contenido": "Estimado {{nombre}}, le recordamos su cita el {{fecha}} a las {{hora}}.",
-  "tipo": "EMAIL"
-}
-```
-**Verificar:** `201`
-
----
-
-### ❌ Error — Notificación a usuario inexistente
-**POST** `http://localhost:8092/notificaciones`
-```json
-{
-  "usuarioId": 99999,
-  "tipo": "ALERTA",
-  "mensaje": "Prueba de error",
-  "canal": "EMAIL"
-}
-```
-**Verificar:** `404` o `400`
+### ❌ Error — Notificación inexistente
+**PUT** `http://localhost:8092/notificaciones/99999/leer`  
+**Verificar:** `404`
 
 ---
 
@@ -977,17 +1059,19 @@
 
 ### Paso 1 — Dashboard general
 **GET** `http://localhost:8091/dashboard`  
-**Verificar:** `200` · datos generales del sistema
+**Verificar:** `200`
 
 ---
 
-### Paso 2 — Reporte de atenciones por sucursal
+### Paso 2 — Reporte de atenciones
 **POST** `http://localhost:8091/reportes-atencion`
 ```json
 {
+  "tipo": "ATENCION",
   "sucursal": "CHILLAN",
-  "fechaInicio": "2025-01-01",
-  "fechaFin": "2025-12-31"
+  "desde": "2025-01-01",
+  "hasta": "2025-12-31",
+  "generadoPor": 1
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `reporteId`
@@ -998,9 +1082,11 @@
 **POST** `http://localhost:8091/reportes-venta`
 ```json
 {
+  "tipo": "VENTA",
   "sucursal": "CHILLAN",
-  "fechaInicio": "2025-01-01",
-  "fechaFin": "2025-12-31"
+  "desde": "2025-01-01",
+  "hasta": "2025-12-31",
+  "generadoPor": 1
 }
 ```
 **Verificar:** `201`
@@ -1011,9 +1097,11 @@
 **POST** `http://localhost:8091/reportes-stock`
 ```json
 {
+  "tipo": "STOCK",
   "sucursal": "CHILLAN",
-  "fechaInicio": "2025-01-01",
-  "fechaFin": "2025-12-31"
+  "desde": "2025-01-01",
+  "hasta": "2025-12-31",
+  "generadoPor": 1
 }
 ```
 **Verificar:** `201`
@@ -1022,35 +1110,29 @@
 
 ### Paso 5 — Exportar reporte
 **GET** `http://localhost:8091/reportes/{reporteId}/exportar`  
-**Verificar:** `200` · archivo o contenido exportable
+**Verificar:** `200`
 
 ---
 
-### Paso 6 — Registrar monitoreo de microservicio
+### Paso 6 — Monitorear microservicio
 **POST** `http://localhost:8091/monitor`
 ```json
 {
   "microservicio": "vetnova_agenda",
   "estado": "UP",
-  "mensaje": "Servicio operativo — 138 tests pasando"
+  "mensaje": "Servicio operativo"
 }
 ```
 **Verificar:** `201`
 
 ---
 
-### Paso 7 — Ver historial de monitoreo
-**GET** `http://localhost:8091/monitor/vetnova_agenda/historial`  
-**Verificar:** `200` · historial de estados del servicio
-
----
-
-### Paso 8 — Registrar incidente
+### Paso 7 — Registrar incidente
 **POST** `http://localhost:8091/incidentes`
 ```json
 {
   "microservicio": "vetnova_laboratorio",
-  "descripcion": "Tiempo de respuesta elevado — latencia > 2s",
+  "descripcion": "Latencia elevada — tiempo de respuesta > 2s",
   "severidad": "MEDIA"
 }
 ```
@@ -1058,7 +1140,7 @@
 
 ---
 
-### Paso 9 — Crear respaldo
+### Paso 8 — Crear respaldo
 **POST** `http://localhost:8091/respaldos`
 ```json
 {
@@ -1070,22 +1152,24 @@
 
 ---
 
-### Paso 10 — Restaurar respaldo
+### Paso 9 — Restaurar respaldo
 **POST** `http://localhost:8091/respaldos/{respaldoId}/restaurar`  
 **Verificar:** `200`
 
 ---
 
-### ❌ Error — Reporte con rango de fechas inválido
+### ❌ Error — Rango de fechas inválido
 **POST** `http://localhost:8091/reportes-atencion`
 ```json
 {
+  "tipo": "ATENCION",
   "sucursal": "CHILLAN",
-  "fechaInicio": "2025-12-31",
-  "fechaFin": "2025-01-01"
+  "desde": "2025-12-31",
+  "hasta": "2025-01-01",
+  "generadoPor": 1
 }
 ```
-**Verificar:** `400` · fechaInicio no puede ser mayor que fechaFin
+**Verificar:** `400`
 
 ---
 
@@ -1096,7 +1180,9 @@
 ```json
 {
   "nombre": "Problemas técnicos",
-  "descripcion": "Errores o fallas en el sistema"
+  "descripcion": "Errores o fallas en el sistema",
+  "areaPorDefecto": "TI",
+  "prioridadDefault": "MEDIA"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `categoriaTicketId`
@@ -1107,29 +1193,17 @@
 **POST** `http://localhost:8088/tickets`
 ```json
 {
-  "titulo": "No puedo ver mis citas agendadas",
+  "clienteId": 1,
+  "motivo": "No puedo ver mis citas agendadas",
   "descripcion": "Al ingresar al portal las citas no aparecen en la lista.",
-  "categoriaId": 1,
-  "clienteId": 1
+  "sucursalId": "CHILLAN"
 }
 ```
 **Verificar:** `201` · campo `id` → guardar como `ticketId` · `estado` = `"ABIERTO"`
 
 ---
 
-### Paso 3 — Agregar respuesta al ticket
-**POST** `http://localhost:8088/tickets/{ticketId}/respuestas`
-```json
-{
-  "mensaje": "Hemos revisado su caso. Limpie caché del navegador e intente nuevamente.",
-  "operadorId": 2
-}
-```
-**Verificar:** `201`
-
----
-
-### Paso 4 — Clasificar ticket
+### Paso 3 — Clasificar ticket
 **PUT** `http://localhost:8088/tickets/{ticketId}/clasificar`
 ```json
 {
@@ -1141,12 +1215,24 @@
 
 ---
 
+### Paso 4 — Agregar respuesta al ticket
+**POST** `http://localhost:8088/tickets/{ticketId}/respuestas`
+```json
+{
+  "autorId": 2,
+  "contenido": "Hemos revisado su caso. Limpie caché del navegador e intente nuevamente.",
+  "visible": true
+}
+```
+**Verificar:** `201`
+
+---
+
 ### Paso 5 — Derivar ticket
 **PUT** `http://localhost:8088/tickets/{ticketId}/derivar`
 ```json
 {
-  "operadorDestinoId": 3,
-  "motivo": "Requiere revisión técnica especializada"
+  "responsableId": 3
 }
 ```
 **Verificar:** `200`
@@ -1154,7 +1240,12 @@
 ---
 
 ### Paso 6 — Cerrar ticket
-**PUT** `http://localhost:8088/tickets/{ticketId}/cerrar`  
+**PUT** `http://localhost:8088/tickets/{ticketId}/cerrar`
+```json
+{
+  "resolucion": "Problema resuelto limpiando caché del navegador."
+}
+```
 **Verificar:** `200` · `estado` = `"CERRADO"`
 
 ---
@@ -1168,7 +1259,7 @@
   "comentario": "Problema resuelto rápidamente, excelente atención."
 }
 ```
-**Verificar:** `201` · campo `id` → guardar como `valoracionId`
+**Verificar:** `201`
 
 ---
 
@@ -1182,26 +1273,31 @@
 **POST** `http://localhost:8088/tickets`
 ```json
 {
-  "titulo": "Ticket sin responder",
+  "clienteId": 1,
+  "motivo": "Ticket sin responder",
   "descripcion": "Prueba de error al cerrar sin respuesta.",
-  "categoriaId": 1,
-  "clienteId": 1
+  "sucursalId": "CHILLAN"
 }
 ```
-Luego intentar cerrar inmediatamente:  
-**PUT** `http://localhost:8088/tickets/{nuevoTicketId}/cerrar`  
-**Verificar:** `400` · mensaje `"El ticket debe tener al menos una respuesta"`
+Luego cerrar inmediatamente:  
+**PUT** `http://localhost:8088/tickets/{nuevoTicketId}/cerrar`
+```json
+{
+  "resolucion": "Cierre sin respuesta"
+}
+```
+**Verificar:** `400` · `"El ticket debe tener al menos una respuesta"`
 
 ---
 
-### ❌ Error — Ticket con usuario inexistente
+### ❌ Error — Cliente inexistente
 **POST** `http://localhost:8088/tickets`
 ```json
 {
-  "titulo": "Prueba",
+  "clienteId": 99999,
+  "motivo": "Prueba",
   "descripcion": "Error esperado",
-  "categoriaId": 1,
-  "clienteId": 99999
+  "sucursalId": "CHILLAN"
 }
 ```
 **Verificar:** `404` · usuario no encontrado (dura vs vetnova_auth)
@@ -1210,13 +1306,13 @@ Luego intentar cerrar inmediatamente:
 
 ## Resumen de validaciones especiales
 
-| Tipo | MS | Qué probar | Esperado |
-|------|----|-----------|----------|
+| Tipo | MS | Endpoint | Esperado |
+|------|----|----------|----------|
 | Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/evoluciones/{id}` | `422` |
 | Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/recetas/{id}` | `422` |
 | Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/vacunas/{id}` | `422` |
 | Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/certificados/{id}` | `422` |
 | Soft delete | `vetnova_ficha` | `DELETE /api/v1/mascotas/{id}` | `200` + `activo: false` |
-| Degradación suave | `vetnova_agenda` | `GET /api/v1/citas` (auth caído) | `200` + `nombreCliente: null` |
-| Degradación dura | `vetnova_laboratorio` | `POST /ordenes-examen` (ficha caída) | `404` bloquea creación |
+| Degradación suave | `vetnova_agenda` | `GET /api/v1/citas` con auth caído | `200` + `nombreCliente: null` |
+| Degradación dura | `vetnova_laboratorio` | `POST /ordenes-examen` con ficha caída | `404` bloquea |
 | Stock crítico | `vetnova_inventario` | Bajar stock < mínimo → `GET /alertastocks` | alerta automática |
