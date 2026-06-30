@@ -17,6 +17,7 @@ import cl.vetnova.fichaclinica.model.Mascota;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 import cl.vetnova.fichaclinica.repository.MascotaRepository;
 
+// Garantiza que cada mascota tenga exactamente una ficha clínica (relación 1:1 estricta)
 @Service
 public class FichaClinicaService {
 
@@ -51,6 +52,7 @@ public class FichaClinicaService {
         if (!mascotaRepository.existsById(ficha.getMascotaId())) {
             throw new ResourceNotFoundException("Mascota no encontrada");
         }
+        // Cada mascota tiene exactamente una ficha; un segundo intento lanza ConflictException (409)
         if (fichaClinicaRepository.existsByMascotaId(ficha.getMascotaId())) {
             throw new ConflictException("La mascota ya tiene una ficha clínica");
         }
@@ -58,6 +60,7 @@ public class FichaClinicaService {
         return fichaClinicaRepository.save(ficha);
     }
 
+    // Si la mascota fue eliminada físicamente (caso edge), usa valores por defecto para no romper la respuesta
     private FichaClinicaResponse toResponse(FichaClinica ficha) {
         Mascota mascota = mascotaRepository.findById(ficha.getMascotaId()).orElse(null);
         String nombreMascota = mascota != null ? mascota.getNombre() : "Desconocida";

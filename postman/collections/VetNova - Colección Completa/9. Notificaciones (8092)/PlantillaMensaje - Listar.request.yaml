@@ -1,4 +1,0 @@
-$kind: http-request
-url: localhost:8092/plantillas
-method: GET
-order: 7000

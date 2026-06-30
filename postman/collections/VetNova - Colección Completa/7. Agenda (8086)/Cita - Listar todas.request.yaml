@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8086/api/v1/citas
-method: GET
-order: 6000

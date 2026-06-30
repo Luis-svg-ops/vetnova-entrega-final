@@ -13,6 +13,11 @@ import org.springframework.web.client.RestTemplate;
 
 import cl.vetnova.agenda.exception.ResourceNotFoundException;
 
+/**
+ * Cliente HTTP que comunica vetnova_agenda (8086) con vetnova_ficha (8087).
+ * Igual que AuthClient, distingue entre obtención de datos (degradación suave) y
+ * verificación de existencia (validación dura que bloquea la creación de la cita).
+ */
 @Component
 public class FichaClient {
 
@@ -21,9 +26,16 @@ public class FichaClient {
     @Autowired
     private RestTemplate restTemplate;
 
+    // URL base de vetnova_ficha; configurable desde application.properties
     @Value("${app.ficha-service-url:http://localhost:8087}")
     private String fichaUrl;
 
+    /**
+     * Obtiene el nombre de una mascota desde vetnova_ficha.
+     * Degradación suave: si ficha no está disponible o la mascota no existe, retorna null sin lanzar excepción.
+     * @param mascotaId id de la mascota
+     * @return nombre de la mascota o null si no se pudo obtener
+     */
     public String obtenerNombreMascota(Long mascotaId) {
         if (mascotaId == null) return null;
         try {
@@ -39,10 +51,16 @@ public class FichaClient {
         }
     }
 
+    /**
+     * Verifica que la mascota exista en vetnova_ficha antes de crear una cita (validación dura).
+     * Si ficha no responde o la mascota no existe, lanza ResourceNotFoundException y la cita NO se crea.
+     * @param mascotaId id de la mascota a verificar
+     */
     public void verificarMascota(Long mascotaId) {
         try {
             restTemplate.getForObject(fichaUrl + "/api/v1/mascotas/" + mascotaId, Object.class);
         } catch (Exception e) {
+            // Cualquier error (404, timeout, conexión rechazada) se traduce en mascota no encontrada
             throw new ResourceNotFoundException("Mascota no encontrada en el sistema");
         }
     }

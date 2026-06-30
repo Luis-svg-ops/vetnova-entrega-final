@@ -1,0 +1,1641 @@
+{
+  "info": {
+    "_postman_id": "vetnova-perfiles-2025",
+    "name": "VetNova — Coleccion por Perfiles",
+    "description": "Coleccion organizada por perfil de usuario.\nEjecutar requests EN ORDEN dentro de cada carpeta.\nActualizar las variables de coleccion con los IDs reales de cada respuesta (campo 'id').\n\nVariables clave a actualizar:\n  clienteId, usuarioId, veterinarioId, mascotaId, fichaId,\n  citaId, boxId, inventarioId, ordenId, pagoId, documentoId,\n  ticketId, ordenExamenId, muestraId, procesamientoId, resultadoId",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "clienteId",          "value": "1",  "description": "ID del cliente (POST /api/v1/clientes)" },
+    { "key": "usuarioId",          "value": "1",  "description": "ID del usuario (POST /api/usuarios)" },
+    { "key": "veterinarioId",      "value": "2",  "description": "ID del veterinario" },
+    { "key": "rolId",              "value": "1",  "description": "ID del rol (POST /api/roles)" },
+    { "key": "mascotaId",          "value": "1",  "description": "ID de la mascota" },
+    { "key": "fichaId",            "value": "1",  "description": "ID de la ficha clinica" },
+    { "key": "citaId",             "value": "1",  "description": "ID de la cita" },
+    { "key": "boxId",              "value": "1",  "description": "ID del box" },
+    { "key": "categoriaId",        "value": "1",  "description": "ID de categoria (catalogo)" },
+    { "key": "productoInvId",      "value": "1",  "description": "ID del producto en inventario" },
+    { "key": "inventarioId",       "value": "1",  "description": "ID del registro de inventario" },
+    { "key": "alertaId",           "value": "1",  "description": "ID de la alerta de stock" },
+    { "key": "proveedorId",        "value": "1",  "description": "ID del proveedor" },
+    { "key": "pedidoId",           "value": "1",  "description": "ID del pedido a proveedor" },
+    { "key": "solicitudId",        "value": "1",  "description": "ID de solicitud de reposicion" },
+    { "key": "transferenciaStockId","value":"1",  "description": "ID de transferencia de stock" },
+    { "key": "carritoId",          "value": "1",  "description": "ID del carrito" },
+    { "key": "ordenId",            "value": "1",  "description": "ID de la orden de venta" },
+    { "key": "pagoId",             "value": "1",  "description": "ID del pago" },
+    { "key": "documentoId",        "value": "1",  "description": "ID del documento tributario" },
+    { "key": "envioId",            "value": "1",  "description": "ID del envio" },
+    { "key": "tipoExamenId",       "value": "1",  "description": "ID del tipo de examen" },
+    { "key": "ordenExamenId",      "value": "1",  "description": "ID de la orden de examen" },
+    { "key": "muestraId",          "value": "1",  "description": "ID de la muestra" },
+    { "key": "procesamientoId",    "value": "1",  "description": "ID del procesamiento" },
+    { "key": "resultadoId",        "value": "1",  "description": "ID del resultado de examen" },
+    { "key": "notificacionId",     "value": "1",  "description": "ID de la notificacion" },
+    { "key": "plantillaId",        "value": "1",  "description": "ID de la plantilla" },
+    { "key": "reporteId",          "value": "1",  "description": "ID del reporte" },
+    { "key": "incidenteId",        "value": "1",  "description": "ID del incidente" },
+    { "key": "respaldoId",         "value": "1",  "description": "ID del respaldo" },
+    { "key": "ticketId",           "value": "1",  "description": "ID del ticket de soporte" }
+  ],
+  "item": [
+
+    {
+      "name": "1. Administrador del Sistema",
+      "description": "Gestionar usuarios, configurar permisos, monitorear sistema y realizar respaldos.",
+      "item": [
+
+        {
+          "name": "Gestion de Usuarios",
+          "item": [
+            {
+              "name": "01 Registrar usuario admin",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Admin Principal\",\n  \"email\": \"admin@vetnova.cl\",\n  \"telefono\": \"+56911111111\",\n  \"password\": \"Admin1234!\",\n  \"rol\": \"ADMIN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/register", "host": ["localhost"], "port": "8081", "path": ["api","auth","register"] },
+                "description": "Crea la cuenta del administrador. Guardar el 'id' como usuarioId."
+              }
+            },
+            {
+              "name": "02 Login admin",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@vetnova.cl\",\n  \"password\": \"Admin1234!\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/login", "host": ["localhost"], "port": "8081", "path": ["api","auth","login"] },
+                "description": "Inicio de sesion. Retorna token."
+              }
+            },
+            {
+              "name": "03 Crear usuario veterinario",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Dr. Carlos Ruiz\",\n  \"email\": \"carlos.ruiz@vetnova.cl\",\n  \"telefono\": \"+56922222222\",\n  \"password\": \"Vet1234!\",\n  \"nombreRol\": \"VETERINARIO\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/usuarios", "host": ["localhost"], "port": "8081", "path": ["api","usuarios"] },
+                "description": "Crea usuario interno. Guardar 'id' como veterinarioId."
+              }
+            },
+            {
+              "name": "04 Crear usuario recepcionista",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Ana Lopez\",\n  \"email\": \"ana.lopez@vetnova.cl\",\n  \"telefono\": \"+56933333333\",\n  \"password\": \"Rec1234!\",\n  \"nombreRol\": \"RECEPCIONISTA\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/usuarios", "host": ["localhost"], "port": "8081", "path": ["api","usuarios"] }
+              }
+            },
+            {
+              "name": "05 Listar todos los usuarios",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8081/api/usuarios", "host": ["localhost"], "port": "8081", "path": ["api","usuarios"] }
+              }
+            },
+            {
+              "name": "06 Ver usuario por ID",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8081/api/usuarios/{{usuarioId}}", "host": ["localhost"], "port": "8081", "path": ["api","usuarios","{{usuarioId}}"] }
+              }
+            },
+            {
+              "name": "07 Desactivar cuenta",
+              "request": {
+                "method": "PATCH",
+                "url": { "raw": "http://localhost:8081/api/usuarios/{{usuarioId}}/desactivar", "host": ["localhost"], "port": "8081", "path": ["api","usuarios","{{usuarioId}}","desactivar"] },
+                "description": "Soft-delete de cuenta. activo = false."
+              }
+            },
+            {
+              "name": "08 Reactivar cuenta",
+              "request": {
+                "method": "PATCH",
+                "url": { "raw": "http://localhost:8081/api/usuarios/{{usuarioId}}/activar", "host": ["localhost"], "port": "8081", "path": ["api","usuarios","{{usuarioId}}","activar"] }
+              }
+            },
+            {
+              "name": "09 Cambiar password de usuario",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"passwordActual\": \"Admin1234!\",\n  \"passwordNueva\": \"Admin5678!\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/usuarios/{{usuarioId}}/password", "host": ["localhost"], "port": "8081", "path": ["api","usuarios","{{usuarioId}}","password"] }
+              }
+            },
+            {
+              "name": "10 Eliminar usuario permanente",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "http://localhost:8081/api/usuarios/{{usuarioId}}", "host": ["localhost"], "port": "8081", "path": ["api","usuarios","{{usuarioId}}"] },
+                "description": "Elimina la cuenta. Retorna usuario desactivado."
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Configurar Permisos",
+          "item": [
+            {
+              "name": "01 Crear rol RECEPCIONISTA",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombreRol\": \"RECEPCIONISTA\",\n  \"descripcion\": \"Gestion de citas y clientes\",\n  \"permisos\": [\"CREAR_CITA\", \"CANCELAR_CITA\", \"VER_AGENDA\"]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/roles", "host": ["localhost"], "port": "8081", "path": ["api","roles"] },
+                "description": "Crear rol con permisos. Guardar 'id' como rolId."
+              }
+            },
+            {
+              "name": "02 Listar roles",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8081/api/roles", "host": ["localhost"], "port": "8081", "path": ["api","roles"] }
+              }
+            },
+            {
+              "name": "03 Asignar permiso adicional a rol",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"permiso\": \"VER_HISTORIAL\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/roles/{{rolId}}/permisos", "host": ["localhost"], "port": "8081", "path": ["api","roles","{{rolId}}","permisos"] }
+              }
+            },
+            {
+              "name": "04 Verificar permiso en rol",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8081/api/roles/{{rolId}}/permisos/VER_HISTORIAL", "host": ["localhost"], "port": "8081", "path": ["api","roles","{{rolId}}","permisos","VER_HISTORIAL"] },
+                "description": "Retorna { tienePermiso: true/false }"
+              }
+            },
+            {
+              "name": "05 Revocar permiso de rol",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "http://localhost:8081/api/roles/{{rolId}}/permisos/VER_HISTORIAL", "host": ["localhost"], "port": "8081", "path": ["api","roles","{{rolId}}","permisos","VER_HISTORIAL"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Monitoreo del Sistema",
+          "item": [
+            {
+              "name": "01 Registrar estado de MS",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"microservicio\": \"vetnova_agenda\",\n  \"estado\": \"UP\",\n  \"mensaje\": \"Servicio operativo\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/monitor", "host": ["localhost"], "port": "8091", "path": ["monitor"] }
+              }
+            },
+            {
+              "name": "02 Ver historial de MS",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8091/monitor/vetnova_agenda/historial", "host": ["localhost"], "port": "8091", "path": ["monitor","vetnova_agenda","historial"] }
+              }
+            },
+            {
+              "name": "03 Registrar incidente",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"microservicio\": \"vetnova_laboratorio\",\n  \"descripcion\": \"Latencia elevada — tiempo de respuesta mayor a 2 segundos\",\n  \"severidad\": \"MEDIA\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/incidentes", "host": ["localhost"], "port": "8091", "path": ["incidentes"] },
+                "description": "Guardar 'id' como incidenteId."
+              }
+            },
+            {
+              "name": "04 Notificar incidente a administrador",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "http://localhost:8091/incidentes/{{incidenteId}}/notificar", "host": ["localhost"], "port": "8091", "path": ["incidentes","{{incidenteId}}","notificar"] }
+              }
+            },
+            {
+              "name": "05 Resolver incidente",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8091/incidentes/{{incidenteId}}/resolver", "host": ["localhost"], "port": "8091", "path": ["incidentes","{{incidenteId}}","resolver"] }
+              }
+            },
+            {
+              "name": "06 Dashboard general del sistema",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8091/dashboard?sucursal=CHILLAN",
+                  "host": ["localhost"], "port": "8091", "path": ["dashboard"],
+                  "query": [{ "key": "sucursal", "value": "CHILLAN" }]
+                }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Respaldos",
+          "item": [
+            {
+              "name": "01 Crear respaldo",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Respaldo pre-defensa\",\n  \"tipo\": \"COMPLETO\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/respaldos", "host": ["localhost"], "port": "8091", "path": ["respaldos"] },
+                "description": "Guardar 'id' como respaldoId."
+              }
+            },
+            {
+              "name": "02 Restaurar respaldo",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "http://localhost:8091/respaldos/{{respaldoId}}/restaurar", "host": ["localhost"], "port": "8091", "path": ["respaldos","{{respaldoId}}","restaurar"] }
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "2. Administrador de Sucursal",
+      "description": "Gestionar boxes, supervisar inventario, generar reportes y autorizar reposiciones.",
+      "item": [
+
+        {
+          "name": "Gestion de Boxes",
+          "item": [
+            {
+              "name": "01 Crear box de atencion",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Box 1\",\n  \"sucursal\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/boxes", "host": ["localhost"], "port": "8086", "path": ["api","v1","boxes"] },
+                "description": "Guardar 'id' como boxId. Sucursales validas: CHILLAN, LOS_ANGELES, TALCA."
+              }
+            },
+            {
+              "name": "02 Listar boxes de la sucursal",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/boxes", "host": ["localhost"], "port": "8086", "path": ["api","v1","boxes"] }
+              }
+            },
+            {
+              "name": "03 Reservar box",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8086/api/v1/boxes/{{boxId}}/reservar", "host": ["localhost"], "port": "8086", "path": ["api","v1","boxes","{{boxId}}","reservar"] }
+              }
+            },
+            {
+              "name": "04 Liberar box",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8086/api/v1/boxes/{{boxId}}/liberar", "host": ["localhost"], "port": "8086", "path": ["api","v1","boxes","{{boxId}}","liberar"] }
+              }
+            },
+            {
+              "name": "05 Registrar disponibilidad veterinario",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"veterinarioId\": {{veterinarioId}},\n  \"diaSemana\": \"LUNES\",\n  \"horaInicio\": \"09:00\",\n  \"horaFin\": \"18:00\",\n  \"sucursal\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/disponibilidad", "host": ["localhost"], "port": "8086", "path": ["api","v1","disponibilidad"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Supervisar Inventario",
+          "item": [
+            {
+              "name": "01 Ver inventario completo",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8083/api/v1/inventarios", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios"] }
+              }
+            },
+            {
+              "name": "02 Buscar inventario por producto y sucursal",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8083/api/v1/inventarios/buscar?productoId=1&sucursal=CHILLAN",
+                  "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios","buscar"],
+                  "query": [{ "key": "productoId", "value": "1" }, { "key": "sucursal", "value": "CHILLAN" }]
+                }
+              }
+            },
+            {
+              "name": "03 Ver alertas de stock critico",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8083/api/v1/alertastocks", "host": ["localhost"], "port": "8083", "path": ["api","v1","alertastocks"] }
+              }
+            },
+            {
+              "name": "04 Marcar alerta como leida",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/alertastocks/{{alertaId}}/leer", "host": ["localhost"], "port": "8083", "path": ["api","v1","alertastocks","{{alertaId}}","leer"] }
+              }
+            },
+            {
+              "name": "05 Aprobar solicitud de reposicion",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"comentario\": \"Aprobado — reposicion urgente autorizada\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/solicitudreposicions/{{solicitudId}}/aprobar", "host": ["localhost"], "port": "8083", "path": ["api","v1","solicitudreposicions","{{solicitudId}}","aprobar"] }
+              }
+            },
+            {
+              "name": "06 Rechazar solicitud de reposicion",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"comentario\": \"Rechazado — stock suficiente en otra sucursal\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/solicitudreposicions/{{solicitudId}}/rechazar", "host": ["localhost"], "port": "8083", "path": ["api","v1","solicitudreposicions","{{solicitudId}}","rechazar"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Reportes de Sucursal",
+          "item": [
+            {
+              "name": "01 Dashboard por sucursal",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8091/dashboard?sucursal=CHILLAN",
+                  "host": ["localhost"], "port": "8091", "path": ["dashboard"],
+                  "query": [{ "key": "sucursal", "value": "CHILLAN" }]
+                }
+              }
+            },
+            {
+              "name": "02 Generar reporte de atenciones",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"ATENCION\",\n  \"sucursal\": \"CHILLAN\",\n  \"desde\": \"2025-01-01\",\n  \"hasta\": \"2025-12-31\",\n  \"generadoPor\": 1\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/reportes-atencion", "host": ["localhost"], "port": "8091", "path": ["reportes-atencion"] },
+                "description": "Guardar 'id' como reporteId."
+              }
+            },
+            {
+              "name": "03 Generar reporte de ventas",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"VENTA\",\n  \"sucursal\": \"CHILLAN\",\n  \"desde\": \"2025-01-01\",\n  \"hasta\": \"2025-12-31\",\n  \"generadoPor\": 1\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/reportes-venta", "host": ["localhost"], "port": "8091", "path": ["reportes-venta"] }
+              }
+            },
+            {
+              "name": "04 Generar reporte de stock",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipo\": \"STOCK\",\n  \"sucursal\": \"CHILLAN\",\n  \"desde\": \"2025-01-01\",\n  \"hasta\": \"2025-12-31\",\n  \"generadoPor\": 1\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8091/reportes-stock", "host": ["localhost"], "port": "8091", "path": ["reportes-stock"] }
+              }
+            },
+            {
+              "name": "05 Exportar reporte",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8091/reportes/{{reporteId}}/exportar?formato=PDF",
+                  "host": ["localhost"], "port": "8091", "path": ["reportes","{{reporteId}}","exportar"],
+                  "query": [{ "key": "formato", "value": "PDF" }]
+                }
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "3. Recepcionista / Ejecutivo de Atencion",
+      "description": "Registrar clientes y mascotas, gestionar citas, emitir documentos tributarios y atender reclamos.",
+      "item": [
+
+        {
+          "name": "Registrar Cliente y Mascota",
+          "item": [
+            {
+              "name": "01 Registrar cliente",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"rut\": \"12345678-9\",\n  \"nombre\": \"Maria\",\n  \"apellido\": \"Gonzalez\",\n  \"email\": \"maria@gmail.com\",\n  \"telefono\": \"+56912345678\",\n  \"direccion\": \"Av. O'Higgins 123, Chillan\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/v1/clientes", "host": ["localhost"], "port": "8081", "path": ["api","v1","clientes"] },
+                "description": "Guardar 'id' como clienteId."
+              }
+            },
+            {
+              "name": "02 Ver clientes registrados",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8081/api/v1/clientes", "host": ["localhost"], "port": "8081", "path": ["api","v1","clientes"] }
+              }
+            },
+            {
+              "name": "03 Registrar mascota",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"nombre\": \"Firulais\",\n  \"especie\": \"Perro\",\n  \"raza\": \"Labrador\",\n  \"sexo\": \"Macho\",\n  \"fechaNacimiento\": \"2020-03-15\",\n  \"peso\": 28.5,\n  \"microchip\": \"985112345678901\",\n  \"activo\": true\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/mascotas", "host": ["localhost"], "port": "8087", "path": ["api","v1","mascotas"] },
+                "description": "Guardar 'id' como mascotaId."
+              }
+            },
+            {
+              "name": "04 Ver mascota registrada",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/mascotas/{{mascotaId}}", "host": ["localhost"], "port": "8087", "path": ["api","v1","mascotas","{{mascotaId}}"] },
+                "description": "Muestra nombreCliente enriquecido desde auth."
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Gestion de Citas",
+          "item": [
+            {
+              "name": "01 Agendar cita",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"mascotaId\": {{mascotaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"servicioId\": 1,\n  \"boxId\": {{boxId}},\n  \"sucursal\": \"CHILLAN\",\n  \"fechaHora\": \"2030-08-15T10:00:00\",\n  \"duracionMinutos\": 30,\n  \"canal\": \"PRESENCIAL\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/citas", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas"] },
+                "description": "Crea cita en estado PENDIENTE. Guardar 'id' como citaId."
+              }
+            },
+            {
+              "name": "02 Ver agenda del dia",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/agenda", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","agenda"] }
+              }
+            },
+            {
+              "name": "03 Ver cita con detalles",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}"] }
+              }
+            },
+            {
+              "name": "04 Reprogramar cita",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fechaHora\": \"2030-09-01T11:00:00\",\n  \"duracionMinutos\": 45\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}"] }
+              }
+            },
+            {
+              "name": "05 Confirmar cita (asistencia)",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}/confirmar", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}","confirmar"] },
+                "description": "Estado: PENDIENTE → CONFIRMADA"
+              }
+            },
+            {
+              "name": "06 Cancelar cita",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"motivoCancelacion\": \"Cliente solicita reagendar para la proxima semana\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}/cancelar", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}","cancelar"] }
+              }
+            },
+            {
+              "name": "07 Crear recordatorio para cliente",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"citaId\": {{citaId}},\n  \"tipo\": \"EMAIL\",\n  \"mensaje\": \"Recuerde su cita el 15 de agosto a las 10:00\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/recordatorios", "host": ["localhost"], "port": "8086", "path": ["api","v1","recordatorios"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Facturacion",
+          "item": [
+            {
+              "name": "01 Emitir boleta",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ordenId\": {{ordenId}},\n  \"clienteId\": {{clienteId}},\n  \"tipo\": \"BOLETA\",\n  \"neto\": 21008.0,\n  \"total\": 25000.0,\n  \"rutEmisor\": \"76000001-1\",\n  \"rutReceptor\": \"12345678-9\",\n  \"sucursal\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8090/documentos", "host": ["localhost"], "port": "8090", "path": ["documentos"] },
+                "description": "Guardar 'id' como documentoId."
+              }
+            },
+            {
+              "name": "02 Emitir factura",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ordenId\": {{ordenId}},\n  \"clienteId\": {{clienteId}},\n  \"tipo\": \"FACTURA\",\n  \"neto\": 77294.0,\n  \"total\": 91980.0,\n  \"rutEmisor\": \"76000001-1\",\n  \"rutReceptor\": \"76543210-2\",\n  \"sucursal\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8090/documentos", "host": ["localhost"], "port": "8090", "path": ["documentos"] }
+              }
+            },
+            {
+              "name": "03 Listar documentos emitidos",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8090/documentos", "host": ["localhost"], "port": "8090", "path": ["documentos"] }
+              }
+            },
+            {
+              "name": "04 Anular documento",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"motivo\": \"Error en monto ingresado\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8090/documentos/{{documentoId}}/anular", "host": ["localhost"], "port": "8090", "path": ["documentos","{{documentoId}}","anular"] }
+              }
+            },
+            {
+              "name": "05 Registrar folio SII",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sucursal\": \"CHILLAN\",\n  \"tipoDocumento\": \"BOLETA\",\n  \"folioDesde\": 1001,\n  \"folioHasta\": 2000\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8090/folios", "host": ["localhost"], "port": "8090", "path": ["folios"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Soporte y Reclamos",
+          "item": [
+            {
+              "name": "01 Crear categoria de ticket",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Problemas tecnicos\",\n  \"descripcion\": \"Errores o fallas en el sistema\",\n  \"areaPorDefecto\": \"TI\",\n  \"prioridadDefault\": \"MEDIA\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/categorias-ticket", "host": ["localhost"], "port": "8088", "path": ["categorias-ticket"] }
+              }
+            },
+            {
+              "name": "02 Crear ticket de reclamo",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"motivo\": \"No puedo ver mis citas agendadas\",\n  \"descripcion\": \"Al ingresar al portal las citas no aparecen en la lista.\",\n  \"sucursalId\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets", "host": ["localhost"], "port": "8088", "path": ["tickets"] },
+                "description": "Guardar 'id' como ticketId."
+              }
+            },
+            {
+              "name": "03 Clasificar ticket",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"categoriaId\": 1,\n  \"prioridad\": \"MEDIA\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}/clasificar", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}","clasificar"] }
+              }
+            },
+            {
+              "name": "04 Derivar ticket a area TI",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"responsableId\": 3\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}/derivar", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}","derivar"] }
+              }
+            },
+            {
+              "name": "05 Responder ticket",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"autorId\": 2,\n  \"contenido\": \"Hemos revisado su caso. Limpie cache del navegador e intente nuevamente.\",\n  \"visible\": true\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}/respuestas", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}","respuestas"] }
+              }
+            },
+            {
+              "name": "06 Cerrar ticket",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"resolucion\": \"Problema resuelto limpiando cache del navegador.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}/cerrar", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}","cerrar"] }
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "4. Veterinario",
+      "description": "Consultar agenda, gestionar fichas clinicas, registrar evoluciones, solicitar examenes y emitir recetas y certificados.",
+      "item": [
+
+        {
+          "name": "Agenda Diaria",
+          "item": [
+            {
+              "name": "01 Ver agenda del dia",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/agenda", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","agenda"] },
+                "description": "Muestra citas de hoy con nombre cliente, mascota y veterinario."
+              }
+            },
+            {
+              "name": "02 Ver detalle de cita",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}"] }
+              }
+            },
+            {
+              "name": "03 Iniciar atencion",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}/iniciar", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}","iniciar"] },
+                "description": "Estado: CONFIRMADA → EN_CURSO"
+              }
+            },
+            {
+              "name": "04 Completar atencion",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}/completar", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}","completar"] },
+                "description": "Estado: EN_CURSO → COMPLETADA"
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Fichas Clinicas",
+          "item": [
+            {
+              "name": "01 Crear ficha clinica de mascota",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mascotaId\": {{mascotaId}},\n  \"observacionesGenerales\": \"Paciente sano, vacunas al dia\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/fichas", "host": ["localhost"], "port": "8087", "path": ["api","v1","fichas"] },
+                "description": "Guardar 'id' como fichaId."
+              }
+            },
+            {
+              "name": "02 Ver fichas de mascota",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/fichas", "host": ["localhost"], "port": "8087", "path": ["api","v1","fichas"] }
+              }
+            },
+            {
+              "name": "03 Registrar evolucion (diagnostico)",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fichaId\": {{fichaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"citaId\": {{citaId}},\n  \"anamnesis\": \"Dueno reporta decaimiento y fiebre desde ayer\",\n  \"examenFisico\": \"Temperatura 39.5C, mucosas rosadas, linfonodos normales\",\n  \"diagnostico\": \"Sindrome febril agudo\",\n  \"tratamiento\": \"Dipirona 500mg IM, reposo y abundante agua\",\n  \"observaciones\": \"Control en 48 horas si no mejora\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/evoluciones", "host": ["localhost"], "port": "8087", "path": ["api","v1","evoluciones"] },
+                "description": "INMUTABLE — una vez creada no se puede modificar ni eliminar."
+              }
+            },
+            {
+              "name": "04 Registrar vacuna aplicada",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fichaId\": {{fichaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"nombre\": \"Antirrábica\",\n  \"fechaAplicacion\": \"2025-06-27\",\n  \"proximaFecha\": \"2026-06-27\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/vacunas", "host": ["localhost"], "port": "8087", "path": ["api","v1","vacunas"] },
+                "description": "INMUTABLE."
+              }
+            },
+            {
+              "name": "05 Registrar procedimiento",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fichaId\": {{fichaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"nombre\": \"Limpieza dental\",\n  \"tipo\": \"PROFILAXIS\",\n  \"descripcion\": \"Limpieza dental con ultrasonido bajo anestesia local\",\n  \"fecha\": \"2025-06-27\",\n  \"resultado\": \"Exitoso, sin complicaciones\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/procedimientos", "host": ["localhost"], "port": "8087", "path": ["api","v1","procedimientos"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Recetas y Certificados",
+          "item": [
+            {
+              "name": "01 Emitir receta medica",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fichaId\": {{fichaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"medicamentos\": [\n    {\n      \"nombre\": \"Amoxicilina 500mg\",\n      \"dosis\": \"1 comprimido\",\n      \"frecuencia\": \"Cada 8 horas\",\n      \"duracionDias\": 7\n    }\n  ],\n  \"fechaVencimiento\": \"2025-07-27\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/recetas", "host": ["localhost"], "port": "8087", "path": ["api","v1","recetas"] },
+                "description": "INMUTABLE."
+              }
+            },
+            {
+              "name": "02 Emitir certificado de salud",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fichaId\": {{fichaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"tipo\": \"SALUD\",\n  \"descripcion\": \"El paciente Firulais se encuentra en buen estado de salud general.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/certificados", "host": ["localhost"], "port": "8087", "path": ["api","v1","certificados"] },
+                "description": "INMUTABLE."
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Examenes de Laboratorio",
+          "item": [
+            {
+              "name": "01 Crear tipo de examen",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Hemograma Completo\",\n  \"descripcion\": \"Analisis completo de sangre\",\n  \"tiempoEstimadoHoras\": 24,\n  \"requiereMuestra\": true,\n  \"instrucciones\": \"Ayuno de 8 horas previo a la extraccion\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/tipos-examen", "host": ["localhost"], "port": "8089", "path": ["tipos-examen"] },
+                "description": "Guardar 'id' como tipoExamenId."
+              }
+            },
+            {
+              "name": "02 Solicitar orden de examen",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mascotaId\": {{mascotaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"tipoExamenId\": {{tipoExamenId}},\n  \"descripcion\": \"Control post-operatorio, revisar globulos blancos\",\n  \"fechaProgramada\": \"2030-08-16T09:00:00\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/ordenes-examen", "host": ["localhost"], "port": "8089", "path": ["ordenes-examen"] },
+                "description": "Guardar 'id' como ordenExamenId."
+              }
+            },
+            {
+              "name": "03 Programar orden de examen",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fechaProgramada\": \"2030-08-16T09:00:00\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/ordenes-examen/{{ordenExamenId}}/programar", "host": ["localhost"], "port": "8089", "path": ["ordenes-examen","{{ordenExamenId}}","programar"] }
+              }
+            },
+            {
+              "name": "04 Registrar muestra",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ordenExamenId\": {{ordenExamenId}},\n  \"tipo\": \"SANGRE\",\n  \"codigoMuestra\": \"MUE-2025-001\",\n  \"descripcion\": \"Muestra de sangre venosa extraida en consulta\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/muestras", "host": ["localhost"], "port": "8089", "path": ["muestras"] },
+                "description": "Guardar 'id' como muestraId."
+              }
+            },
+            {
+              "name": "05 Recepcionar muestra en laboratorio",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"responsableId\": 2\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/muestras/{{muestraId}}/recepcion", "host": ["localhost"], "port": "8089", "path": ["muestras","{{muestraId}}","recepcion"] }
+              }
+            },
+            {
+              "name": "06 Crear procesamiento de muestra",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"muestraId\": {{muestraId}},\n  \"tecnicoId\": 2,\n  \"metodologia\": \"Analisis hematologico automatizado Sysmex XN-1000\",\n  \"observaciones\": \"Muestra en buen estado\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/procesamientos", "host": ["localhost"], "port": "8089", "path": ["procesamientos"] },
+                "description": "Guardar 'id' como procesamientoId."
+              }
+            },
+            {
+              "name": "07 Completar procesamiento",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fechaFin\": \"2030-08-16T14:00:00\",\n  \"observaciones\": \"Procesamiento completado sin incidencias\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/procesamientos/{{procesamientoId}}/completar", "host": ["localhost"], "port": "8089", "path": ["procesamientos","{{procesamientoId}}","completar"] }
+              }
+            },
+            {
+              "name": "08 Registrar resultado del examen",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ordenExamenId\": {{ordenExamenId}},\n  \"muestraId\": {{muestraId}},\n  \"tecnicoId\": 2,\n  \"resultado\": \"Hemograma normal. Globulos blancos 7.200/uL dentro del rango.\",\n  \"observaciones\": \"Sin anomalias detectadas\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8089/resultados-examen", "host": ["localhost"], "port": "8089", "path": ["resultados-examen"] },
+                "description": "Guardar 'id' como resultadoId."
+              }
+            },
+            {
+              "name": "09 Publicar resultado (visible al cliente)",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8089/resultados-examen/{{resultadoId}}/publicar", "host": ["localhost"], "port": "8089", "path": ["resultados-examen","{{resultadoId}}","publicar"] }
+              }
+            },
+            {
+              "name": "10 Ver ordenes de examen por mascota",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8089/ordenes-examen?mascotaId={{mascotaId}}",
+                  "host": ["localhost"], "port": "8089", "path": ["ordenes-examen"],
+                  "query": [{ "key": "mascotaId", "value": "{{mascotaId}}" }]
+                }
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "5. Bodega / Logistica Interna",
+      "description": "Gestionar stock, registrar entradas y salidas, transferir entre sucursales y manejar proveedores.",
+      "item": [
+
+        {
+          "name": "Productos e Inventario",
+          "item": [
+            {
+              "name": "01 Registrar producto en catalogo interno",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": \"PPP15KG\",\n  \"nombre\": \"Purina Pro Plan 15kg\",\n  \"descripcion\": \"Alimento premium para perros adultos\",\n  \"precio\": 45990.0\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/inventario/productos", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventario","productos"] },
+                "description": "Guardar 'id' como productoInvId."
+              }
+            },
+            {
+              "name": "02 Listar productos",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8083/api/v1/inventario/productos", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventario","productos"] }
+              }
+            },
+            {
+              "name": "03 Abrir inventario en sucursal",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productoId\": {{productoInvId}},\n  \"sucursal\": \"CHILLAN\",\n  \"stockDisponible\": 0,\n  \"stockMinimo\": 5\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/inventarios", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios"] },
+                "description": "Crea el registro de inventario por sucursal. Guardar 'id' como inventarioId."
+              }
+            },
+            {
+              "name": "04 Registrar entrada de stock",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cantidad\": 20,\n  \"responsable\": \"Juan Bodeguero\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/inventarios/{{inventarioId}}/entrada", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios","{{inventarioId}}","entrada"] },
+                "description": "stockDisponible pasa de 0 a 20."
+              }
+            },
+            {
+              "name": "05 Registrar salida de stock",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cantidad\": 18,\n  \"motivo\": \"Ventas del mes\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/inventarios/{{inventarioId}}/salida", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios","{{inventarioId}}","salida"] },
+                "description": "stockDisponible pasa a 2 — bajo el minimo de 5. Se genera alerta automatica."
+              }
+            },
+            {
+              "name": "06 Ver stock total de inventario",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8083/api/v1/inventarios/{{inventarioId}}/stock-total", "host": ["localhost"], "port": "8083", "path": ["api","v1","inventarios","{{inventarioId}}","stock-total"] }
+              }
+            },
+            {
+              "name": "07 Ver alertas de stock critico",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8083/api/v1/alertastocks", "host": ["localhost"], "port": "8083", "path": ["api","v1","alertastocks"] }
+              }
+            },
+            {
+              "name": "08 Marcar alerta como leida",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/alertastocks/{{alertaId}}/leer", "host": ["localhost"], "port": "8083", "path": ["api","v1","alertastocks","{{alertaId}}","leer"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Transferencias entre Sucursales",
+          "item": [
+            {
+              "name": "01 Solicitar reposicion entre sucursales",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inventarioId\": {{inventarioId}},\n  \"cantidadSolicitada\": 10,\n  \"motivo\": \"Stock critico en sucursal Chillan\",\n  \"solicitadoPor\": 1\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/solicitudreposicions", "host": ["localhost"], "port": "8083", "path": ["api","v1","solicitudreposicions"] },
+                "description": "Guardar 'id' como solicitudId."
+              }
+            },
+            {
+              "name": "02 Crear transferencia fisica de stock",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sucursalOrigen\": \"LOS_ANGELES\",\n  \"sucursalDestino\": \"CHILLAN\",\n  \"productoId\": {{productoInvId}},\n  \"cantidad\": 10\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/transferenciastocks", "host": ["localhost"], "port": "8083", "path": ["api","v1","transferenciastocks"] },
+                "description": "Guardar 'id' como transferenciaStockId."
+              }
+            },
+            {
+              "name": "03 Iniciar transferencia (en transito)",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/transferenciastocks/{{transferenciaStockId}}/iniciar", "host": ["localhost"], "port": "8083", "path": ["api","v1","transferenciastocks","{{transferenciaStockId}}","iniciar"] }
+              }
+            },
+            {
+              "name": "04 Confirmar recepcion de transferencia",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/transferenciastocks/{{transferenciaStockId}}/confirmar", "host": ["localhost"], "port": "8083", "path": ["api","v1","transferenciastocks","{{transferenciaStockId}}","confirmar"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Proveedores y Pedidos",
+          "item": [
+            {
+              "name": "01 Registrar proveedor",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Distribuidora PetFood Chile\",\n  \"rut\": \"76543210-2\",\n  \"email\": \"contacto@petfood.cl\",\n  \"telefono\": \"+56223456789\",\n  \"direccion\": \"Av. Industrial 456, Santiago\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/proveedors", "host": ["localhost"], "port": "8083", "path": ["api","v1","proveedors"] },
+                "description": "Guardar 'id' como proveedorId. (La ruta es 'proveedors' tal cual en el codigo.)"
+              }
+            },
+            {
+              "name": "02 Asociar producto a proveedor",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productoId\": {{productoInvId}}\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/proveedors/{{proveedorId}}/productos", "host": ["localhost"], "port": "8083", "path": ["api","v1","proveedors","{{proveedorId}}","productos"] }
+              }
+            },
+            {
+              "name": "03 Hacer pedido al proveedor",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"proveedorId\": {{proveedorId}},\n  \"sucursal\": \"CHILLAN\",\n  \"responsable\": \"Ana Administradora\",\n  \"detalles\": [\n    {\n      \"productoId\": {{productoInvId}},\n      \"cantidad\": 50,\n      \"precioUnitario\": 35000.0\n    }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8083/api/v1/pedidoproveedors", "host": ["localhost"], "port": "8083", "path": ["api","v1","pedidoproveedors"] },
+                "description": "Guardar 'id' como pedidoId."
+              }
+            },
+            {
+              "name": "04 Enviar pedido al proveedor",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/pedidoproveedors/{{pedidoId}}/enviar", "host": ["localhost"], "port": "8083", "path": ["api","v1","pedidoproveedors","{{pedidoId}}","enviar"] }
+              }
+            },
+            {
+              "name": "05 Recibir pedido del proveedor",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8083/api/v1/pedidoproveedors/{{pedidoId}}/recibir", "host": ["localhost"], "port": "8083", "path": ["api","v1","pedidoproveedors","{{pedidoId}}","recibir"] }
+              }
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      "name": "6. Cliente (Acciones via Web)",
+      "description": "Registro, login, mascotas, citas, historial, compras, notificaciones, soporte y valoraciones.",
+      "item": [
+
+        {
+          "name": "Cuenta y Perfil",
+          "item": [
+            {
+              "name": "01 Crear cuenta de cliente",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Luis Hernandez\",\n  \"email\": \"luis@gmail.com\",\n  \"telefono\": \"+56912345678\",\n  \"password\": \"Cliente1234!\",\n  \"rol\": \"CLIENTE\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/register", "host": ["localhost"], "port": "8081", "path": ["api","auth","register"] },
+                "description": "Guardar 'id' como usuarioId."
+              }
+            },
+            {
+              "name": "02 Iniciar sesion",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"luis@gmail.com\",\n  \"password\": \"Cliente1234!\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/login", "host": ["localhost"], "port": "8081", "path": ["api","auth","login"] }
+              }
+            },
+            {
+              "name": "03 Actualizar datos personales",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Luis Hernandez\",\n  \"telefono\": \"+56987654321\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/usuarios/{{usuarioId}}/perfil", "host": ["localhost"], "port": "8081", "path": ["api","auth","usuarios","{{usuarioId}}","perfil"] }
+              }
+            },
+            {
+              "name": "04 Cambiar contrasena",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"passwordActual\": \"Cliente1234!\",\n  \"passwordNueva\": \"Cliente5678!\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8081/api/auth/usuarios/{{usuarioId}}/password", "host": ["localhost"], "port": "8081", "path": ["api","auth","usuarios","{{usuarioId}}","password"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Mascotas y Citas",
+          "item": [
+            {
+              "name": "01 Registrar mi mascota",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"nombre\": \"Max\",\n  \"especie\": \"Perro\",\n  \"raza\": \"Golden Retriever\",\n  \"sexo\": \"Macho\",\n  \"fechaNacimiento\": \"2021-05-10\",\n  \"peso\": 30.0,\n  \"activo\": true\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8087/api/v1/mascotas", "host": ["localhost"], "port": "8087", "path": ["api","v1","mascotas"] },
+                "description": "Guardar 'id' como mascotaId."
+              }
+            },
+            {
+              "name": "02 Solicitar cita de atencion",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"mascotaId\": {{mascotaId}},\n  \"veterinarioId\": {{veterinarioId}},\n  \"servicioId\": 1,\n  \"boxId\": {{boxId}},\n  \"sucursal\": \"CHILLAN\",\n  \"fechaHora\": \"2030-08-15T10:00:00\",\n  \"duracionMinutos\": 30,\n  \"canal\": \"WEB\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8086/api/v1/citas", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas"] },
+                "description": "Guardar 'id' como citaId."
+              }
+            },
+            {
+              "name": "03 Ver mis citas",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas"] }
+              }
+            },
+            {
+              "name": "04 Ver proxima cita",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8086/api/v1/citas/{{citaId}}", "host": ["localhost"], "port": "8086", "path": ["api","v1","citas","{{citaId}}"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Historial Clinico",
+          "item": [
+            {
+              "name": "01 Ver ficha clinica",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/fichas", "host": ["localhost"], "port": "8087", "path": ["api","v1","fichas"] }
+              }
+            },
+            {
+              "name": "02 Ver recetas",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/recetas", "host": ["localhost"], "port": "8087", "path": ["api","v1","recetas"] }
+              }
+            },
+            {
+              "name": "03 Ver vacunas registradas",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/vacunas", "host": ["localhost"], "port": "8087", "path": ["api","v1","vacunas"] }
+              }
+            },
+            {
+              "name": "04 Ver certificados emitidos",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8087/api/v1/certificados", "host": ["localhost"], "port": "8087", "path": ["api","v1","certificados"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Catalogo y Compras",
+          "item": [
+            {
+              "name": "01 Ver catalogo disponible en sucursal",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8082/api/v1/catalogo/disponibles?sucursal=CHILLAN",
+                  "host": ["localhost"], "port": "8082", "path": ["api","v1","catalogo","disponibles"],
+                  "query": [{ "key": "sucursal", "value": "CHILLAN" }]
+                }
+              }
+            },
+            {
+              "name": "02 Buscar producto por nombre",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8082/api/v1/catalogo/buscar?nombre=Purina",
+                  "host": ["localhost"], "port": "8082", "path": ["api","v1","catalogo","buscar"],
+                  "query": [{ "key": "nombre", "value": "Purina" }]
+                }
+              }
+            },
+            {
+              "name": "03 Crear carrito de compra",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}}\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8084/api/v1/carritos", "host": ["localhost"], "port": "8084", "path": ["api","v1","carritos"] },
+                "description": "Guardar 'id' como carritoId."
+              }
+            },
+            {
+              "name": "04 Agregar producto al carrito",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"itemId\": 1,\n  \"tipo\": \"PRODUCTO\",\n  \"nombre\": \"Purina Pro Plan 15kg\",\n  \"cantidad\": 2,\n  \"precio\": 45990.0\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8084/api/v1/carritos/{{carritoId}}/items", "host": ["localhost"], "port": "8084", "path": ["api","v1","carritos","{{carritoId}}","items"] }
+              }
+            },
+            {
+              "name": "05 Ver total del carrito",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8084/api/v1/carritos/{{carritoId}}/total", "host": ["localhost"], "port": "8084", "path": ["api","v1","carritos","{{carritoId}}","total"] }
+              }
+            },
+            {
+              "name": "06 Crear orden de compra",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"sucursal\": \"CHILLAN\",\n  \"detalles\": [\n    {\n      \"productoId\": 1,\n      \"nombreProducto\": \"Purina Pro Plan 15kg\",\n      \"cantidad\": 2,\n      \"precioUnitario\": 45990.0\n    }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8084/api/v1/ordenes", "host": ["localhost"], "port": "8084", "path": ["api","v1","ordenes"] },
+                "description": "Guardar 'id' como ordenId."
+              }
+            },
+            {
+              "name": "07 Confirmar orden",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8084/api/v1/ordenes/{{ordenId}}/confirmar", "host": ["localhost"], "port": "8084", "path": ["api","v1","ordenes","{{ordenId}}","confirmar"] }
+              }
+            },
+            {
+              "name": "08 Realizar pago",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ordenId\": {{ordenId}},\n  \"metodo\": \"DEBITO\",\n  \"monto\": 91980.0,\n  \"referencia\": \"TXN-2025-001\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8084/api/v1/pagos", "host": ["localhost"], "port": "8084", "path": ["api","v1","pagos"] },
+                "description": "Guardar 'id' como pagoId."
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Estado de Pedidos",
+          "item": [
+            {
+              "name": "01 Consultar tracking de envio",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8085/api/v1/envios/{{envioId}}/tracking", "host": ["localhost"], "port": "8085", "path": ["api","v1","envios","{{envioId}}","tracking"] }
+              }
+            },
+            {
+              "name": "02 Ver detalle de envio",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8085/api/v1/envios/{{envioId}}", "host": ["localhost"], "port": "8085", "path": ["api","v1","envios","{{envioId}}"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Notificaciones",
+          "item": [
+            {
+              "name": "01 Ver mis notificaciones",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8092/notificaciones?usuarioId={{usuarioId}}",
+                  "host": ["localhost"], "port": "8092", "path": ["notificaciones"],
+                  "query": [{ "key": "usuarioId", "value": "{{usuarioId}}" }]
+                }
+              }
+            },
+            {
+              "name": "02 Ver cantidad de no leidas",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8092/notificaciones/no-leidas/count?usuarioId={{usuarioId}}",
+                  "host": ["localhost"], "port": "8092", "path": ["notificaciones","no-leidas","count"],
+                  "query": [{ "key": "usuarioId", "value": "{{usuarioId}}" }]
+                }
+              }
+            },
+            {
+              "name": "03 Marcar notificacion como leida",
+              "request": {
+                "method": "PUT",
+                "url": { "raw": "http://localhost:8092/notificaciones/{{notificacionId}}/leer", "host": ["localhost"], "port": "8092", "path": ["notificaciones","{{notificacionId}}","leer"] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "Soporte y Valoraciones",
+          "item": [
+            {
+              "name": "01 Enviar consulta o reclamo",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"motivo\": \"Consulta sobre mi cita\",\n  \"descripcion\": \"Quiero saber si mi cita del lunes esta confirmada.\",\n  \"sucursalId\": \"CHILLAN\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/tickets", "host": ["localhost"], "port": "8088", "path": ["tickets"] },
+                "description": "Guardar 'id' como ticketId."
+              }
+            },
+            {
+              "name": "02 Ver estado de mi ticket",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}"] }
+              }
+            },
+            {
+              "name": "03 Ver respuestas de mi ticket",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "http://localhost:8088/tickets/{{ticketId}}/respuestas", "host": ["localhost"], "port": "8088", "path": ["tickets","{{ticketId}}","respuestas"] }
+              }
+            },
+            {
+              "name": "04 Dejar valoracion de la atencion",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ticketId\": {{ticketId}},\n  \"puntuacion\": 5,\n  \"comentario\": \"Problema resuelto rapidamente, excelente atencion.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "http://localhost:8088/valoraciones", "host": ["localhost"], "port": "8088", "path": ["valoraciones"] },
+                "description": "INMUTABLE — no se puede modificar ni eliminar."
+              }
+            },
+            {
+              "name": "05 Ver promedio de valoraciones (sucursal)",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:8088/valoraciones/promedio?sucursalId=CHILLAN",
+                  "host": ["localhost"], "port": "8088", "path": ["valoraciones","promedio"],
+                  "query": [{ "key": "sucursalId", "value": "CHILLAN" }]
+                }
+              }
+            }
+          ]
+        }
+
+      ]
+    }
+
+  ]
+}

@@ -16,6 +16,10 @@ import cl.vetnova.fichaclinica.model.Evolucion;
 import cl.vetnova.fichaclinica.repository.EvolucionRepository;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 
+/**
+ * Servicio de negocio para evoluciones clínicas: valida que la cita corresponda a la mascota correcta.
+ * Consulta vetnova_agenda (AgendaClient) para validar la cita; si el servicio no responde, continúa igual.
+ */
 @Service
 public class EvolucionService {
 
@@ -27,9 +31,14 @@ public class EvolucionService {
     @Autowired
     private FichaClinicaRepository fichaClinicaRepository;
 
+    // AgendaClient llama al microservicio vetnova_agenda (puerto 8086) para validar la cita
     @Autowired
     private AgendaClient agendaClient;
 
+    /**
+     * Registra una evolución clínica validando que la cita pertenezca a la mascota de la ficha.
+     * Si vetnova_agenda no está disponible, la evolución se guarda igual (tolerancia a fallos).
+     */
     public Evolucion crear(Evolucion evolucion) {
         if (evolucion.getFichaId() == null) {
             throw new BusinessRuleException("El fichaId es obligatorio");
@@ -50,14 +59,17 @@ public class EvolucionService {
                     Long citaMascotaId = ((Number) citaData.get("mascotaId")).longValue();
                     cl.vetnova.fichaclinica.model.FichaClinica ficha =
                             fichaClinicaRepository.findById(evolucion.getFichaId()).orElseThrow();
+                    // Validación cruzada: la cita debe ser de la misma mascota que la ficha clínica
                     if (!citaMascotaId.equals(ficha.getMascotaId())) {
                         throw new BusinessRuleException(
                                 "La cita pertenece a una mascota distinta a la de la ficha clínica");
                     }
                 }
             } catch (BusinessRuleException ex) {
+                // Re-lanzar errores de regla de negocio; no swallowear validaciones críticas
                 throw ex;
             } catch (Exception e) {
+                // Si vetnova_agenda no responde, se registra warning pero la evolución se guarda igual
                 log.warn("event=agenda_no_disponible citaId={} — evolución creada sin validar cita: {}",
                         evolucion.getCitaId(), e.getMessage());
             }
@@ -68,14 +80,22 @@ public class EvolucionService {
         if (evolucion.getDescripcion().isBlank()) {
             throw new BusinessRuleException("La descripción no puede estar vacía");
         }
+        // Se usa UTC para consistencia entre todos los microservicios del sistema
         evolucion.setFechaRegistro(LocalDateTime.now(ZoneOffset.UTC));
         return evolucionRepository.save(evolucion);
     }
 
+    /**
+     * Retorna las evoluciones de una ficha clínica ordenadas de más antigua a más reciente.
+     * @param fichaId ID de la ficha cuyas evoluciones se quieren consultar
+     */
     public List<Evolucion> listarPorFicha(Long fichaId) {
         return evolucionRepository.findByFichaIdOrderByFechaRegistroAsc(fichaId);
     }
 
+    /**
+     * Retorna todas las evoluciones registradas en el sistema.
+     */
     public List<Evolucion> listar() {
         return evolucionRepository.findAll();
     }

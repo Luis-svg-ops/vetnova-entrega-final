@@ -17,9 +17,12 @@ import cl.vetnova.catalogo.model.Producto;
 import cl.vetnova.catalogo.repository.CategoriaRepository;
 import cl.vetnova.catalogo.repository.ProductoRepository;
 
+// Gestiona el CRUD de productos; toda validación de categoría es contra la BD local — no llama a otros MS
 @Service
 public class ProductoService {
     private static final Logger log = LoggerFactory.getLogger(ProductoService.class);
+
+    // Acepta URLs que comiencen con http:// o https:// sin espacios
     private static final String URL_REGEX = "^https?://[^\\s]+$";
 
     @Autowired
@@ -28,13 +31,15 @@ public class ProductoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    public ProductoResponse crear(ProductoRequest request){
+    // Todo producto nuevo comienza con activo=true
+    public ProductoResponse crear(ProductoRequest request) {
         if (request.getNombre() == null) {
             throw new BusinessRuleException("El nombre es obligatorio");
         }
         if (request.getNombre().isBlank()) {
             throw new BusinessRuleException("El nombre no puede estar vacío");
         }
+        // Unicidad insensible a mayúsculas para evitar duplicados semánticos como "Amoxicilina" y "amoxicilina"
         if (productoRepository.existsByNombreIgnoreCase(request.getNombre())) {
             throw new ConflictException("Ya existe un producto con ese nombre");
         }
@@ -42,9 +47,11 @@ public class ProductoService {
         if (request.getCategoriaId() == null) {
             throw new BusinessRuleException("La categoría es obligatoria");
         }
+        // Validación interna: se consulta CategoriaRepository local, sin llamar a ningún otro MS
         if (!categoriaRepository.existsById(request.getCategoriaId())) {
             throw new ResourceNotFoundException("Categoría no encontrada");
         }
+        // La URL de imagen es opcional; si viene, debe tener formato válido
         if (request.getImagenUrl() != null && !request.getImagenUrl().matches(URL_REGEX)) {
             throw new BusinessRuleException("El formato de la URL de imagen no es válido");
         }
@@ -60,15 +67,16 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
-    public List<ProductoResponse> listar(){
+    public List<ProductoResponse> listar() {
         return productoRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public ProductoResponse obtenerPorId(Long id){
+    public ProductoResponse obtenerPorId(Long id) {
         return toResponse(buscar(id));
     }
 
-    public ProductoResponse activar(Long id){
+    // Permite que el producto vuelva a aparecer en búsquedas sin recrearlo
+    public ProductoResponse activar(Long id) {
         log.info("event=activar_producto productoId={}", id);
         Producto producto = buscar(id);
         producto.setActivo(true);
@@ -76,7 +84,8 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
-    public ProductoResponse desactivar(Long id){
+    // Soft delete: el registro queda en BD para preservar referencias en ventas históricas
+    public ProductoResponse desactivar(Long id) {
         log.info("event=desactivar_producto productoId={}", id);
         Producto producto = buscar(id);
         producto.setActivo(false);
@@ -84,7 +93,7 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
-    public ProductoResponse actualizarPrecio(Long id, Double nuevoPrecio){
+    public ProductoResponse actualizarPrecio(Long id, Double nuevoPrecio) {
         log.info("event=actualizar_precio_producto productoId={} precio={}", id, nuevoPrecio);
         Producto producto = buscar(id);
         validarPrecio(nuevoPrecio);
@@ -93,13 +102,14 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
-    public void eliminar(Long id){
+    public void eliminar(Long id) {
         log.info("event=eliminar_producto productoId={}", id);
         buscar(id);
         productoRepository.deleteById(id);
     }
 
-    private void validarPrecio(Double precio){
+    // Reutilizado en crear() y actualizarPrecio() para no repetir la lógica de validación
+    private void validarPrecio(Double precio) {
         if (precio == null) {
             throw new BusinessRuleException("El precio es obligatorio");
         }
@@ -108,12 +118,14 @@ public class ProductoService {
         }
     }
 
-    private Producto buscar(Long id){
+    // Centraliza el 404 para no repetirlo en cada método público
+    private Producto buscar(Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id " + id));
     }
 
-    private ProductoResponse toResponse(Producto producto){
+    // Separa la entidad interna del contrato público de la API
+    private ProductoResponse toResponse(Producto producto) {
         ProductoResponse response = new ProductoResponse();
         response.setId(producto.getId());
         response.setNombre(producto.getNombre());

@@ -1,4 +1,0 @@
-$kind: http-request
-url: localhost:8083/api/v1/movimientos
-method: GET
-order: 7000

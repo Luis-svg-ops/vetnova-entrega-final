@@ -17,6 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import cl.vetnova.fichaclinica.dto.MascotaDesactivacionResponse;
 import cl.vetnova.fichaclinica.dto.MascotaResponse;
+import cl.vetnova.fichaclinica.exception.BusinessRuleException;
+import cl.vetnova.fichaclinica.exception.ConflictException;
+import cl.vetnova.fichaclinica.exception.ResourceNotFoundException;
 import cl.vetnova.fichaclinica.model.Mascota;
 import cl.vetnova.fichaclinica.service.MascotaService;
 
@@ -45,5 +48,28 @@ public class MascotaControllerTest {
         mockMvc.perform(put("/api/v1/mascotas/1").contentType(MediaType.APPLICATION_JSON).content("{}"))
                 .andExpect(status().isOk());
         mockMvc.perform(delete("/api/v1/mascotas/1")).andExpect(status().isOk());
+    }
+
+    @Test
+    void testCrearMascotaInvalidaResponde400() throws Exception {
+        when(mascotaService.crear(any(Mascota.class)))
+                .thenThrow(new BusinessRuleException("El clienteId es obligatorio"));
+        mockMvc.perform(post("/api/v1/mascotas").contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCrearMascotaMicrochipDuplicadoResponde409() throws Exception {
+        when(mascotaService.crear(any(Mascota.class)))
+                .thenThrow(new ConflictException("Ya existe una mascota con ese microchip"));
+        mockMvc.perform(post("/api/v1/mascotas").contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void testObtenerPorIdInexistenteResponde404() throws Exception {
+        when(mascotaService.obtenerPorIdConCliente(99L))
+                .thenThrow(new ResourceNotFoundException("Mascota no encontrado con id 99"));
+        mockMvc.perform(get("/api/v1/mascotas/99")).andExpect(status().isNotFound());
     }
 }

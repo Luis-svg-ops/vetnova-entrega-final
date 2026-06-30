@@ -214,4 +214,29 @@ public class DisponibilidadProfesionalServiceTest {
         when(disponibilidadRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> disponibilidadService.obtenerPorId(99L));
     }
+
+    @Test
+    void testObtenerPorIdExistenteDevuelveElHorario() {
+        when(disponibilidadRepository.findById(1L)).thenReturn(Optional.of(valido()));
+        assertEquals("LUNES", disponibilidadService.obtenerPorId(1L).getDiaSemana());
+    }
+
+    @Test
+    void testActivarInexistenteLanzaNotFound() {
+        when(disponibilidadRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> disponibilidadService.activar(99L));
+    }
+
+    @Test
+    void testDesactivarInexistenteLanzaNotFound() {
+        when(disponibilidadRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> disponibilidadService.desactivar(99L));
+    }
+
+    @Test
+    void testActualizarInexistenteLanzaNotFound() {
+        when(disponibilidadRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class,
+                () -> disponibilidadService.actualizar(99L, valido()));
+    }
 }

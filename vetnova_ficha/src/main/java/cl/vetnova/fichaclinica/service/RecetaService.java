@@ -16,6 +16,10 @@ import cl.vetnova.fichaclinica.model.Receta;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 import cl.vetnova.fichaclinica.repository.RecetaRepository;
 
+/**
+ * Servicio de negocio para recetas médicas: valida medicamentos, calcula vencimiento y persiste la receta.
+ * Las recetas son documentos legales inmutables; el modelo aplana la lista de medicamentos en un string.
+ */
 @Service
 public class RecetaService {
 
@@ -26,6 +30,10 @@ public class RecetaService {
     private FichaClinicaRepository fichaClinicaRepository;
 
     // CA-REC-01..13: emite una receta con una lista de medicamentos válidos.
+    /**
+     * Emite una receta médica validando cada medicamento y asignando vencimiento por defecto a 30 días.
+     * @param request datos de la receta (fichaId, veterinarioId y al menos un medicamento son obligatorios)
+     */
     public Receta crear(RecetaRequest request) {
         if (request.getFichaId() == null) {
             throw new BusinessRuleException("El fichaId es obligatorio");
@@ -42,6 +50,7 @@ public class RecetaService {
         if (request.getMedicamentos().isEmpty()) {
             throw new BusinessRuleException("La receta debe tener al menos un medicamento");
         }
+        // Cada medicamento debe tener nombre, dosis y frecuencia completos
         for (MedicamentoRequest medicamento : request.getMedicamentos()) {
             if (medicamento.getNombre() == null) {
                 throw new BusinessRuleException("El nombre del medicamento es obligatorio");
@@ -57,9 +66,11 @@ public class RecetaService {
         if (request.getFechaVencimiento() != null && request.getFechaVencimiento().before(emision)) {
             throw new BusinessRuleException("La fecha de vencimiento debe ser posterior a la fecha de emisión");
         }
+        // Si no se especifica vencimiento, se asigna 30 días por defecto
         if (request.getFechaVencimiento() == null) {
             request.setFechaVencimiento(Date.valueOf(LocalDate.now().plusDays(30)));
         }
+        // El modelo almacena los nombres de medicamentos como string concatenado; dosis/frecuencia del primero
         MedicamentoRequest primero = request.getMedicamentos().get(0);
         Receta receta = new Receta();
         receta.setFichaId(request.getFichaId());
@@ -74,10 +85,17 @@ public class RecetaService {
     }
 
     // CA-REC-17: listado de recetas de una ficha por fecha de emisión descendente.
+    /**
+     * Retorna las recetas de una ficha clínica ordenadas de más reciente a más antigua.
+     * @param fichaId ID de la ficha cuyas recetas se quieren consultar
+     */
     public List<Receta> listarPorFicha(Long fichaId) {
         return recetaRepository.findByFichaIdOrderByFechaEmisionDesc(fichaId);
     }
 
+    /**
+     * Retorna todas las recetas emitidas en el sistema.
+     */
     public List<Receta> listar() {
         return recetaRepository.findAll();
     }

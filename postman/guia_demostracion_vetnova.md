@@ -142,15 +142,11 @@
 
 ---
 
-### Paso 3 — Crear ficha clínica
-**POST** `http://localhost:8087/api/v1/fichas`
-```json
-{
-  "mascotaId": 1,
-  "observacionesGenerales": "Paciente sano, vacunas al día"
-}
-```
-**Verificar:** `201` · campo `id` → guardar como `fichaId`
+### Paso 3 — Consultar ficha clínica (creada automáticamente)
+**GET** `http://localhost:8087/api/v1/fichas?mascotaId=1`  
+**Verificar:** `200` · campo `id` → guardar como `fichaId` · la ficha ya existe porque se creó sola en el POST /mascotas
+
+> **Nota:** No llamar a POST /fichas — devolvería `409 Conflict` porque la ficha 1:1 ya fue creada automáticamente.
 
 ---
 
@@ -161,6 +157,7 @@
   "fichaId": 1,
   "veterinarioId": 1,
   "citaId": 1,
+  "descripcion": "Síndrome febril agudo con temperatura 39.5°C",
   "anamnesis": "Dueño reporta decaimiento y fiebre desde ayer",
   "examenFisico": "Temperatura 39.5°C, mucosas rosadas, linfonodos normales",
   "diagnostico": "Síndrome febril agudo",
@@ -186,7 +183,7 @@
       "duracionDias": 7
     }
   ],
-  "fechaVencimiento": "2025-07-27"
+  "fechaVencimiento": "2027-07-27"
 }
 ```
 **Verificar:** `201`
@@ -246,7 +243,7 @@
   "diagnostico": "Intentando editar"
 }
 ```
-**Verificar:** `422` · registro inmutable
+**Verificar:** `405` · registro inmutable (Method Not Allowed)
 
 ---
 
@@ -304,9 +301,11 @@
 
 ---
 
-### Paso 4 — Consultar agenda del día (enriquecida)
-**GET** `http://localhost:8086/api/v1/citas/agenda`  
+### Paso 4 — Listar todas las citas (enriquecidas)
+**GET** `http://localhost:8086/api/v1/citas`  
 **Verificar:** `200` · campos `nombreCliente`, `nombreMascota`, `nombreVeterinario` presentes
+
+> **Nota:** `GET /agenda` retorna solo citas del día de HOY — como la cita es para 2030 la lista saldría vacía. Usar `GET /citas` para ver todas.
 
 ---
 
@@ -449,8 +448,8 @@
 {
   "productoId": 1,
   "descuento": 15.0,
-  "fechaInicio": "2025-07-01",
-  "fechaFin": "2025-07-31",
+  "fechaInicio": "2026-08-01",
+  "fechaFin": "2026-08-31",
   "activa": true
 }
 ```
@@ -594,7 +593,12 @@
 ---
 
 ### Paso 10 — Aprobar solicitud
-**PUT** `http://localhost:8083/api/v1/solicitudreposicions/{solicitudId}/aprobar`  
+**PUT** `http://localhost:8083/api/v1/solicitudreposicions/{solicitudId}/aprobar`
+```json
+{
+  "comentario": "Aprobado — reposición urgente"
+}
+```
 **Verificar:** `200`
 
 ---
@@ -1032,8 +1036,8 @@
 ---
 
 ### Paso 3 — Contar no leídas
-**GET** `http://localhost:8092/notificaciones/no-leidas/count`  
-**Verificar:** `200` · campo `count` > `0`
+**GET** `http://localhost:8092/notificaciones/no-leidas/count?usuarioId=1`  
+**Verificar:** `200` · campo `noLeidas` > `0`
 
 ---
 
@@ -1264,8 +1268,8 @@
 ---
 
 ### Paso 8 — Consultar promedio de valoraciones
-**GET** `http://localhost:8088/valoraciones/promedio`  
-**Verificar:** `200` · campo `promedio` = `5.0`
+**GET** `http://localhost:8088/valoraciones/promedio?sucursalId=CHILLAN`  
+**Verificar:** `200` · campo `promedio`
 
 ---
 
@@ -1308,10 +1312,10 @@ Luego cerrar inmediatamente:
 
 | Tipo | MS | Endpoint | Esperado |
 |------|----|----------|----------|
-| Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/evoluciones/{id}` | `422` |
-| Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/recetas/{id}` | `422` |
-| Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/vacunas/{id}` | `422` |
-| Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/certificados/{id}` | `422` |
+| Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/evoluciones/{id}` | `405` |
+| Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/recetas/{id}` | `405` |
+| Inmutabilidad | `vetnova_ficha` | `PUT /api/v1/vacunas/{id}` | `405` |
+| Inmutabilidad | `vetnova_ficha` | `DELETE /api/v1/certificados/{id}` | `405` |
 | Soft delete | `vetnova_ficha` | `DELETE /api/v1/mascotas/{id}` | `200` + `activo: false` |
 | Degradación suave | `vetnova_agenda` | `GET /api/v1/citas` con auth caído | `200` + `nombreCliente: null` |
 | Degradación dura | `vetnova_laboratorio` | `POST /ordenes-examen` con ficha caída | `404` bloquea |

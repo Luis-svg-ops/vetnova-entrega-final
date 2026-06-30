@@ -14,6 +14,7 @@ import cl.vetnova.agenda.exception.ResourceNotFoundException;
 
 import cl.vetnova.agenda.repository.BoxRepository;
 
+// Gestiona los boxes (consultorios físicos) de la clínica; evita que dos citas usen el mismo espacio simultáneamente
 @Service
 public class BoxService {
     private static final Logger log = LoggerFactory.getLogger(BoxService.class);
@@ -21,7 +22,8 @@ public class BoxService {
     @Autowired
     private BoxRepository boxRepository;
 
-    public Box crear(Box box){
+    // Todo box nuevo comienza disponible
+    public Box crear(Box box) {
         if (box.getNombre() == null || box.getNombre().isBlank()) {
             throw new BusinessRuleException("El nombre del box es obligatorio");
         }
@@ -33,11 +35,12 @@ public class BoxService {
         return boxRepository.save(box);
     }
 
-    public List<Box> listar(){
+    public List<Box> listar() {
         return boxRepository.findAll();
     }
 
-    public Box reservar(Long id){
+    // Marca el box como ocupado; falla si ya estaba reservado (no se puede reservar dos veces)
+    public Box reservar(Long id) {
         Box box = boxRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Box no encontrado con id " + id));
         if (!Boolean.TRUE.equals(box.getDisponible())) {
@@ -47,7 +50,8 @@ public class BoxService {
         return boxRepository.save(box);
     }
 
-    public Box liberar(Long id){
+    // Devuelve el box al pool de disponibles; falla si ya estaba libre
+    public Box liberar(Long id) {
         Box box = boxRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Box no encontrado con id " + id));
         if (Boolean.TRUE.equals(box.getDisponible())) {
@@ -57,7 +61,8 @@ public class BoxService {
         return boxRepository.save(box);
     }
 
-    public void eliminar(Long id){
+    // Hard delete: los boxes no tienen historial clínico, se pueden eliminar físicamente
+    public void eliminar(Long id) {
         boxRepository.deleteById(id);
     }
 }

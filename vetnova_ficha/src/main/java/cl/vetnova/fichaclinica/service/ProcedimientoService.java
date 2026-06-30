@@ -13,6 +13,10 @@ import cl.vetnova.fichaclinica.model.Procedimiento;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 import cl.vetnova.fichaclinica.repository.ProcedimientoRepository;
 
+/**
+ * Servicio de negocio para procedimientos médicos: valida campos obligatorios y asigna fecha UTC automáticamente.
+ * Los procedimientos son registros inmutables una vez persistidos en la base de datos.
+ */
 @Service
 public class ProcedimientoService {
 
@@ -23,6 +27,10 @@ public class ProcedimientoService {
     private FichaClinicaRepository fichaClinicaRepository;
 
     // CA-PRO-01..10: registra un procedimiento en una ficha existente.
+    /**
+     * Registra un procedimiento médico validando que la ficha exista y los campos obligatorios estén completos.
+     * @param procedimiento datos del procedimiento (fichaId, nombre, descripcion y veterinarioId son obligatorios)
+     */
     public Procedimiento crear(Procedimiento procedimiento) {
         if (procedimiento.getFichaId() == null) {
             throw new BusinessRuleException("El fichaId es obligatorio");
@@ -45,15 +53,23 @@ public class ProcedimientoService {
         if (procedimiento.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
         }
+        // Se usa UTC para consistencia entre todos los microservicios del sistema
         procedimiento.setFechaRegistro(LocalDateTime.now(ZoneOffset.UTC));
         return procedimientoRepository.save(procedimiento);
     }
 
     // CA-PRO-14/15: listado de procedimientos de una ficha por fecha de registro.
+    /**
+     * Retorna los procedimientos de una ficha clínica ordenados de más antiguo a más reciente.
+     * @param fichaId ID de la ficha cuyos procedimientos se quieren consultar
+     */
     public List<Procedimiento> listarPorFicha(Long fichaId) {
         return procedimientoRepository.findByFichaIdOrderByFechaRegistroAsc(fichaId);
     }
 
+    /**
+     * Retorna todos los procedimientos registrados en el sistema.
+     */
     public List<Procedimiento> listar() {
         return procedimientoRepository.findAll();
     }

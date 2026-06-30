@@ -177,4 +177,24 @@ public class ServicioServiceTest {
         when(servicioRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> servicioService.eliminar(99L));
     }
+
+    @Test
+    void testDesactivarServicioInexistenteLanzaNotFound() {
+        when(servicioRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> servicioService.desactivar(99L));
+    }
+
+    @Test
+    void testActualizarPrecioServicioInexistenteLanzaNotFound() {
+        when(servicioRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> servicioService.actualizarPrecio(99L, 20000.0));
+    }
+
+    @Test
+    void testActualizarPrecioPrecioNuloLanzaBusinessRule() {
+        when(servicioRepository.findById(1L)).thenReturn(Optional.of(new Servicio()));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class,
+                () -> servicioService.actualizarPrecio(1L, null));
+        assertEquals("El precio es obligatorio", ex.getMessage());
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import cl.vetnova.agenda.model.HistorialAgenda;
 import cl.vetnova.agenda.repository.HistorialAgendaRepository;
 
+// Auditoría: registra qué ocurrió con cada cita a lo largo del tiempo
 @Service
 public class HistorialAgendaService {
     private static final Logger log = LoggerFactory.getLogger(HistorialAgendaService.class);
@@ -17,16 +18,16 @@ public class HistorialAgendaService {
     @Autowired
     private HistorialAgendaRepository historialAgendaRepository;
 
-    public HistorialAgenda crear(HistorialAgenda historial){
+    public HistorialAgenda crear(HistorialAgenda historial) {
         log.info("event=registrar_historial citaId={}", historial.getCitaId());
         return historialAgendaRepository.save(historial);
     }
 
-    public List<HistorialAgenda> listar(){
+    public List<HistorialAgenda> listar() {
         return historialAgendaRepository.findAll();
     }
 
-    public void eliminar(Long id){
+    public void eliminar(Long id) {
         historialAgendaRepository.deleteById(id);
     }
 }

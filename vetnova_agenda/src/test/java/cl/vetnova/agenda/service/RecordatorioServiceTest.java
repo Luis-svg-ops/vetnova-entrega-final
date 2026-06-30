@@ -180,4 +180,17 @@ public class RecordatorioServiceTest {
         when(recordatorioRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> recordatorioService.obtenerPorId(99L));
     }
+
+    @Test
+    void testObtenerPorIdExistenteDevuelveElRecordatorio() {
+        when(recordatorioRepository.findById(1L)).thenReturn(Optional.of(recordatorio(false)));
+        assertEquals(1L, recordatorioService.obtenerPorId(1L).getCitaId());
+    }
+
+    @Test
+    void testReenviarYaEnviadoSigueMarcandoEnviado() {
+        when(recordatorioRepository.findById(1L)).thenReturn(Optional.of(recordatorio(true)));
+        when(recordatorioRepository.save(any(Recordatorio.class))).thenAnswer(inv -> inv.getArgument(0));
+        assertTrue(recordatorioService.reenviar(1L).getEnviado());
+    }
 }

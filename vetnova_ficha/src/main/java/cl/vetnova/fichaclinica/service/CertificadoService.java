@@ -15,9 +15,14 @@ import cl.vetnova.fichaclinica.repository.CertificadoRepository;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 import cl.vetnova.fichaclinica.repository.VacunaRepository;
 
+/**
+ * Servicio de negocio para certificados veterinarios: valida tipo, ficha y prerrequisitos de vacunación.
+ * Los certificados son documentos oficiales inmutables; los tipos válidos son SALUD, VACUNACION, VIAJE y ADOPCION.
+ */
 @Service
 public class CertificadoService {
 
+    // Conjunto inmutable con los únicos tipos de certificado aceptados por el sistema
     private static final Set<String> TIPOS = Set.of("SALUD", "VACUNACION", "VIAJE", "ADOPCION");
 
     @Autowired
@@ -30,6 +35,10 @@ public class CertificadoService {
     private VacunaRepository vacunaRepository;
 
     // CA-CER-01..11: emite un certificado para una ficha existente.
+    /**
+     * Emite un certificado veterinario validando tipo y prerrequisitos (ej. vacunas para tipo VACUNACION).
+     * @param certificado datos del certificado (fichaId, veterinarioId y tipo son obligatorios)
+     */
     public Certificado crear(Certificado certificado) {
         if (certificado.getFichaId() == null) {
             throw new BusinessRuleException("El fichaId es obligatorio");
@@ -43,9 +52,11 @@ public class CertificadoService {
         if (certificado.getTipo() == null) {
             throw new BusinessRuleException("El tipo de certificado es obligatorio");
         }
+        // Validación de dominio: solo se aceptan los 4 tipos definidos en el sistema
         if (!TIPOS.contains(certificado.getTipo())) {
             throw new BusinessRuleException("Tipo no válido. Valores permitidos: SALUD, VACUNACION, VIAJE, ADOPCION");
         }
+        // Regla especial: el certificado de vacunación requiere que haya al menos una vacuna registrada
         if ("VACUNACION".equals(certificado.getTipo())
                 && !vacunaRepository.existsByFichaId(certificado.getFichaId())) {
             throw new BusinessRuleException(
@@ -60,10 +71,17 @@ public class CertificadoService {
     }
 
     // CA-CER-16: listado de certificados de una ficha.
+    /**
+     * Retorna todos los certificados emitidos para una ficha clínica específica.
+     * @param fichaId ID de la ficha cuyos certificados se quieren consultar
+     */
     public List<Certificado> listarPorFicha(Long fichaId) {
         return certificadoRepository.findByFichaId(fichaId);
     }
 
+    /**
+     * Retorna todos los certificados emitidos en el sistema.
+     */
     public List<Certificado> listar() {
         return certificadoRepository.findAll();
     }

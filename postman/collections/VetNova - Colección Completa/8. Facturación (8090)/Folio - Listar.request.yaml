@@ -1,4 +1,0 @@
-$kind: http-request
-url: localhost:8090/folios
-method: GET
-order: 5000

@@ -1,7 +1,0 @@
-$kind: http-request
-url: localhost:8083/api/v1/inventarios/buscar?productoId=1&sucursal=SANTIAGO
-method: GET
-queryParams:
-  productoId: "1"
-  sucursal: SANTIAGO
-order: 3000

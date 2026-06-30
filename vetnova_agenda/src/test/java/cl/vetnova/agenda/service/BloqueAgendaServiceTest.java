@@ -215,4 +215,10 @@ public class BloqueAgendaServiceTest {
         when(bloqueAgendaRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> bloqueAgendaService.obtenerPorId(99L));
     }
+
+    @Test
+    void testObtenerPorIdExistenteDevuelveElBloque() {
+        when(bloqueAgendaRepository.findById(1L)).thenReturn(Optional.of(valido()));
+        assertEquals("Vacaciones", bloqueAgendaService.obtenerPorId(1L).getMotivo());
+    }
 }

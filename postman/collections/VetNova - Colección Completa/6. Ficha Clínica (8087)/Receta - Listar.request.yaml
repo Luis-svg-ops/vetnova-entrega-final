@@ -1,4 +1,0 @@
-$kind: http-request
-url: http://localhost:8087/api/v1/recetas
-method: GET
-order: 12000

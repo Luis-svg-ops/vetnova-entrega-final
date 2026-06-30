@@ -99,4 +99,19 @@ public class CitaControllerTest {
         when(citaService.confirmar(anyLong())).thenThrow(new ResourceNotFoundException("Cita no encontrada con id 99"));
         mockMvc.perform(put("/api/v1/citas/99/confirmar")).andExpect(status().isNotFound());
     }
+
+    @Test
+    void testReprogramarCitaResponde200() throws Exception {
+        when(citaService.reprogramar(eq(1L), any(), any())).thenReturn(cita("confirmada"));
+        mockMvc.perform(put("/api/v1/citas/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fechaHora\":\"2030-09-01T11:00:00\",\"duracionMinutos\":45}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testAgendaDelDiaResponde200() throws Exception {
+        when(citaService.agendaDelDiaConNombres(any())).thenReturn(List.of(response("pendiente")));
+        mockMvc.perform(get("/api/v1/citas/agenda")).andExpect(status().isOk());
+    }
 }

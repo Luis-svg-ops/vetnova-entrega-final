@@ -16,9 +16,11 @@ import cl.vetnova.agenda.model.DisponibilidadProfesional;
 import cl.vetnova.agenda.repository.CitaRepository;
 import cl.vetnova.agenda.repository.DisponibilidadProfesionalRepository;
 
+// Administra los horarios semanales de disponibilidad de los veterinarios por sucursal
 @Service
 public class DisponibilidadProfesionalService {
 
+    // Valores válidos centralizados para evitar errores de tipeo en validaciones
     private static final Set<String> DIAS = Set.of("LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO");
     private static final Set<String> SUCURSALES = Set.of("CHILLAN", "LOS_ANGELES", "TALCA", "SANTIAGO");
     private static final Pattern HORA = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]$");
@@ -38,6 +40,7 @@ public class DisponibilidadProfesionalService {
                 .orElseThrow(() -> new ResourceNotFoundException("Disponibilidad no encontrada con id " + id));
     }
 
+    // Al crear, el horario queda activo por defecto; se valida formato HH:mm, día, sucursal y sin duplicados
     public DisponibilidadProfesional crear(DisponibilidadProfesional disponibilidad) {
         if (disponibilidad.getVeterinarioId() == null) {
             throw new BusinessRuleException("El veterinarioId es obligatorio");
@@ -74,6 +77,7 @@ public class DisponibilidadProfesionalService {
         if (!SUCURSALES.contains(disponibilidad.getSucursal())) {
             throw new ResourceNotFoundException("Sucursal no encontrada");
         }
+        // Un veterinario no puede tener dos entradas para el mismo día y sucursal
         if (disponibilidadRepository.existsByVeterinarioIdAndDiaSemanaAndSucursal(
                 disponibilidad.getVeterinarioId(), disponibilidad.getDiaSemana(), disponibilidad.getSucursal())) {
             throw new ConflictException("Ya existe horario para ese día y sucursal");
@@ -82,9 +86,11 @@ public class DisponibilidadProfesionalService {
         return disponibilidadRepository.save(disponibilidad);
     }
 
+    // No permite modificar si hay citas agendadas en los próximos 7 días — protege a los clientes ya agendados
     public DisponibilidadProfesional actualizar(Long id, DisponibilidadProfesional datos) {
         DisponibilidadProfesional existente = obtenerPorId(id);
         LocalDateTime ahora = LocalDateTime.now();
+        // Protección: cambiar el horario afectaría citas ya confirmadas esta semana
         if (citaRepository.existsByVeterinarioIdAndFechaHoraBetween(
                 existente.getVeterinarioId(), ahora, ahora.plusDays(7))) {
             throw new BusinessRuleException("No se puede modificar con citas en los próximos 7 días");
@@ -102,12 +108,14 @@ public class DisponibilidadProfesionalService {
         return disponibilidadRepository.save(disponibilidad);
     }
 
+    // Soft delete del horario: útil para vacaciones o licencias temporales sin perder la configuración
     public DisponibilidadProfesional desactivar(Long id) {
         DisponibilidadProfesional disponibilidad = obtenerPorId(id);
         disponibilidad.setActiva(false);
         return disponibilidadRepository.save(disponibilidad);
     }
 
+    // No permite eliminar si el veterinario tiene citas futuras que dependen de este horario
     public void eliminar(Long id) {
         DisponibilidadProfesional existente = obtenerPorId(id);
         if (citaRepository.existsByVeterinarioIdAndFechaHoraAfter(existente.getVeterinarioId(), LocalDateTime.now())) {

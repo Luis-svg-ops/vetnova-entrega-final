@@ -18,6 +18,7 @@ import cl.vetnova.fichaclinica.model.Mascota;
 import cl.vetnova.fichaclinica.repository.FichaClinicaRepository;
 import cl.vetnova.fichaclinica.repository.MascotaRepository;
 
+// Valida reglas de creación/actualización/soft-delete; integra con AuthClient para enriquecer respuestas
 @Service
 public class MascotaService {
 
@@ -27,6 +28,7 @@ public class MascotaService {
     @Autowired
     private FichaClinicaRepository fichaClinicaRepository;
 
+    // AuthClient llama a vetnova_auth (puerto 8081) para obtener el nombre del cliente propietario
     @Autowired
     private AuthClient authClient;
 
@@ -34,6 +36,7 @@ public class MascotaService {
         return mascotaRepository.findAll();
     }
 
+    // Enriquece cada mascota con el nombre del cliente; si auth cae, nombreCliente queda null (degradación suave)
     public List<MascotaResponse> listarConCliente() {
         return mascotaRepository.findAll().stream()
                 .map(m -> new MascotaResponse(m, authClient.obtenerNombreCliente(m.getClienteId())))
@@ -50,14 +53,15 @@ public class MascotaService {
         return new MascotaResponse(m, authClient.obtenerNombreCliente(m.getClienteId()));
     }
 
-    // CA-MAS-01..14: registra una mascota y crea su FichaClinica automáticamente.
     public Mascota crear(Mascota mascota) {
+        // ── Campos obligatorios: validan sin tocar la BD ──────────────────────────────
         if (mascota.getClienteId() == null) {
             throw new BusinessRuleException("El clienteId es obligatorio");
         }
         if (mascota.getNombre() == null) {
             throw new BusinessRuleException("El nombre es obligatorio");
         }
+        // isBlank() atrapa cadenas de solo espacios — separado del null para mensajes distintos
         if (mascota.getNombre().isBlank()) {
             throw new BusinessRuleException("El nombre no puede estar vacío");
         }
@@ -67,18 +71,29 @@ public class MascotaService {
         if (mascota.getEspecie().isBlank()) {
             throw new BusinessRuleException("La especie no puede estar vacía");
         }
+
+        // ── Campos opcionales: solo se validan si vienen con valor ────────────────────
+        // Una mascota sin fecha de nacimiento conocida es válida; pero si viene, no puede ser futura
         if (mascota.getFechaNacimiento() != null && mascota.getFechaNacimiento().isAfter(LocalDate.now())) {
             throw new BusinessRuleException("La fecha de nacimiento no puede ser futura");
         }
+        // Peso null = no registrado (válido); peso <= 0 = dato erróneo (inválido)
         if (mascota.getPeso() != null && mascota.getPeso() <= 0) {
             throw new BusinessRuleException("El peso debe ser mayor a 0");
         }
+
+        // ── Unicidad: requiere consulta a BD, se hace al final para no gastar red antes ─
+        // El microchip identifica al animal de forma global; duplicarlo sería corrupción de datos
         if (mascota.getMicrochip() != null && mascotaRepository.existsByMicrochip(mascota.getMicrochip())) {
             throw new ConflictException("Ya existe una mascota con ese microchip");
         }
+
+        // Toda mascota nueva comienza activa; el soft-delete la desactivará si es necesario
         mascota.setActivo(true);
         Mascota guardada = mascotaRepository.save(mascota);
 
+        // La ficha clínica se crea aquí mismo — garantiza la relación 1:1 desde el inicio.
+        // Si el cliente intenta crear otra ficha vía POST /fichas → FichaClinicaService lanzará 409.
         FichaClinica ficha = new FichaClinica();
         ficha.setMascotaId(guardada.getId());
         ficha.setFechaCreacion(Date.valueOf(LocalDate.now()));
@@ -87,9 +102,10 @@ public class MascotaService {
         return guardada;
     }
 
-    // CA-MAS-15/16: actualiza datos de la mascota validando el peso.
+    // Se actualiza sobre el objeto existente de BD para no sobrescribir campos no editables
     public Mascota actualizar(Long id, Mascota datos) {
         Mascota existente = obtenerPorId(id);
+        // Peso null = no cambiar; peso <= 0 = dato inválido
         if (datos.getPeso() != null && datos.getPeso() <= 0) {
             throw new BusinessRuleException("El peso debe ser mayor a 0");
         }
@@ -103,9 +119,10 @@ public class MascotaService {
         return mascotaRepository.save(existente);
     }
 
-    // CA-MAS-17..20: desactivación lógica (soft-delete) idempotente.
+    // Soft delete: activo=false preserva el historial clínico (evoluciones, recetas, vacunas siguen referenciando esta mascota)
     public MascotaDesactivacionResponse desactivar(Long id) {
         Mascota mascota = obtenerPorId(id);
+        // Idempotente: llamar dos veces no falla ni genera escritura innecesaria en BD
         if (Boolean.FALSE.equals(mascota.getActivo())) {
             return new MascotaDesactivacionResponse(mascota, "La mascota ya estaba inactiva");
         }
